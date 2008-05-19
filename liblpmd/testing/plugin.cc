@@ -37,6 +37,7 @@ Module * lpmd::LoadPluginModule(std::string path, std::string args)
  }
  Module * tmp = create_module(args);
  tmp->unloader = destroy_module;
+ tmp->AssignParameter("fullpath", path);
  return tmp;
 }
 

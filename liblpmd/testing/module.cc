@@ -132,6 +132,8 @@ void Module::Show(std::ostream & os) const
  std::list<std::string> kwds = Parameters();
  for (std::list<std::string>::const_iterator it=kwds.begin();it!=kwds.end();++it)
  {
+  if (*it == "module") continue;    // parametro reservado
+  if (*it == "fullpath") continue;  // parametro reservado
   if (impl->emptycall) 
   { 
    os << "   " << std::setw(10) << (*it);
