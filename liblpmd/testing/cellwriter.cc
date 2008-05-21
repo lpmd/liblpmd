@@ -21,9 +21,9 @@ void CellWriter::Write(const std::string & filename, SimulationCell & sc) const
 void CellWriter::WriteMany(const std::string & filename, std::vector<SimulationCell> & scs) const
 {
  std::ofstream os(filename.c_str());
+ WriteHeader(os);
  for (unsigned long i=0;i<scs.size();++i)
  {
-  WriteHeader(os);
   WriteCell(os, scs[i]);
  }
 }
