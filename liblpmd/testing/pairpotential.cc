@@ -39,6 +39,11 @@ void PairPotential::UpdateForces(SimulationCell & sc)
  Vector ff, acci, accj;
  const long n = sc.Size();
  double tmpvir = 0.0;
+ double stress[3][3];
+ for (int i=0;i<3;i++)
+ {
+  for (int j=0;j<3;j++) stress[i][j]=0.0e0;
+ }
  for (long i=0;i<n;++i)
  {
   std::list<Neighbor> nlist;
@@ -56,8 +61,24 @@ void PairPotential::UpdateForces(SimulationCell & sc)
     jpointer->SetAccel(accj - ff*(FORCEFACTOR/nn.j->Mass()));    // y menos esto :D
     tmpvir -= Dot(nn.rij, ff); // virial de pares
     //if (ff.Mod() > 10.0) throw HorrendousForce(ff.Mod());
+
+    //Asignacion de stress, un for adicional pequeno, 
+    //sera mas lento?
+    for (int k=0;k<3;k++)
+    {
+     stress[0][k] += (nn.rij).GetX()*ff.Get(k);
+     stress[1][k] += (nn.rij).GetY()*ff.Get(k);
+     stress[2][k] += (nn.rij).GetZ()*ff.Get(k);
+    }
    }
   }
+ }
+ sc.AddToVirial(tmpvir);
+ for (int i=0;i<3;i++)
+ {
+  sc.StressTensor(0,i) = stress[0][i];
+  sc.StressTensor(1,i) = stress[1][i];
+  sc.StressTensor(2,i) = stress[2][i];
  }
 }
 

@@ -26,6 +26,7 @@ class lpmd::SimCellImpl
  public:
    unsigned int na, nb, nc;
    double virial;
+   double s[3][3];
    CellManager * cm;
    DistanceCache * dc;
 
@@ -42,6 +43,10 @@ SimulationCell::SimulationCell(int nra, int nrb, int nrc, bool pba, bool pbb, bo
  SetPeriodicity(0, pba);
  SetPeriodicity(1, pbb);
  SetPeriodicity(2, pbc);
+ for (int i=0;i<3;i++) 
+ {
+  for (int j=0;j<3;j++) impl->s[i][j]=0.0e0;
+ }
 }
 
 SimulationCell::SimulationCell(const SimulationCell & sc): Particles(sc), Cell(sc)
@@ -300,17 +305,16 @@ void SimulationCell::RescalePercent(double p, int i)
  RealPos();
 }
 
-//
-//
-//
-double SimulationCell::Virial() const { return impl->virial; }
-//return ((1.0/3.0)*(KIN2EV*virial+virialcorrec)*PRESSFACTOR/v);
 
+//
+// SECCION :
+// Calculo y/o asignacion de Propiedades Fisicas para un
+// SimulationCell
+//
+
+double SimulationCell::Virial() const { return impl->virial; }
 void SimulationCell::AddToVirial(double vir) { impl->virial += vir; }
 
-//
-//
-//
 double SimulationCell::Density() const
 {
  double m = 0.0e0, v = Volume();
@@ -322,9 +326,6 @@ double SimulationCell::Density() const
  return m/v;
 }
 
-//
-//
-//
 double SimulationCell::ParticleDensity() const
 {
  double N = (double)Size();
@@ -332,3 +333,15 @@ double SimulationCell::ParticleDensity() const
  return N/V;
 }
 
+double & SimulationCell::StressTensor(int alpha, int beta) //Combina Get y Set
+{
+ if(alpha>2 || alpha<0) 
+ {
+  throw Error("bad alpha index for stress set/get, please report");
+ }
+ else if(beta>2 || beta<0)
+ {
+  throw Error("bad beta index for stress set/get, please report");
+ }
+ else return impl->s[alpha][beta];
+}

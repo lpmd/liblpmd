@@ -86,6 +86,7 @@ void MetalPotential::UpdateForces(SimulationCell & sc)
  const long n = sc.Size();
  Initialize(sc);
  double tmpvir = 0.0;
+ double stress[3][3];
  for (long i=0;i<n;++i)
  {
   std::list<Neighbor> nlist;
@@ -105,10 +106,24 @@ void MetalPotential::UpdateForces(SimulationCell & sc)
     Atom * jpointer = const_cast<Atom *>(nn.j);                         // FIXME esto no se debe hacer :)
     jpointer->SetAccel(accj - (pf+mb)*(FORCEFACTOR/nn.j->Mass()));    // FIXME y menos esto :D
     tmpvir -= Dot(nn.rij, pf+mb);  // virial de pares
+    //Asignacion de stress, un for adicional pequeno, 
+    //sera mas lento?
+    for (int k=0;k<3;k++)
+    {
+     stress[0][k] += (nn.rij).GetX()*(pf+mb).Get(k);
+     stress[1][k] += (nn.rij).GetY()*(pf+mb).Get(k);
+     stress[2][k] += (nn.rij).GetZ()*(pf+mb).Get(k);
+    }
    }
   }
  }
  sc.AddToVirial(tmpvir);
+ for (int i=0;i<3;i++)
+ {
+  sc.StressTensor(0,i) = stress[0][i];
+  sc.StressTensor(1,i) = stress[1][i];
+  sc.StressTensor(2,i) = stress[2][i];
+ }
 }
 
 double MetalPotential::VirialContribution(const double &r, const double & rhoi, const double & rhoj) const { return 0.0; }

@@ -93,6 +93,9 @@ class SimulationCell: public Particles, public Cell
    void AddToVirial(double vir);
    double Virial() const; 
 
+   //set para asingacion de stress
+   double& StressTensor(int alpha, int beta);
+
  private:
    class SimCellImpl * impl;
 };
