@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: liblpmd
+Description: An object-oriented, modular Molecular Dynamics library
+Version: @VERSION@
+Libs: -L${libdir} -llpmd -ldl -lm
+Cflags: -I${includedir}

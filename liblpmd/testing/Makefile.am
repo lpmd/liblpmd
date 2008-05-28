@@ -1,6 +1,9 @@
 
 AM_CPPFLAGS = -g -Wall -pedantic -DPLUGINPATH="\"$(libdir)/lpmd\""
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = liblpmd-1.0.pc
+
 lib_LTLIBRARIES = liblpmd.la
 liblpmd_la_LDFLAGS = -version-info 1:0:0
 
