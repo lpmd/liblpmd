@@ -56,6 +56,7 @@ class Cell
 
     void Scale(int i, double f);
     void ScalePercent(int i, double p);
+    void ScaleVector(int i, lpmd::Vector s);
 
     friend std::ostream & operator<<(std::ostream &, const Cell &);
 

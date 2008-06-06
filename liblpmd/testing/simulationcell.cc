@@ -305,6 +305,21 @@ void SimulationCell::RescalePercent(double p, int i)
  RealPos();
 }
 
+void SimulationCell::RescaleVector(Vector sx, Vector sy, Vector sz)
+{
+ FracPos();
+ Cell::ScaleVector(0,sx);
+ Cell::ScaleVector(1,sy);
+ Cell::ScaleVector(2,sz);
+ RealPos();
+}
+
+void SimulationCell::RescaleVector(Vector s, int i)
+{
+ FracPos();
+ Cell::ScaleVector(i,s);
+ RealPos();
+}
 
 //
 // SECCION :

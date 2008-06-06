@@ -83,6 +83,8 @@ class SimulationCell: public Particles, public Cell
    void Rescale(double f, int i);
    void RescalePercent(double p);
    void RescalePercent(double p, int i); 
+   void RescaleVector(Vector sx, Vector sy, Vector sz);
+   void RescaleVector(Vector s, int i);
 
    // Propiedades fisicas
    double Pressure() const;

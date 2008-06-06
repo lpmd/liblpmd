@@ -213,6 +213,12 @@ void Cell::ScalePercent(int i, double p)
  UpdateTransfMatrix();
 }
 
+void Cell::ScaleVector(int i, lpmd::Vector s)
+{
+ impl->v[i] += s;
+ UpdateTransfMatrix();
+}
+
 std::ostream & operator<<(std::ostream & os, const Cell & c)
 {
  os << c.GetVector(0) << " " << c.GetVector(1) << " " << c.GetVector(2) << '\n';
