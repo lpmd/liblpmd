@@ -145,10 +145,11 @@ std::ostream & lpmd::operator<<(std::ostream & os, const Matrix & m)
  {
   for (long i=0;i<m.Columns();++i)
   {
-   os.setf(std::ios::fixed);
-   os.setf(std::ios::showpoint);
-   os << os.width(12);
-   os << m.Get(i, j);
+   os.setf(std::ios::scientific);
+   //os.setf(std::ios::showpoint);
+   os.precision(15);
+   //os << os.width(20);
+   os << "   " << m.Get(i, j);
   }
   os << '\n';
  }
