@@ -20,7 +20,7 @@ double PairPotential::energy(SimulationCell & sc)
  for (long i=0;i<n;++i)
  {
   std::list<Neighbor> nlist;
-  sc.BuildNeighborList(i, nlist, false);
+  sc.BuildNeighborList(i, nlist, false, GetCutoff());
   for (std::list<Neighbor>::const_iterator it=nlist.begin();it!=nlist.end();++it)
   {
    const Neighbor & nn = *it;
@@ -47,7 +47,7 @@ void PairPotential::UpdateForces(SimulationCell & sc)
  for (long i=0;i<n;++i)
  {
   std::list<Neighbor> nlist;
-  sc.BuildNeighborList(i, nlist, false);
+  sc.BuildNeighborList(i, nlist, false, GetCutoff());
   for (std::list<Neighbor>::const_iterator it=nlist.begin();it!=nlist.end();++it)
   {
    const Neighbor & nn = *it;

@@ -216,10 +216,10 @@ void SimulationCell::ClearForces()
  impl->virial = 0.0;
 }
 
-void SimulationCell::BuildNeighborList(long i, std::list<Neighbor> & nlist, bool full)
+void SimulationCell::BuildNeighborList(long i, std::list<Neighbor> & nlist, bool full, double rcut)
 {
  if (impl->cm == NULL) throw CellManagerMissing();
- else (impl->cm)->BuildNeighborList(*this, i, nlist, full);
+ else (impl->cm)->BuildNeighborList(*this, i, nlist, full, rcut);
 }
 
 
