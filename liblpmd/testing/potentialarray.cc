@@ -6,6 +6,7 @@
 #include <lpmd/simulationcell.h>
 
 #include <string>
+#include <cassert>
 
 using namespace lpmd;
 
@@ -21,6 +22,20 @@ void PotentialArray::Set(int s1, int s2, Potential & pot)
 {
  pot.SetValidSpecies(s1, s2);
  potlist.push_back(&pot);
+}
+
+Potential & PotentialArray::Get(int s1, int s2)
+{
+ for (std::list<Potential *>::const_iterator it=potlist.begin();it != potlist.end();++it) 
+ {
+  if ((*it)->AppliesTo(s1, s2)) return *(*it);
+ }
+ assert(false); // No hay potential que aplique a s1 y s2 en este PotentialArray
+}
+
+Potential & PotentialArray::Get(std::string s1, std::string s2)
+{
+ return PotentialArray::Get(ElemNum(s1), ElemNum(s2));
 }
 
 void PotentialArray::Initialize(SimulationCell & sc)

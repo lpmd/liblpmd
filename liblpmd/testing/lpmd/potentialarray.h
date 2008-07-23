@@ -21,6 +21,8 @@ class PotentialArray: public Potential
    //    
    void Set(std::string s1, std::string s2, Potential & p);
    void Set(int s1, int s2, Potential & p);
+   Potential & Get(int s1, int s2);
+   Potential & Get(std::string s1, std::string s2);
 
    void Initialize(SimulationCell & sc);
    double energy(SimulationCell & sc);
