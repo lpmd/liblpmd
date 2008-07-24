@@ -64,6 +64,7 @@ class SimulationCell: public Particles, public Cell
 
    CellManager & GetCellManager() const;
    void SetCellManager(CellManager & cm);
+   double CMCutoff() const;
 
    double Angle(long i, long j, long k);
    Vector VectorDistance(long i, long j); 

@@ -360,3 +360,12 @@ double & SimulationCell::StressTensor(int alpha, int beta) //Combina Get y Set
  }
  else return impl->s[alpha][beta];
 }
+
+
+double SimulationCell::CMCutoff() const
+{
+ if (impl->cm == NULL) throw CellManagerMissing();
+ CellManager & cm = GetCellManager();
+ return cm.Cutoff();
+}
+
