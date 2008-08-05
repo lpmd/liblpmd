@@ -139,6 +139,12 @@ void InputFile::Read(std::istream & istr, const ParamList & options, const std::
  int line_count = 0;
  while(getline(istr, tmp))
  {
+  while (tmp[tmp.size()-1] == '\\')
+  {
+   std::string tmp2;
+   getline(istr, tmp2);
+   tmp = tmp.substr(0, tmp.size()-1) + tmp2;
+  }
   line_count++;
   std::ostringstream strlnum;
   strlnum << line_count;
