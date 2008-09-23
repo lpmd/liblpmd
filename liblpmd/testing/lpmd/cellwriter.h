@@ -20,7 +20,7 @@ namespace lpmd
   //
    virtual ~CellWriter();
 
-   virtual void WriteHeader(std::ostream & os) const = 0;
+   virtual void WriteHeader(std::ostream & os, std::vector<SimulationCell> *cells=NULL) const = 0;
    virtual void WriteCell(std::ostream & os, SimulationCell & sc) const = 0;
    virtual long int GetInterval() const = 0;
 
