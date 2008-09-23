@@ -24,7 +24,8 @@ InputFile::~InputFile() { }
 
 void InputFile::DeclareStatement(const std::string & cmd, const std::string & args)
 {
- reservedkw[cmd] = args;
+ if (((cmd == "if") || (cmd == "else")) || (cmd == "endif")) throw Error(cmd+" is a reserved statement");
+ else reservedkw[cmd] = args;
 }
 
 //
@@ -137,6 +138,9 @@ void InputFile::Read(std::istream & istr, const ParamList & options, const std::
 {
  std::string tmp;
  int line_count = 0;
+ // conditional_ignore se hace true si se encuentra un 'if' con condicion falsa
+ // y se hace false al encontrar 'endif'
+ bool conditional_ignore = false;
  while(getline(istr, tmp))
  {
   while (tmp[tmp.size()-1] == '\\')
@@ -170,17 +174,32 @@ void InputFile::Read(std::istream & istr, const ParamList & options, const std::
   std::string first_word = words.front();
   std::string statement_args = MatchCommand(words);
   if (statement_args == "") words.pop_front();
-  if (statement_args != "")
+  // intercepta instrucciones if/endif
+  if (first_word == "if")
   {
-   // Palabra clave de tipo regular, o no valida
-   std::string kvpairs = ParseCommandArguments(first_word, statement_args);
-   int st = OnStatement(first_word, kvpairs, true);
-   if (st != 0) throw InputError("Unexpected error in input file \""+inpfile+"\"", line_count, tmp);
-  }
-  else 
+   std::string x1 = words.front();
+   words.pop_front();
+   std::string x2 = words.front();
+   words.pop_front();
+   if (x1 != x2) conditional_ignore = true;
+  } 
+  else if (first_word == "else") conditional_ignore = (conditional_ignore ? false : true);
+  else if (first_word == "endif") conditional_ignore = false;
+  else if (! conditional_ignore)
   {
-   int st = OnStatement(first_word, "", false);
-   if (st == 1) throw InputError("Unexpected instruction was found in input file \""+inpfile+"\"", line_count, tmp);
+   // tratamiento normal de instrucciones
+   if (statement_args != "")
+   {
+    // Palabra clave de tipo regular, o no valida
+    std::string kvpairs = ParseCommandArguments(first_word, statement_args);
+    int st = OnStatement(first_word, kvpairs, true);
+    if (st != 0) throw InputError("Unexpected error in input file \""+inpfile+"\"", line_count, tmp);
+   }
+   else 
+   {
+    int st = OnStatement(first_word, "", false);
+    if (st == 1) throw InputError("Unexpected instruction was found in input file \""+inpfile+"\"", line_count, tmp);
+   }
   }
  }
 
