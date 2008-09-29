@@ -13,6 +13,7 @@
 
 #include <lpmd/paramlist.h>
 #include <lpmd/error.h>
+#include <cstdlib>
 
 #include <list>
 

@@ -9,6 +9,7 @@
 #include <list>
 #include <vector>
 #include <sstream>
+#include <cstdlib>
 
 namespace lpmd
 {

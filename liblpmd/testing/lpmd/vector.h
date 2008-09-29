@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <cstdlib>
 
 namespace lpmd
 {

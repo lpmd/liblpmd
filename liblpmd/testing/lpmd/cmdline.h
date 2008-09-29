@@ -7,6 +7,7 @@
 
 #include <lpmd/paramlist.h>
 #include <lpmd/error.h>
+#include <cstring>
 
 namespace lpmd
 {

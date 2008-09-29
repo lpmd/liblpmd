@@ -5,6 +5,8 @@
 #ifndef __LPMD_TIMER_H__
 #define __LPMD_TIMER_H__
 
+#include <cstdlib>
+
 namespace lpmd
 {
 

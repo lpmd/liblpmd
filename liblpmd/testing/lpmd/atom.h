@@ -7,6 +7,7 @@
 
 #include <lpmd/vector.h>
 #include <lpmd/paramlist.h>
+#include <cstdlib>
 
 namespace lpmd
 {
