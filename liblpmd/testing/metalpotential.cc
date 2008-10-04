@@ -53,6 +53,10 @@ void MetalPotential::VirialEvaluate(SimulationCell & sc)
 
 double MetalPotential::energy(SimulationCell & sc) 
 {
+ // Si la energia potencial esta ingresada como metadato en sc, el valor es 
+ // todavia valido, simplemente retorna ese valor
+ if (sc.MetaData().Defined("pe")) return sc.MetaData().GetDouble("pe");
+ ShowWarning("MetalPotential", "Recalculating potential energy... there is a waste of time somewhere..."); 
  double e = 0.0;
  const long n = sc.Size();
  //Calculo de la Energia de Pares U1
@@ -85,7 +89,7 @@ void MetalPotential::UpdateForces(SimulationCell & sc)
 {
  const long n = sc.Size();
  Initialize(sc);
- double tmpvir = 0.0;
+ double tmpvir = 0.0, ep = 0.0;
  double stress[3][3];
  for (long i=0;i<n;++i)
  {
@@ -98,6 +102,7 @@ void MetalPotential::UpdateForces(SimulationCell & sc)
    if (AppliesTo(sc[i].Species(), nn.j->Species())) 
    {
     Vector pf, acci, accj, mb;
+    ep += pairEnergy(nn.r);
     pf = PairForce(nn.rij);
     mb = ManyBodies(nn.rij,rho[i],rho[nn.j->Index()]);
     acci = sc[i].Acceleration();
@@ -117,6 +122,11 @@ void MetalPotential::UpdateForces(SimulationCell & sc)
    }
   }
  }
+ //Anade correccion a la energia de pares.
+ ep += deltaU1(sc.ParticleDensity(),n);
+ //Calcula de la Energia de Muchos Cuerpos.
+ for (long i=0;i<n;++i) ep += F(rho[i]);
+ sc.MetaData().AssignParameter("pe", ToString<double>(ep));
  sc.AddToVirial(tmpvir);
  for (int i=0;i<3;i++)
  {
