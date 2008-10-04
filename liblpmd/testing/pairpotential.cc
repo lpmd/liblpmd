@@ -15,6 +15,10 @@ PairPotential::~PairPotential() { }
 
 double PairPotential::energy(SimulationCell & sc) 
 {
+ // Si la energia potencial esta ingresada como metadato en sc, el valor es 
+ // todavia valido, simplemente retorna ese valor
+ if (sc.MetaData().Defined("pe")) return sc.MetaData().GetDouble("pe");
+ ShowWarning("PairPotential", "Recalculating potential energy... there is a waste of time somewhere..."); 
  double e = 0.0;
  const long n = sc.Size();
  for (long i=0;i<n;++i)
@@ -38,7 +42,7 @@ void PairPotential::UpdateForces(SimulationCell & sc)
 {
  Vector ff, acci, accj;
  const long n = sc.Size();
- double tmpvir = 0.0;
+ double tmpvir = 0.0, ep = 0.0;
  double stress[3][3];
  for (int i=0;i<3;i++)
  {
@@ -53,6 +57,7 @@ void PairPotential::UpdateForces(SimulationCell & sc)
    const Neighbor & nn = *it;
    if (AppliesTo(sc[i].Species(), nn.j->Species()) && nn.r < GetCutoff()) 
    {
+    ep += pairEnergy(nn.r);
     ff = pairForce(nn.rij);
     acci = sc[i].Acceleration(); 
     accj = nn.j->Acceleration(); 
@@ -73,6 +78,7 @@ void PairPotential::UpdateForces(SimulationCell & sc)
    }
   }
  }
+ sc.MetaData().AssignParameter("pe", ToString<double>(ep));
  sc.AddToVirial(tmpvir);
  for (int i=0;i<3;i++)
  {

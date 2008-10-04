@@ -2,6 +2,7 @@
 //
 //
 
+#include <lpmd/paramlist.h>
 #include <lpmd/simulationcell.h>
 #include <lpmd/cellmanager.h>
 #include <lpmd/physunits.h>
@@ -29,6 +30,8 @@ class lpmd::SimCellImpl
    double s[3][3];
    CellManager * cm;
    DistanceCache * dc;
+
+   ParamList mdata;
 
    SimCellImpl(): na(1), nb(1), nc(1), cm(NULL), dc(NULL) { }
    SimCellImpl(int nra, int nrb, int nrc): na(nra), nb(nrb), nc(nrc), cm(NULL), dc(NULL) { }
@@ -253,13 +256,6 @@ double SimulationCell::Distance(long i, long j)
  return VectorDistance(i, j).Mod();
 }
 
-/*
-double SimulationCell::Distance(const Atom & i, const Atom & j)
-{
- return Displacement(i.Position(), j.Position()).Mod();
-}
-*/
-
 double SimulationCell::RealDistance(long i, long j) { return VectorRealDistance(i,j).Mod(); }
 
 double SimulationCell::DistanceToReplica(long i, long j, long nx, long ny, long nz) { return VectorDistanceToReplica(i,j,nx,ny,nz).Mod(); }
@@ -368,4 +364,7 @@ double SimulationCell::CMCutoff() const
  CellManager & cm = GetCellManager();
  return cm.Cutoff();
 }
+
+ParamList & SimulationCell::MetaData() const { return impl->mdata; }
+
 

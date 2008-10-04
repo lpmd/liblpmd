@@ -65,6 +65,7 @@ void PotentialArray::UpdateForces(SimulationCell & sc)
  //
  // Actualiza las fuerzas para la celda, aplicando cada potencial secuencialmente (por ahora)
  //
+ sc.MetaData().Remove("pe");
  sc.ClearForces();
  for (std::list<Potential *>::const_iterator it=potlist.begin();it != potlist.end();++it)
  {

@@ -19,6 +19,7 @@
 namespace lpmd
 {
  class CellManager;           // forward declaration 
+ class ParamList;             // forward declaration
 
  class CellManagerMissing: public Error
  {
@@ -98,6 +99,10 @@ class SimulationCell: public Particles, public Cell
 
    //set para asingacion de stress
    double& StressTensor(int alpha, int beta);
+
+   // Acceso a la lista de metadatos: no usar fuera de liblpmd por ahora!
+   // La idea es ver como formalizar esto en el API 1.1
+   ParamList & MetaData() const;
 
  private:
    class SimCellImpl * impl;
