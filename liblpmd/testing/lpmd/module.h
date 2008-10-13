@@ -17,8 +17,12 @@
 
 #include <list>
 
+// Esto para marcar que la version menor del API soporta Module::GetManager() 
+#define __LPMD__MODULE__GETMANAGER__
+
 namespace lpmd
 {
+ class PluginManager;        // forward declaration
 
 /**
  *  Module es la clase base de la cual deben derivar todos los módulos que LPMD usa como plugins.
@@ -45,6 +49,8 @@ class Module: public ParamList
    bool Used() const;
    void SetUsed();
 
+   PluginManager & GetManager() const;
+
    // Operador de asignacion
    Module & operator=(const Module & mod);
 
@@ -59,6 +65,9 @@ class Module: public ParamList
    virtual std::string Keywords() const = 0;
 
    void (*unloader)(Module *);
+
+   // FIXME : Cambiar este metodo por un parametro extra en el constructor
+   void SetManager(PluginManager & pm);
 
  private:
    class ModuleImpl * impl;

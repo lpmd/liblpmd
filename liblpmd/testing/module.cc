@@ -3,6 +3,7 @@
 //
 
 #include <lpmd/module.h>
+#include <lpmd/pluginmanager.h>
 #include <lpmd/util.h>
 
 #include <iostream>
@@ -19,12 +20,14 @@ class lpmd::ModuleImpl
    ParamList defvalues;
    std::string name;
    bool emptycall;
+   PluginManager * manager;
 
    ModuleImpl() 
    {
     name = "unnamed";
     used = false;
     emptycall = false;
+    manager = NULL;
    }
 };
 
@@ -172,6 +175,18 @@ std::string Module::Name() const { return impl->name; }
 bool Module::Used() const { return impl->used; }
 
 void Module::SetUsed() { impl->used = true; }
+
+void Module::SetManager(PluginManager & pm) { impl->manager = &pm; }
+
+PluginManager & Module::GetManager() const 
+{
+ if (impl->manager == NULL) throw PluginError(impl->name, "Called GetManager() on an unmanaged plugin");
+ return *(impl->manager); 
+}
+
+//
+//
+//
 
 InvalidModuleType::InvalidModuleType(): Error("Attempted to load module of the wrong type") { }
 

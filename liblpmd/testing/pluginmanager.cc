@@ -49,6 +49,7 @@ void PluginManager::LoadPluginFile(std::string path, std::string id, std::string
 {
  Module * mm = LoadPluginModule(path, args);
  if (mm == NULL) throw ModuleNotFound(path);
+ mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
  // Agrega nuevas propiedades a la lista
  std::list<std::string> proplist = ListOfTokens(mm->Provides());
@@ -66,6 +67,7 @@ void PluginManager::LoadPlugin(std::string name, std::string id, std::string arg
   if (mm != NULL) break;
  }
  if (mm == NULL) throw ModuleNotFound(name);
+ mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
  // Agrega nuevas propiedades a la lista
  std::list<std::string> proplist = ListOfTokens(mm->Provides());
