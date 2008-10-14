@@ -12,6 +12,9 @@
  */
 
 #include <lpmd/error.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 namespace lpmd
 {

@@ -48,6 +48,9 @@ void PairPotential::UpdateForces(SimulationCell & sc)
  {
   for (int j=0;j<3;j++) stress[i][j]=0.0e0;
  }
+#ifdef _OPENMP
+#pragma omp parallel for private ( i,ff,acci,accj ) reduction ( + : ep,tmpvir )
+#endif
  for (long i=0;i<n;++i)
  {
   std::list<Neighbor> nlist;
