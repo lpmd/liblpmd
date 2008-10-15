@@ -28,6 +28,7 @@
 #include <lpmd/util.h>
 #include <lpmd/physunits.h>
 #include <lpmd/cmdline.h>
+#include <lpmd/color.h>
 #include <lpmd/inputfile.h>
 #include <lpmd/paramlist.h>
 #include <lpmd/error.h>
