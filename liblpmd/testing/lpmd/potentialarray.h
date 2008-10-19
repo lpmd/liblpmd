@@ -5,7 +5,7 @@
 #ifndef __LPMD_POTENTIALARRAY_H__
 #define __LPMD_POTENTIALARRAY_H__
 
-#include <list>
+//#include <list>
 
 #include <lpmd/potential.h>
 
@@ -17,8 +17,11 @@ class PotentialArray: public Potential
  public:
    //
    PotentialArray();
+   PotentialArray(const PotentialArray & pa);
+   virtual ~PotentialArray();
    
    //    
+   PotentialArray & operator=(const PotentialArray & pa);
    void Set(std::string s1, std::string s2, Potential & p);
    void Set(int s1, int s2, Potential & p);
    Potential & Get(int s1, int s2);
@@ -29,8 +32,7 @@ class PotentialArray: public Potential
    void UpdateForces(SimulationCell & sc);
 
  private:
-   std::list<Potential *> potlist;
-   bool initialized;
+   class PotArrayImpl * impl;
 };
 
 } // lpmd
