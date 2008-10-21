@@ -1,7 +1,7 @@
 
 SUBDIRS = . lpunit tests
 
-AM_CPPFLAGS = -g -Wall -pedantic -DPLUGINPATH="\"$(libdir)/lpmd\""
+AM_CPPFLAGS = -g -Wall -pedantic $(cpp_omp) -DPLUGINPATH="\"$(libdir)/lpmd\""
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = liblpmd-1.0.pc

@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: liblpmd
 Description: An object-oriented, modular Molecular Dynamics library
 Version: @VERSION@
-Libs: -L${libdir} -llpmd -ldl -lm
+Libs: -L${libdir} -llpmd -ldl @ld_omp@ -lm
 Cflags: -I${includedir}
