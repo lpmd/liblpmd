@@ -1,4 +1,6 @@
 
+SUBDIRS = . lpunit tests
+
 AM_CPPFLAGS = -g -Wall -pedantic -DPLUGINPATH="\"$(libdir)/lpmd\""
 
 pkgconfigdir = $(libdir)/pkgconfig

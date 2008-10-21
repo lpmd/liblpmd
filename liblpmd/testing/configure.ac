@@ -3,7 +3,7 @@ AC_INIT
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(liblpmd, 1.0.2)
+AM_INIT_AUTOMAKE(liblpmd, 1.0.3pre)
 
 AC_PROG_CXX
 
@@ -13,5 +13,5 @@ AC_PROG_LIBTOOL
 
 AC_STDC_HEADERS
 
-AC_OUTPUT(Makefile liblpmd-1.0.pc)
+AC_OUTPUT(Makefile lpunit/Makefile tests/Makefile liblpmd-1.0.pc)
 

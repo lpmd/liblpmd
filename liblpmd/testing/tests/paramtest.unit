@@ -1,0 +1,45 @@
+//
+//
+//
+
+#include <lpmd/paramlist.h>
+
+using namespace lpmd;
+
+@testsuite Tests de la clase ParamList
+
+@test Metodo Defined
+{
+ ParamList p;
+ p.AssignParameter("cutoff", "7.0");
+ @assert p.Defined("cutoff")
+}
+@end
+
+@test Conversiones de parametros
+{
+ ParamList p;
+ p.AssignParameter("a0", "1.2345");
+ p.AssignParameter("b", "42");
+ p.AssignParameter("real", "true");
+ p.AssignParameter("notreal", "false");
+ @approx p.GetDouble("a0"), 1.2345, 0.000001
+ @equal p.GetInteger("b"), 42
+ @assert p.GetBool("real")
+ @assert !(p.GetBool("notreal"))
+}
+@end
+
+@test Metodos Remove y Parameters
+{
+ ParamList p;
+ p.AssignParameter("a0", "1.2345");
+ p.AssignParameter("b", "42");
+ p.AssignParameter("cutoff", "7.0");
+ @equal p.Parameters().size(), 3
+ p.Remove("b");
+ @equal p.Parameters().size(), 2
+}
+@end
+
+
