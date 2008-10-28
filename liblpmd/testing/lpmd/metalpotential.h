@@ -61,12 +61,14 @@ class MetalPotential: public Potential
 
   /* Metodo callback, para correccion de la densidad.
    * \param rhobar es la densidad del sistema.
+   * \param N es el numero total de atomos de la celda.
    * \return correccion a la densidad.
    */
-  virtual double deltarhoi(const double & rhobar) const = 0;
+  virtual double deltarhoi(const double & rhobar, const int & N) const = 0;
 
   /* Metodo callback, para correccion de la energia.
    * \param rhobar es la densidad del sistema.
+   * \param es el numero total de atomos de la celda
    * \return correccion ala energia de U1.
    */
   virtual double deltaU1(const double & rhobar, const int & N) const = 0;
@@ -74,12 +76,15 @@ class MetalPotential: public Potential
   /* Metodo callback, para correccion a la energia.
    * \param rhobar, rhoi son las densidades del sistema y la sin 
    * corregir.
+   * \param N es el numero total de atomos de la celda.
    * \return correccion a la energia U2. No se necesita si se corrige la densidad!!!.
    */
   virtual double deltaU2(const double & rhobar, const int & N, const double & rhoi) const = 0;
 
   /** Metodo callback, metodo para la fuerza de pares de particulas.
    * \param r El vector qu separa dos particulas.
+   * \param N Numero total de atomos de la celda.
+   * \param rhoi la densidad local del atomo i.
    * \return El vector fuerza entre ambas particulas.
    */
   virtual Vector PairForce(const Vector & r) const = 0;

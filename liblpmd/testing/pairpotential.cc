@@ -71,7 +71,8 @@ void PairPotential::UpdateForces(SimulationCell & sc)
     //if (ff.Mod() > 10.0) throw HorrendousForce(ff.Mod());
 
     //Asignacion de stress, un for adicional pequeno, 
-    //sera mas lento? - El signo parec provenir de la fuerza, ojo con eso
+    //sera mas lento?
+    //FIXME : El signo no esta claramente explicado!
     for (int k=0;k<3;k++)
     {
      stress[0][k] += -(nn.rij).GetX()*ff.Get(k);
