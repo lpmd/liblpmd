@@ -2,10 +2,11 @@
 #
 #
 
-TESTS = celltest paramtest
+TESTS = celltest paramtest vectortest
 
 celltest_SOURCES = celltest.unit
 paramtest_SOURCES = paramtest.unit
+vectortest_SOURCES = vectortest.unit
 
 #
 #

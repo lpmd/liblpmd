@@ -9,6 +9,7 @@
 #include <list>
 #include <cstring>
 #include <cstdlib>
+#include <lpmd/vector.h>
 
 namespace lpmd
 {
@@ -33,6 +34,8 @@ class ParamList
    long GetInteger(const std::string & key);
 
    bool GetBool(const std::string & key);
+
+   Vector GetVector(const std::string & key);
 
    std::string & operator[](const std::string & key);
  

@@ -1,0 +1,32 @@
+//
+//
+//
+
+#include <lpmd/vector.h>
+
+using namespace lpmd;
+
+@testsuite Tests de la clase Vector
+
+@test Tests de Settings y Gettings
+{
+ Vector c(3.0, 4.0, 5.0);
+ @approx c.GetX(), 3.0, 0.00001
+ @approx c.Get(0), 3.0, 0.00001
+ @approx c.GetY(), 4.0, 0.00001
+ @approx c.Get(1), 4.0, 0.00001
+ @approx c.GetZ(), 5.0, 0.00001
+ @approx c.Get(2), 5.0, 0.00001
+ Vector b(0.0,0.0,0.0);
+ b.SetX(3.0e0);b.SetY(4.0e0);b.SetZ(5.0e0);
+ @approx b.GetX(), 3.0, 0.00001
+ @approx b.GetY(), 4.0, 0.00001
+ @approx b.GetZ(), 5.0, 0.00001
+ Vector a;
+ a.Set(3.0e0,4.0e0,5.0e0);
+ @approx a.GetX(), 3.0, 0.00001
+ @approx a.GetY(), 4.0, 0.00001
+ @approx a.GetZ(), 5.0, 0.00001
+}
+@end
+
