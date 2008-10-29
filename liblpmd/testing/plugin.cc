@@ -14,6 +14,8 @@
 
 using namespace lpmd;
 
+typedef const char * pluginversion_t();
+
 //
 // Dynamic loading of modules
 //
@@ -48,6 +50,12 @@ Module * lpmd::LoadPluginModule(std::string path, std::string args)
  Module * tmp = create_module(args);
  tmp->unloader = destroy_module;
  tmp->AssignParameter("fullpath", path);
+ void * fp = dlsym(mymodule, "PluginVersion");
+ if (fp != NULL)
+ {
+  pluginversion_t *fptr = function_cast<pluginversion_t *>(fp);
+  tmp->AssignParameter("version", (*fptr)());
+ }
  return tmp;
 }
 
