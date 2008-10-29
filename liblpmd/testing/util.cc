@@ -10,6 +10,7 @@
 #include <cctype>
 
 #include "config.h"
+#include "version.h"
 
 //
 //
@@ -17,7 +18,14 @@
 
 std::string lpmd::LibraryVersion() 
 {
- return VERSION;
+ std::string lver;
+ lver = VERSION;
+ #ifndef NUMBERED_RELEASE
+ lver += " (from ";
+ lver += SVNBRANCH;
+ lver += (", revision "+ToString<int>(SVNREVISION)+")");
+ #endif
+ return lver;
 }
 
 void lpmd::EndWithError(const std::string & text)

@@ -13,6 +13,8 @@ AC_PROG_LIBTOOL
 
 AC_STDC_HEADERS
 
+#AC_DEFINE([NUMBERED_RELEASE], [0], [Marks this revision as a numbered release])
+
 AC_ARG_ENABLE(omp,
  [  --enable-omp  Enable OpenMP parallelization of loops],
  [AC_SUBST(cpp_omp, "-fopenmp ") 

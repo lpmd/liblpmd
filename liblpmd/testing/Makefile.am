@@ -25,3 +25,18 @@ liblpmd_la_SOURCES =  applicable.cc atom.cc cell.cc cellformat.cc cellgenerator.
                       potential.cc potentialarray.cc replicamatrix.cc scalartable.cc scalarvalue.cc simulationcell.cc systemmodifier.cc \
                       temporalproperty.cc timer.cc twostepintegrator.cc util.cc vectorvalue.cc visualizer.cc
 
+#
+#
+#
+
+version.h:
+	./update-svnrev.sh
+
+install:
+	./update-svnrev.sh
+	$(MAKE) install-am
+
+install-exec:
+	./update-svnrev.sh
+	$(MAKE) install-exec-am
+
