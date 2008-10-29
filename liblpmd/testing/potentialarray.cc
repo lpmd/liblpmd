@@ -15,9 +15,11 @@ class lpmd::PotArrayImpl
 {
  public:
   std::list<Potential *> potlist; 
+  double * energies;
   bool initialized;
 
-  PotArrayImpl(): initialized(false) { }
+  PotArrayImpl(): energies(NULL), initialized(false) { }
+  ~PotArrayImpl() { delete [] energies; }
 };
 
 //
@@ -76,7 +78,13 @@ Potential & PotentialArray::Get(std::string s1, std::string s2)
 
 void PotentialArray::Initialize(SimulationCell & sc)
 {
- for (std::list<Potential *>::const_iterator it=impl->potlist.begin();it != impl->potlist.end();++it) (*it)->Initialize(sc);
+ int npot = 0;
+ for (std::list<Potential *>::const_iterator it=impl->potlist.begin();it != impl->potlist.end();++it)
+ {
+  (*it)->Initialize(sc);
+  npot++;
+ }
+ impl->energies = new double[npot];
  impl->initialized = true;
 }
 
@@ -87,10 +95,13 @@ double PotentialArray::energy(SimulationCell & sc)
  // Calcula la energia para la celda, sumando la contribucion de cada potencial
  //
  double e = 0.0e0;
+ int i = 0;
  for (std::list<Potential *>::const_iterator it=impl->potlist.begin();it != impl->potlist.end();++it)
  {
   Potential * p = (*it);
+  sc.MetaData().AssignParameter("pe", ToString<double>(impl->energies[i]));
   e += (p->energy(sc));
+  i++;
  }
  return e;
 }
@@ -103,10 +114,13 @@ void PotentialArray::UpdateForces(SimulationCell & sc)
  //
  sc.MetaData().Remove("pe");
  sc.ClearForces();
+ int i = 0;
  for (std::list<Potential *>::const_iterator it=impl->potlist.begin();it != impl->potlist.end();++it)
  {
   Potential * p = (*it);
   p->UpdateForces(sc);
+  impl->energies[i] = sc.MetaData().GetDouble("pe");
+  i++;
  }
 }
 
