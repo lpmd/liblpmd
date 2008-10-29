@@ -27,6 +27,72 @@ using namespace lpmd;
  @approx a.GetX(), 3.0, 0.00001
  @approx a.GetY(), 4.0, 0.00001
  @approx a.GetZ(), 5.0, 0.00001
+ Vector d;
+ d.Set(0,3.0e0);d.Set(1,4.0e0);d.Set(2,5.0e0);
+ @approx d.GetX(), 3.0, 0.00001
+ @approx d.GetY(), 4.0, 0.00001
+ @approx d.GetZ(), 5.0, 0.00001
+}
+@end
+
+@test Test Propiedades de Vectores
+{
+ Vector a(2.876,-1.23456,3.8743);
+ @approx a.Mod(),   4.9805335, 0.0000001
+ @approx a.Mod2(), 24.8057148, 0.0000001
+ Vector b=a;b.Scale(0.00543);
+ @approx b.GetX(), 0.01561668, 0.00000001
+ @approx b.GetY(),-0.00670366, 0.00000001
+ @approx b.GetZ(), 0.02103744, 0.00000001
+ Vector c=a;c.Norm();
+ @approx c.Mod(), 1.0, 0.00000001
+ Vector d=a;d.Zero();
+ @approx d.GetX(), 0.0, 0.00000001
+ @approx d.GetY(), 0.0, 0.00000001
+ @approx d.GetZ(), 0.0, 0.00000001
+}
+@end
+
+@test Test Operaciones con Vectores
+{
+ Vector a(0.043,-7.598,1234321);
+ Vector b(2468642, 32.3, -0.05);
+ Vector c = a+b;
+ Vector d = b-a;
+ Vector e = a-b;
+ Vector f = a*0.432;
+ Vector g = b/124.53;
+ @approx c.GetX(), 2468642.043, 0.0001
+ @approx c.GetY(), 24.702, 0.0001
+ @approx c.GetZ(), 1234320.95, 0.001
+ @approx d.GetX(), 2468641.957, 0.0001
+ @approx d.GetY(), 39.898, 0.0001
+ @approx d.GetZ(),-1234321.05, 0.001
+ @approx e.GetX(),-2468641.957, 0.0001
+ @approx e.GetY(),-39.898, 0.0001
+ @approx e.GetZ(), 1234321.05,0.001
+ @approx f.GetX(), 0.018576, 0.0000001
+ @approx f.GetY(),-3.282336, 0.0000001
+ @approx f.GetZ(), 533226.672, 0.0001
+ @approx g.GetX(), 19823.673, 0.0001
+ @approx g.GetY(), 0.259375, 0.000001
+ @approx g.GetZ(),-0.000401, 0.000001
+}
+@end
+
+@test Metodos Adicionales
+{
+ Vector a(1.0,0.0,0.0);
+ Vector b(0.0,1.0,0.0);
+ Vector c(0.0,0.0,1.0);
+ Vector d = Crux(a,b);
+ bool check=false ;
+ if (c==d) check=true;
+ @assert check
+ double dot = Dot(a,b);
+ @approx dot, 0.0, 0.00001
+ double ang = Ang(b,c);
+ @approx ang, 1.570796, 0.000001
 }
 @end
 
