@@ -16,6 +16,9 @@
 #include <lpmd/neighbor.h>
 #include <lpmd/error.h>
 
+// Esto para marcar que la version menor del API soporta SimulationCell::MetaData() 
+#define __LPMD__SIMULATIONCELL__METADATA__
+
 namespace lpmd
 {
  class CellManager;           // forward declaration 
@@ -100,8 +103,8 @@ class SimulationCell: public Particles, public Cell
    //set para asingacion de stress
    double& StressTensor(int alpha, int beta);
 
-   // Acceso a la lista de metadatos: no usar fuera de liblpmd por ahora!
-   // La idea es ver como formalizar esto en el API 1.1
+   // Acceso a la lista de metadatos
+   // FIXME: La idea es ver como formalizar esto en el API 1.1
    ParamList & MetaData() const;
 
  private:

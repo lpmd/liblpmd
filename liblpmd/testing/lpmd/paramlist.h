@@ -11,6 +11,9 @@
 #include <cstdlib>
 #include <lpmd/vector.h>
 
+// Esto para marcar que la version menor del API soporta ParamList::GetVector() 
+#define __LPMD__PARAMLIST__GETVECTOR__
+
 namespace lpmd
 {
 
