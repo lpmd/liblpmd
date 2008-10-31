@@ -36,7 +36,7 @@ void lpmd::EndWithError(const std::string & text)
 
 void lpmd::ShowWarning(const std::string who, const std::string text)
 {
- std::cerr << "[Warning (from " << who << "): " << text << '\n';
+ std::cerr << "[Warning] (from " << who << "): " << text << '\n';
 }
 
 bool lpmd::MustDo(long i, long start, long end, long step)

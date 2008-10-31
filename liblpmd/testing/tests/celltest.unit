@@ -35,9 +35,3 @@ using namespace lpmd;
 }
 @end
 
-@test Este test siempre fallara
-{
- @assert 2 + 2 == 5
-}
-@end
-

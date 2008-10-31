@@ -13,6 +13,7 @@ using namespace lpmd;
  ParamList p;
  p.AssignParameter("cutoff", "7.0");
  @assert p.Defined("cutoff")
+ @assert !(p.Defined("noexiste"))
 }
 @end
 
@@ -23,10 +24,13 @@ using namespace lpmd;
  p.AssignParameter("b", "42");
  p.AssignParameter("real", "true");
  p.AssignParameter("notreal", "false");
+ p.AssignParameter("unvector", "<1.0, 2.0, 3.0>");
  @approx p.GetDouble("a0"), 1.2345, 0.000001
  @equal p.GetInteger("b"), 42
  @assert p.GetBool("real")
  @assert !(p.GetBool("notreal"))
+ Vector v(1.0, 2.0, 3.0);
+ @assert (p.GetVector("unvector") == v)
 }
 @end
 
@@ -39,7 +43,31 @@ using namespace lpmd;
  @equal p.Parameters().size(), 3
  p.Remove("b");
  @equal p.Parameters().size(), 2
+ const std::list<std::string> & parm = p.Parameters();
+ int k=0;
+ // FIXME: Parameters() aparentemente esta en un orden arbitrario, no alfabetico!
+ for (std::list<std::string>::const_iterator it=parm.begin();it!=parm.end();++it)
+ {
+  if (k == 0)
+    @equal (*it), "a0"
+  if (k == 1)
+    @equal (*it), "cutoff"
+  if (k == 2)
+    @equal (*it), "b"
+  ++k;
+ }
 }
 @end
 
+@test Probando operator[]
+{
+ ParamList p;
+ p.AssignParameter("xyz", "3.14159");
+ @equal p["xyz"], "3.14159"
+ p["xyz"] = "12345";
+ @equal p["xyz"], "12345"
+ p["lpmd-rulez"] = "42";
+ @equal p.GetInteger("lpmd-rulez"), 42
+}
+@end
 
