@@ -2,6 +2,7 @@
 SUBDIRS = . lpunit tests
 
 AM_CPPFLAGS = -g -Wall -pedantic $(cpp_omp) -DPLUGINPATH="\"$(libdir)/lpmd\""
+EXTRA_DIST = update-svnrev.sh
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = liblpmd-1.0.pc
@@ -19,7 +20,7 @@ nobase_include_HEADERS =  lpmd/applicable.h lpmd/atom.h lpmd/cell.h lpmd/cellfor
 
 noinst_HEADERS = distcache.h
 
-liblpmd_la_SOURCES =  applicable.cc atom.cc cell.cc cellformat.cc cellgenerator.cc cellmanager.cc cellreader.cc cellwriter.cc \
+liblpmd_la_SOURCES =  version.h applicable.cc atom.cc cell.cc cellformat.cc cellgenerator.cc cellmanager.cc cellreader.cc cellwriter.cc \
                       cmdline.cc color.cc containable.cc coulomb.cc distcache.cc error.cc inputfile.cc instantproperty.cc integrator.cc matrix.cc md.cc \
                       metalpotential.cc module.cc onestepintegrator.cc pairpotential.cc paramlist.cc particles.cc plugin.cc pluginmanager.cc \
                       potential.cc potentialarray.cc replicamatrix.cc scalartable.cc scalarvalue.cc simulationcell.cc systemmodifier.cc \
