@@ -232,6 +232,35 @@ Vector SimulationCell::VectorDistance(long i, long j)
  return Displacement(Particles::GetAtom(i).Position(), Particles::GetAtom(j).Position());
 }
 
+void SimulationCell::SortBySpecies(void)
+{
+ //Generamos la lista de especies.
+ std::list<std::string> lista=(*this).SpeciesList();
+ std::vector<lpmd::Atom> *tmp = new std::vector<lpmd::Atom>[lista.size()]; 
+ for(int i=0 ; i < (*this).Size() ; ++i)
+ { 
+  int j=0;
+  for(std::list<std::string>::const_iterator it=lista.begin();it!=lista.end();++it)
+  {
+   if(ElemNum(*it)==(*this)[i].Species()) 
+   {
+    tmp[j].push_back((*this)[i]);
+   }
+   j++;
+  }
+ }
+ (*this).Clear();
+ int j=0;
+ for(std::list<std::string>::const_iterator it=lista.begin();it!=lista.end();++it)
+ {
+  for(unsigned long int i=0 ; i < tmp[j].size() ; ++i)
+  {
+   (*this).AppendAtom((tmp[j])[i]);
+  }
+  j++;
+ }
+}
+
 /*
 Vector SimulationCell::VectorDistance(const Atom & i, const Atom & j)
 {

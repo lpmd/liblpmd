@@ -91,6 +91,8 @@ class SimulationCell: public Particles, public Cell
    void RescaleVector(Vector sx, Vector sy, Vector sz);
    void RescaleVector(Vector s, int i);
 
+   void SortBySpecies(void);
+
    // Propiedades fisicas
    double Pressure() const;
    double Density() const;
