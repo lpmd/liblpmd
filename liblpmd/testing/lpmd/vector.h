@@ -53,6 +53,7 @@ class Vector
 
    friend Vector operator+(const Vector &A, const Vector &B);
    friend Vector operator+(const Vector &A, const double &a);
+   friend Vector operator-(const Vector &A);
    friend Vector operator-(const Vector &A, const Vector &B);
    friend Vector operator-(const Vector &A, const double &a);
    friend Vector operator*(const Vector &A, const Vector &B);
@@ -129,6 +130,11 @@ inline void Vector::Zero()
  q[2]=0.0e0;
 }
 
+const Vector zero(0,0,0);
+const Vector e1(1,0,0);
+const Vector e2(0,1,0);
+const Vector e3(0,0,1);
+
 inline Vector operator+(const Vector &A, const Vector &B)
 {
  return Vector(A.q[0]+B.q[0],A.q[1]+B.q[1],A.q[2]+B.q[2]);
@@ -139,10 +145,16 @@ inline Vector operator+(const Vector &A, const double &a)
  return Vector(A.q[0]+a,A.q[1]+a,A.q[2]+a);
 }
 
+inline Vector operator-(const Vector &A)
+{
+ return Vector(0.0-A.q[0],0.0-A.q[1],0.0-A.q[2]);
+}
+
 inline Vector operator-(const Vector &A, const Vector &B)
 {
  return Vector(A.q[0]-B.q[0],A.q[1]-B.q[1],A.q[2]-B.q[2]);
 }
+
 
 inline Vector operator-(const Vector &A, const double &a)
 {
@@ -265,4 +277,3 @@ inline Vector Crux(const Vector & A, const Vector & B)
 
 
 #endif
-
