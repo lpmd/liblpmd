@@ -90,7 +90,13 @@ class Particles
       //Utils
       void AppendAtom(Atom a) { A.push_back(a); }
       void DeleteAtom(int i) {A.erase(A.begin()+i);}
-
+      void DeleteAtom(const Atom & at)
+      {
+       for (unsigned int i=0;i<A.size();++i) 
+       { 
+        if (&(A[i]) == &at) A.erase(A.begin()+i);
+       }
+      }
 
    private: 
       std::vector<Atom> A;
