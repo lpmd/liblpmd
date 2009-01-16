@@ -66,8 +66,8 @@ class Atom
     Atom(int S, const Vector & P, const Vector & V);
     Atom(int S, const Vector & P, const Vector & V, const Vector & A);
     Atom(int S, const Vector & P, const Vector & V, const Vector & A, double c);
-//    Atom(const Atom &);
-//    ~Atom();
+    Atom(const Atom &);
+    ~Atom();
 
     void SetPos(const Vector & P);
     void SetVel(const Vector & V);
@@ -112,7 +112,7 @@ class Atom
     }
     void CleanNeighbors()
     {
-     if(atomneigh!=NULL) delete atomneigh;
+     if(atomneigh!=NULL) delete [] atomneigh;
     }
     AtomNeighbors & Neighbors() 
     {
@@ -237,9 +237,9 @@ inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A): 
 
 inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A, double c): prev(NULL), next(NULL),s(S), atomneigh(NULL), atomtype(NULL), p(P), v(V), a(A), charge(c), index (-1), clr(GetSpcColor(S)) { }
 
-//inline Atom::Atom(const Atom &A) {prev = A.prev;next = A.next;s = A.s; atomneigh = A.atomneigh; atomtype=A.atomtype; charge = A.charge; index = A.index;clr=A.clr;}
+inline Atom::Atom(const Atom &A):prev(NULL), next(NULL), atomneigh(NULL), atomtype(NULL) {*this = A;}
 
-//inline Atom::~Atom(){std::cerr <<"DESTROY"<<'\n';if (prev!=NULL) delete[] prev;if (next!=NULL) delete[] next;if (atomneigh!=NULL) delete[] atomneigh;if (atomtype!=NULL) delete[] atomtype;}
+inline Atom::~Atom(){if (prev!=NULL) delete[] prev;if (next!=NULL) delete[] next;if (atomneigh!=NULL) delete[] atomneigh;if (atomtype!=NULL) delete[] atomtype;}
 
 inline void Atom::SetPos(const Vector & P) { p=P; }
 
