@@ -46,12 +46,11 @@ class AtomType: public ParamList
    AtomType(const std::string & n);
 };
 
-class AtomNeighbors
+class AtomNeighbors: public std::vector<Neighbor>
 {
  public:
-  std::vector<Neighbor> neighbors;
-  void Add(Neighbor n) {neighbors.push_back(n);}
-  Neighbor Get(int i) {return neighbors[i];}
+  void Add(Neighbor n) { push_back(n); }
+  Neighbor & Get(int i) { return (*this)[i]; }
 };
 
 //
@@ -81,7 +80,7 @@ class Atom
     const Vector & Velocity() const;
     const Vector & Acceleration() const;
     const Vector & Color() const;
-	 Vector GetSpcColor(int spc);
+    Vector GetSpcColor(int spc);
     
     int Species() const;
     int Index() const;
@@ -237,9 +236,26 @@ inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A): 
 
 inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A, double c): prev(NULL), next(NULL),s(S), atomneigh(NULL), atomtype(NULL), p(P), v(V), a(A), charge(c), index (-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(const Atom &A):prev(NULL), next(NULL), atomneigh(NULL), atomtype(NULL) {*this = A;}
+inline Atom::Atom(const Atom &A):prev(NULL), next(NULL), s(A.s), atomneigh(NULL), atomtype(A.atomtype), p(A.p), v(A.v), a(A.a), charge(A.charge), index(A.index), clr(A.clr)
+{
+ if (this != &A)
+ {
+  if (A.atomneigh != NULL)
+  {
+   atomneigh = new AtomNeighbors();
+   const std::vector<Neighbor> & nlist = *(A.atomneigh);
+   for (unsigned long i=0;i<A.atomneigh->size();++i) atomneigh->Add(nlist[i]);
+  } 
+ }
+}
 
-inline Atom::~Atom(){if (prev!=NULL) delete[] prev;if (next!=NULL) delete[] next;if (atomneigh!=NULL) delete[] atomneigh;if (atomtype!=NULL) delete[] atomtype;}
+inline Atom::~Atom()
+{
+//if (prev!=NULL) delete[] prev;
+// if (next!=NULL) delete[] next; 
+ if (atomneigh!=NULL) delete atomneigh;
+// if (atomtype!=NULL) delete[] atomtype;
+}
 
 inline void Atom::SetPos(const Vector & P) { p=P; }
 
