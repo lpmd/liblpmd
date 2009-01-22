@@ -111,7 +111,8 @@ class Atom
     }
     void CleanNeighbors()
     {
-     if(atomneigh!=NULL) delete [] atomneigh;
+     if(atomneigh!=NULL) delete atomneigh;
+     atomneigh=NULL;
     }
     AtomNeighbors & Neighbors() 
     {
