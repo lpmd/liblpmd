@@ -19,23 +19,7 @@ double PairPotential::energy(SimulationCell & sc)
  // todavia valido, simplemente retorna ese valor
  if (sc.MetaData().Defined("pe")) return sc.MetaData().GetDouble("pe");
  ShowWarning("PairPotential", "Recalculating potential energy... there is a waste of time somewhere..."); 
- double e = 0.0;
- const long n = sc.Size();
- for (long i=0;i<n;++i)
- {
-  std::list<Neighbor> nlist;
-  sc.BuildNeighborList(i, nlist, false, GetCutoff());
-  for (std::list<Neighbor>::const_iterator it=nlist.begin();it!=nlist.end();++it)
-  {
-   const Neighbor & nn = *it;
-   if (AppliesTo(sc[i].Species(), nn.j->Species()) && nn.r < GetCutoff())
-   {
-    double ep = pairEnergy(nn.r);
-    e += ep;
-   }
-  }
- }
- return e;
+ return 0.0e0;
 }
 
 void PairPotential::UpdateForces(SimulationCell & sc)
@@ -48,14 +32,14 @@ void PairPotential::UpdateForces(SimulationCell & sc)
  {
   for (int j=0;j<3;j++) stress[i][j]=0.0e0;
  }
+ sc.BuildList(false, GetCutoff());
 #ifdef _OPENMP
 #pragma omp parallel for private ( i,ff,acci,accj ) reduction ( + : ep,tmpvir )
 #endif
  for (long i=0;i<n;++i)
  {
-  std::list<Neighbor> nlist;
-  sc.BuildNeighborList(i, nlist, false, GetCutoff());
-  for (std::list<Neighbor>::const_iterator it=nlist.begin();it!=nlist.end();++it)
+  std::vector<Neighbor> nlist = sc.GetAtom(i).Neighbors();
+  for (std::vector<Neighbor>::const_iterator it=nlist.begin();it!=nlist.end();++it)
   {
    const Neighbor & nn = *it;
    if (AppliesTo(sc[i].Species(), nn.j->Species()) && nn.r < GetCutoff()) 

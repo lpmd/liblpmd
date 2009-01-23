@@ -225,6 +225,11 @@ void SimulationCell::BuildNeighborList(long i, std::list<Neighbor> & nlist, bool
  else (impl->cm)->BuildNeighborList(*this, i, nlist, full, rcut);
 }
 
+void SimulationCell::BuildList(bool full, double rcut)
+{
+ if (impl->cm == NULL) throw CellManagerMissing();
+ else (impl->cm)->BuildList(*this,full,rcut);
+}
 
 Vector SimulationCell::VectorDistance(long i, long j)
 {

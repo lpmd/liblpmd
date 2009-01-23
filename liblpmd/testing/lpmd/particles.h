@@ -36,7 +36,8 @@ class Particles
       virtual ~Particles();
 
       //Settings and Gettings
-      const Atom & GetAtom(int i) const { return A[i]; }
+      const Atom & GetAtom(int i) const{ return A[i]; }
+      Atom & GetAtom(int i) { return A[i]; }
       void SetAtom(Atom a,int i){A[i]=a;}
       void SetAtomType(int i, AtomType & at) { A[i].SetType(at); }
       int Size() const {return A.size();}

@@ -76,6 +76,7 @@ class SimulationCell: public Particles, public Cell
    Vector VectorDistanceToReplica(long i, long j, long nx, long ny, long nz);
 
    void BuildNeighborList(long i, std::list<Neighbor> & nlist, bool full, double rcut);
+   void BuildList(bool full, double rcut);
 
    void RealPos();
    void FracPos();
