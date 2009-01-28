@@ -57,6 +57,11 @@ SimulationCell::SimulationCell(const SimulationCell & sc): Particles(sc), Cell(s
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
  for (int i=0;i<3;++i) SetPeriodicity(i, sc.Periodic(i));
  if (sc.impl->dc != NULL) impl->dc = new DistanceCache(sc);
+ std::list<std::string> keys = sc.MetaData().Parameters();
+ for (std::list<std::string>::const_iterator it=keys.begin();it!=keys.end();++it)
+ {
+  MetaData().AssignParameter(*it, sc.MetaData()[*it]);
+ }
  //if (sc.impl->cm != NULL) SetCell(sc);
  SetCell(sc);
 }
