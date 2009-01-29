@@ -18,7 +18,7 @@ nobase_include_HEADERS =  lpmd/applicable.h lpmd/atom.h lpmd/cell.h lpmd/cellfor
                           lpmd/systemmodifier.h lpmd/temporalproperty.h lpmd/timer.h lpmd/twostepintegrator.h lpmd/util.h lpmd/vector.h \
                           lpmd/vectorvalue.h lpmd/visualizer.h lpmd/neighbor.h lpmd/api.h
 
-noinst_HEADERS = distcache.h
+noinst_HEADERS = version.h distcache.h
 
 liblpmd_la_SOURCES =  version.h applicable.cc atom.cc cell.cc cellformat.cc cellgenerator.cc cellmanager.cc cellreader.cc cellwriter.cc \
                       cmdline.cc color.cc containable.cc coulomb.cc distcache.cc error.cc inputfile.cc instantproperty.cc integrator.cc matrix.cc md.cc \

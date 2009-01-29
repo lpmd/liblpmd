@@ -3,7 +3,7 @@ AC_INIT
 
 AC_CONFIG_HEADERS(config.h)
 
-AM_INIT_AUTOMAKE(liblpmd, 1.0.3)
+AM_INIT_AUTOMAKE(liblpmd, 1.0.4)
 
 AC_PROG_CXX
 
