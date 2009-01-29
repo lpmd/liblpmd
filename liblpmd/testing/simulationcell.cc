@@ -305,6 +305,16 @@ double SimulationCell::Distance2(long i,long j)
  return VectorDistance(i, j).Mod2();
 }
 
+double SimulationCell::BondLength(int s1, int s2) const
+{
+ return MetaData().GetDouble("bond-"+ElemSym[s1]+"-"+ElemSym[s2]);
+}
+
+double SimulationCell::BondLength(const std::string & s1, const std::string & s2) const
+{
+ return MetaData().GetDouble("bond-"+s1+"-"+s2);
+}
+
 double SimulationCell::Angle(long i, long j, long k) 
 {
  Vector a = VectorDistance(i,j);

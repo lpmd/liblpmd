@@ -66,6 +66,9 @@ class SimulationCell: public Particles, public Cell
    double DistanceToReplica(long i, long j, long nx, long ny, long nz);
    double Distance2(long i,long j);
 
+   double BondLength(int s1, int s2) const;
+   double BondLength(const std::string & s1, const std::string & s2) const; 
+
    CellManager & GetCellManager() const;
    void SetCellManager(CellManager & cm);
    double CMCutoff() const;
