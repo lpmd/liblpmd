@@ -36,11 +36,10 @@ void Integrator::Initialize(SimulationCell & sc, Potential & p) { }
 
 void Integrator::GoBack(SimulationCell & sc)
 {
- Atom now;
  Vector newpos, newvel;
- for (int i=0;i<sc.Size();++i)
+ for (unsigned long int i=0;i<sc.size();++i)
  {
-  now = sc.GetAtom(i);
+  const Atom & now = sc[i];
   newpos = now.Position() - now.Velocity()*dt;
   newvel = now.Velocity() - now.Acceleration()*dt;
   sc.SetPosition(i, newpos);

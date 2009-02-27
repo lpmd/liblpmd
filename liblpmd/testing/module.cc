@@ -3,10 +3,10 @@
 //
 
 #include <lpmd/module.h>
-#include <lpmd/pluginmanager.h>
 #include <lpmd/util.h>
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <sstream>
 
@@ -20,18 +20,22 @@ class lpmd::ModuleImpl
    ParamList defvalues;
    std::string name;
    bool emptycall;
-   PluginManager * manager;
+   std::ostream * debugstr;     // puntero al flujo de depuracion actual
+   bool extdebugstr;            // true si es necesario hacer delete sobre debugstr
+   bool strictkw;               // true si solo considera como argumentos las palabras devueltas por Keyword()
+   std::string kwstr;
 
    ModuleImpl() 
    {
     name = "unnamed";
     used = false;
     emptycall = false;
-    manager = NULL;
+    debugstr = &(std::cerr);
+    extdebugstr = false;
+    strictkw = true;
+    kwstr = "";
    }
 };
-
-Module::Module() { impl = new ModuleImpl(); }
 
 Module::Module(const Module & mod) 
 { 
@@ -39,19 +43,26 @@ Module::Module(const Module & mod)
  impl->name = mod.Name();
  impl->used = false;
  impl->emptycall = false;
+ impl->strictkw = mod.impl->strictkw;
+ impl->kwstr = mod.impl->kwstr;
  std::list<std::string> kwd = mod.Parameters();
  for (std::list<std::string>::const_iterator it=kwd.begin();it!=kwd.end();++it) AssignParameter(*it, mod.GetString(*it));
 }
 
-Module::Module(std::string modulename) 
+Module::Module(std::string modulename, bool strictkw)
 { 
  impl = new ModuleImpl();
+ impl->strictkw = strictkw;
  impl->name = modulename;
  impl->used = false; 
  impl->emptycall = false;
 }
 
-Module::~Module() { delete impl; }
+Module::~Module() 
+{ 
+ if (impl->extdebugstr) delete impl->debugstr;
+ delete impl; 
+}
 
 Module & Module::operator=(const Module & mod)
 {
@@ -60,6 +71,8 @@ Module & Module::operator=(const Module & mod)
   impl->name = mod.Name();
   impl->used = false;
   impl->emptycall = false;
+  impl->strictkw = mod.impl->strictkw;
+  impl->kwstr = mod.impl->kwstr;
   std::list<std::string> kwd = mod.Parameters();
   for (std::list<std::string>::const_iterator it=kwd.begin();it!=kwd.end();++it) AssignParameter(*it, mod.GetString(*it));
  }
@@ -68,6 +81,7 @@ Module & Module::operator=(const Module & mod)
 
 void Module::ProcessArguments(std::string line)
 {
+ if (!Defined("debug")) DefineKeyword("debug", "stderr");
  // Registra los parametros que ya tengan valores (por omision)
  std::list<std::string> kwd = Parameters();
  for (std::list<std::string>::const_iterator it=kwd.begin();it!=kwd.end();++it)
@@ -127,27 +141,47 @@ std::string Module::GetNextWord(char d)
 
 void Module::SetParameter(std::string name) { AssignParameter(name, GetNextWord()); }
 
+void Module::AssignParameter(const std::string & key, std::string value)
+{
+ ParamList::AssignParameter(key, value);
+ //
+ // Inicializa el modulo segun los parametros asignados
+ //
+ if (key == "debug")
+ { 
+  const std::string d = GetString("debug");
+  if (d == "stdout") SetDebugStream(std::cout);
+  else if (d == "stderr") SetDebugStream(std::cerr);
+  else if (d == "none") SetDebugFile("/dev/null");
+  else SetDebugFile(d);
+ }
+}
+
 void Module::Show() const { Show(std::cout); }
 
 void Module::Show(std::ostream & os) const 
 { 
- os << "Module " << impl->name << ": " << '\n'; 
- std::list<std::string> kwds = Parameters();
+ os << "Module " << impl->name;
+ if (Defined("module") && (GetString("module") != Name())) os << " (loaded as \"" << GetString("module") << "\")";
+ os << ": " << '\n'; 
+ std::list<std::string> kwds;
+ if (impl->strictkw) kwds = ListOfTokens(Keywords());
+ else kwds = Parameters();
  for (std::list<std::string>::const_iterator it=kwds.begin();it!=kwds.end();++it)
  {
-  if (*it == "module") continue;    // parametro reservado
-  if (*it == "fullpath") continue;  // parametro reservado
+  if ((*it) == "module") continue;      // No muestra parametro "module", reservado para uso interno
+  if ((*it) == "fullpath") continue;  // parametro reservado
   if (impl->emptycall) 
   { 
-   os << "   " << std::setw(10) << (*it);
-   if (impl->defvalues.Defined(*it)) os << " = " << std::setw(20) << impl->defvalues.GetString(*it) << '\n';
+   os << "   " << std::setw(20) << (*it);
+   if (impl->defvalues.Defined(*it)) os << " = " << std::setw(30) << impl->defvalues.GetString(*it) << '\n';
    else os << " has no default value\n";
   }
   else
   {
-   os << "   " << std::setw(10) << (*it) << " = " << std::setw(20) << GetString(*it);
-   if (impl->defvalues.Defined(*it)) os << " (default value: " << impl->defvalues.GetString(*it) << ")\n";
-   else os << " (no default value)\n";
+   os << "   " << std::setw(20) << (*it) << " = " << std::setw(30) << GetString(*it);
+   if (impl->defvalues.Defined(*it)) os << " (default: " << impl->defvalues.GetString(*it) << ")\n";
+   else os << '\n';
   }
  }
 }
@@ -157,6 +191,28 @@ void Module::ShowHelp() const
  // This is the default implementation, if not overloaded in a plugin
  std::cout << "No help available for this module." << '\n';
 }
+
+void Module::DefineKeyword(const std::string kw, const std::string defvalue) 
+{ 
+ impl->kwstr += (kw+" "); 
+ AssignParameter(kw, defvalue);
+ impl->defvalues.AssignParameter(kw, defvalue);
+}
+
+void Module::DefineKeyword(const std::string kw) { impl->kwstr += (kw+" "); }
+
+std::string Module::Keywords() const { return impl->kwstr; }
+
+void Module::SetDebugStream(std::ostream & ostr) { impl->extdebugstr = false; impl->debugstr = &ostr; }
+
+void Module::SetDebugFile(const std::string debugfile) 
+{
+ impl->extdebugstr = true;
+ impl->debugstr = new std::ofstream(debugfile.c_str());
+ (impl->debugstr)->setf(std::ios::unitbuf);
+}
+
+std::ostream & Module::DebugStream() const { return *(impl->debugstr); }
 
 std::string Module::Provides() const 
 { 
@@ -175,18 +231,6 @@ std::string Module::Name() const { return impl->name; }
 bool Module::Used() const { return impl->used; }
 
 void Module::SetUsed() { impl->used = true; }
-
-void Module::SetManager(PluginManager & pm) { impl->manager = &pm; }
-
-PluginManager & Module::GetManager() const 
-{
- if (impl->manager == NULL) throw PluginError(impl->name, "Called GetManager() on an unmanaged plugin");
- return *(impl->manager); 
-}
-
-//
-//
-//
 
 InvalidModuleType::InvalidModuleType(): Error("Attempted to load module of the wrong type") { }
 

@@ -7,6 +7,8 @@
 #include <lpmd/integrator.h>
 #include <lpmd/potentialarray.h>
 
+#include <fstream>
+
 using namespace lpmd;
 
 // Implementation class for MD
@@ -70,10 +72,8 @@ void MD::Dump(std::string filename)
 {
  SimulationCell & cell = GetCell();
  std::ofstream output(filename.c_str());
- output << step << std::endl ;
- output << cell.GetVector(0) << std::endl;
- output << cell.GetVector(1) << std::endl;
- output << cell.GetVector(2) << std::endl;
+ output << step << std::endl;
+ for (int q=0;q<3;++q) output << cell.GetVector(q) << std::endl;
  cell.WriteAll(output);
  output.close();
 }
@@ -82,22 +82,20 @@ void MD::LoadDump(std::string filename)
 {
  SimulationCell & cell = GetCell();
  std::ifstream input(filename.c_str());
- Vector a, b, c;
- input >> step ;
- input >> a ;
- cell.SetVector(0,a);
- input >> b ;
- cell.SetVector(1,b);
- input >> c ;
- cell.SetVector(2,c);
+ input >> step;
+ for (int q=0;q<3;++q)
+ {
+  Vector tmp;
+  input >> tmp;
+  cell.SetVector(q, tmp);
+ }
  int N=0;
  input >> N;
- cell.Initialize(N);
  for(int i=0;i<N;i++) 
  {
-  Atom at;
-  input >> at;
-  cell.AppendAtom(at);
+  Atom * at = new Atom();
+  input >> (*at);
+  cell.Create(at);
  }
  input.close();
 }

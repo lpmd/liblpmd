@@ -44,7 +44,7 @@ void CellReader::ReadMany(const std::string & filename, std::vector<SimulationCe
  }
  while (1)
  {
-  sc.Clear();
+  sc.clear();
   bool st = ReadCell(is, sc);
   if (st)
   {

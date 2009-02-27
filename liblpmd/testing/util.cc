@@ -10,7 +10,6 @@
 #include <cctype>
 
 #include "config.h"
-#include "version.h"
 
 //
 //
@@ -18,14 +17,7 @@
 
 std::string lpmd::LibraryVersion() 
 {
- std::string lver;
- lver = VERSION;
- #ifndef NUMBERED_RELEASE
- lver += " (from ";
- lver += SVNBRANCH;
- lver += (", revision "+ToString<int>(SVNREVISION)+")");
- #endif
- return lver;
+ return VERSION;
 }
 
 void lpmd::EndWithError(const std::string & text)
@@ -36,7 +28,7 @@ void lpmd::EndWithError(const std::string & text)
 
 void lpmd::ShowWarning(const std::string who, const std::string text)
 {
- std::cerr << "[Warning] (from " << who << "): " << text << '\n';
+ std::cerr << "[Warning (from " << who << "): " << text << '\n';
 }
 
 bool lpmd::MustDo(long i, long start, long end, long step)
@@ -79,35 +71,6 @@ void lpmd::RemoveUnnecessarySpaces(std::string & input_string)
   while(isspace(input_string[i])) input_string.erase(i,1);	 
   ++i;	 
  }
-}
-//
-//
-//
-//Ojo FindBetween no es const porque el string es modificado
-std::vector<std::string> lpmd::FindBetween(std::string &line)
-{
- std::string tmpline(line);
- RemoveUnnecessarySpaces(tmpline);
- std::vector<std::string> words;
- size_t pc=0;
- size_t uc=0;
- int counter=0;
- while(1)
- {
-  pc=tmpline.find_first_of("\"",uc+1);
-  if(pc==std::string::npos) break;
-  uc=tmpline.find_first_of("\"",pc+1);
-  std::string t1=tmpline.substr(pc,uc-pc+1);
-  t1.erase(0,1);
-  t1.erase(t1.size()-1,1);
-  words.push_back(t1);
-  std::stringstream sst;
-  sst << counter ;
-  std::string t2="%"+sst.str();
-  line.replace(pc,uc-pc+1,t2);
-  counter++;
- }
- return words;
 }
 
 //

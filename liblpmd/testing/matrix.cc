@@ -138,18 +138,18 @@ Matrix lpmd::operator*(const Matrix & a, double f)
 
 std::ostream & lpmd::operator<<(std::ostream & os, const Matrix & m)
 {
- os << "#" << std::setfill(' ');
+ os << "#"; // << std::setfill(' ');
  for (long i=0;i<m.Columns();++i) os << std::setw(19) << m.GetLabel(i) << " ";
  os << '\n';
  for (long j=0;j<m.Rows();++j)
  {
   for (long i=0;i<m.Columns();++i)
   {
-   os.setf(std::ios::scientific);
+   os.setf(std::ios::fixed);
    //os.setf(std::ios::showpoint);
-   os.precision(15);
-   //os << os.width(20);
-   os << "   " << m.Get(i, j);
+   os << std::setw(19);
+   // os << std::setfill(' ');
+   os << m.Get(i, j);
   }
   os << '\n';
  }

@@ -26,11 +26,29 @@ class InputSyntaxError: public Error
    InputSyntaxError();
 };
 
-class InputFile: public ParamList
+class InputFile: public Map
 {
  public:
-   InputFile();
+   // 
+   InputFile(Map & m);
    virtual ~InputFile();
+
+   void SetMap(Map & m);
+
+   Map & GetMap() const;
+
+   // Implementacion de metodos de Map
+   bool Defined(const std::string & key) const;
+
+   void AssignParameter(const std::string & key, std::string value);
+
+   std::string & operator[](const std::string & key);
+
+   const std::string & operator[](const std::string & key) const;   
+ 
+   void Remove(const std::string & key);
+
+   std::list<std::string> Parameters() const;
 
    void DeclareStatement(const std::string & cmd, const std::string & args);
  
@@ -45,6 +63,7 @@ class InputFile: public ParamList
    std::string GetNextWord();
 
  private:
+   Map * innermap;
    std::map<std::string, std::string> reservedkw;
 };
 

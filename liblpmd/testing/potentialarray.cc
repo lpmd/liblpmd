@@ -5,66 +5,28 @@
 #include <lpmd/potentialarray.h>
 #include <lpmd/simulationcell.h>
 
-#include <list>
 #include <string>
 #include <cassert>
 
 using namespace lpmd;
 
-class lpmd::PotArrayImpl
-{
- public:
-  std::list<Potential *> potlist; 
-  double * energies;
-  bool initialized;
-
-  PotArrayImpl(): energies(NULL), initialized(false) { }
-  ~PotArrayImpl() { delete [] energies; }
-};
-
-//
-//
-//
-
-PotentialArray::PotentialArray() { impl = new PotArrayImpl(); }
-
-PotentialArray::PotentialArray(const PotentialArray & pa)
-{
- impl = new PotArrayImpl();
- impl->initialized = pa.impl->initialized;
- for (std::list<Potential *>::const_iterator it=pa.impl->potlist.begin();it != pa.impl->potlist.end();++it) 
-     impl->potlist.push_back((*it));
-}
-
-PotentialArray::~PotentialArray() { delete impl; }
-
-PotentialArray & PotentialArray::operator=(const PotentialArray & pa)
-{
- if (&pa != this)
- {
-  impl->initialized = pa.impl->initialized;
-  impl->potlist.clear();
-  for (std::list<Potential *>::const_iterator it=pa.impl->potlist.begin();it != pa.impl->potlist.end();++it) 
-     impl->potlist.push_back((*it));
- }
- return (*this);
-}
+PotentialArray::PotentialArray(): initialized(false) { }
 
 void PotentialArray::Set(std::string s1, std::string s2, Potential & pot)
 {
  pot.SetValidSpecies(ElemNum(s1), ElemNum(s2));
- impl->potlist.push_back(&pot);
+ potlist.push_back(&pot);
 }
 
 void PotentialArray::Set(int s1, int s2, Potential & pot)
 {
  pot.SetValidSpecies(s1, s2);
- impl->potlist.push_back(&pot);
+ potlist.push_back(&pot);
 }
 
 Potential & PotentialArray::Get(int s1, int s2)
 {
- for (std::list<Potential *>::const_iterator it=impl->potlist.begin();it != impl->potlist.end();++it) 
+ for (std::list<Potential *>::const_iterator it=potlist.begin();it != potlist.end();++it) 
  {
   if ((*it)->AppliesTo(s1, s2)) return *(*it);
  }
@@ -78,49 +40,36 @@ Potential & PotentialArray::Get(std::string s1, std::string s2)
 
 void PotentialArray::Initialize(SimulationCell & sc)
 {
- int npot = 0;
- for (std::list<Potential *>::const_iterator it=impl->potlist.begin();it != impl->potlist.end();++it)
- {
-  (*it)->Initialize(sc);
-  npot++;
- }
- impl->energies = new double[npot];
- impl->initialized = true;
+ for (std::list<Potential *>::const_iterator it=potlist.begin();it != potlist.end();++it) (*it)->Initialize(sc);
+ initialized = true;
 }
 
 double PotentialArray::energy(SimulationCell & sc) 
 {
- if (! impl->initialized) Initialize(sc);
+ if (! initialized) Initialize(sc);
  //
  // Calcula la energia para la celda, sumando la contribucion de cada potencial
  //
  double e = 0.0e0;
- int i = 0;
- for (std::list<Potential *>::const_iterator it=impl->potlist.begin();it != impl->potlist.end();++it)
+ for (std::list<Potential *>::const_iterator it=potlist.begin();it != potlist.end();++it)
  {
   Potential * p = (*it);
-  sc.MetaData().AssignParameter("pe", ToString<double>(impl->energies[i]));
   e += (p->energy(sc));
-  i++;
  }
  return e;
 }
 
 void PotentialArray::UpdateForces(SimulationCell & sc)
 {
- if (! impl->initialized) Initialize(sc);
+ if (! initialized) Initialize(sc);
  //
  // Actualiza las fuerzas para la celda, aplicando cada potencial secuencialmente (por ahora)
  //
- sc.MetaData().Remove("pe");
  sc.ClearForces();
- int i = 0;
- for (std::list<Potential *>::const_iterator it=impl->potlist.begin();it != impl->potlist.end();++it)
+ for (std::list<Potential *>::const_iterator it=potlist.begin();it != potlist.end();++it)
  {
   Potential * p = (*it);
   p->UpdateForces(sc);
-  impl->energies[i] = sc.MetaData().GetDouble("pe");
-  i++;
  }
 }
 

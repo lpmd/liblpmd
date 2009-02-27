@@ -12,9 +12,6 @@
  */
 
 #include <lpmd/error.h>
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 namespace lpmd
 {
@@ -61,6 +58,9 @@ class Potential
  private:
    int spc_sum;
    double rcutoff;
+
+ protected:
+   double energycache;
 };
 
  class HorrendousForce: public Error

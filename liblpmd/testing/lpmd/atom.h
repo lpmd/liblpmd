@@ -6,8 +6,8 @@
 #define __LPMD_ATOM_H__
 
 #include <lpmd/vector.h>
-#include <lpmd/neighbor.h>
 #include <lpmd/paramlist.h>
+#include <iostream>
 #include <cstdlib>
 
 
@@ -19,7 +19,7 @@ namespace lpmd
  extern const double ElemMass[119];
 
  extern const double ElemRad[119];
- 
+
  inline int ElemNum(std::string el)
  {
   int r=0;
@@ -34,7 +34,6 @@ namespace lpmd
   return r;
  }
 
-
 //
 //
 //
@@ -44,13 +43,6 @@ class AtomType: public ParamList
    std::string name;
   
    AtomType(const std::string & n);
-};
-
-class AtomNeighbors: public std::vector<Neighbor>
-{
- public:
-  void Add(Neighbor n) { push_back(n); }
-  Neighbor & Get(int i) { return (*this)[i]; }
 };
 
 //
@@ -65,8 +57,6 @@ class Atom
     Atom(int S, const Vector & P, const Vector & V);
     Atom(int S, const Vector & P, const Vector & V, const Vector & A);
     Atom(int S, const Vector & P, const Vector & V, const Vector & A, double c);
-    Atom(const Atom &);
-    ~Atom();
 
     void SetPos(const Vector & P);
     void SetVel(const Vector & V);
@@ -80,7 +70,7 @@ class Atom
     const Vector & Velocity() const;
     const Vector & Acceleration() const;
     const Vector & Color() const;
-    Vector GetSpcColor(int spc);
+	 Vector GetSpcColor(int spc);
     
     int Species() const;
     int Index() const;
@@ -103,26 +93,8 @@ class Atom
 
     Atom *prev,*next; // for use in double linked lists
 
-    //Methods for atom neighbours.
-    void AddNeighbor(Neighbor n)
-    {
-     if(atomneigh==NULL) atomneigh = new AtomNeighbors; 
-     atomneigh->Add(n);
-    }
-    void CleanNeighbors()
-    {
-     if(atomneigh!=NULL) delete atomneigh;
-     atomneigh=NULL;
-    }
-    AtomNeighbors & Neighbors() 
-    {
-     if(atomneigh==NULL) atomneigh = new AtomNeighbors;
-     return (*atomneigh);
-    }
-
    private:
     int s;                         // Species of atom
-    AtomNeighbors * atomneigh;    // Neighbours of a atom.
     AtomType * atomtype;           // Atomtype
     Vector p, v, a;                // Position, velocity and aceleration of the atom
     double charge;                 // charge of atom.
@@ -225,38 +197,17 @@ inline Vector Atom::GetSpcColor(int spc)
 }
 
 
-inline Atom::Atom(): prev(NULL), next(NULL), s(0), atomneigh(NULL), atomtype(NULL), charge(0.0e0),  index(-1), clr(DefCol) { }
+inline Atom::Atom(): prev(NULL), next(NULL), s(0), atomtype(NULL), charge(0.0e0),  index(-1), clr(DefCol) { }
 
-inline Atom::Atom(int S): prev(NULL), next(NULL), s(S), atomneigh(NULL), atomtype(NULL), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S): prev(NULL), next(NULL), s(S), atomtype(NULL), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(int S, const Vector & P):  prev(NULL), next(NULL),s(S), atomneigh(NULL), atomtype(NULL), p(P), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S, const Vector & P):  prev(NULL), next(NULL),s(S), atomtype(NULL), p(P), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(int S, const Vector & P, const Vector & V):  prev(NULL), next(NULL),s(S), atomneigh(NULL), atomtype(NULL), p(P), v(V), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S, const Vector & P, const Vector & V):  prev(NULL), next(NULL),s(S), atomtype(NULL), p(P), v(V), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A): prev(NULL), next(NULL),s(S), atomneigh(NULL), atomtype(NULL), p(P), v(V), a(A), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A): prev(NULL), next(NULL),s(S), atomtype(NULL), p(P), v(V), a(A), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A, double c): prev(NULL), next(NULL),s(S), atomneigh(NULL), atomtype(NULL), p(P), v(V), a(A), charge(c), index (-1), clr(GetSpcColor(S)) { }
-
-inline Atom::Atom(const Atom &A):prev(NULL), next(NULL), s(A.s), atomneigh(NULL), atomtype(A.atomtype), p(A.p), v(A.v), a(A.a), charge(A.charge), index(A.index), clr(A.clr)
-{
- if (this != &A)
- {
-  if (A.atomneigh != NULL)
-  {
-   atomneigh = new AtomNeighbors();
-   const std::vector<Neighbor> & nlist = *(A.atomneigh);
-   for (unsigned long i=0;i<A.atomneigh->size();++i) atomneigh->Add(nlist[i]);
-  } 
- }
-}
-
-inline Atom::~Atom()
-{
-//if (prev!=NULL) delete[] prev;
-// if (next!=NULL) delete[] next; 
- if (atomneigh!=NULL) delete atomneigh;
-// if (atomtype!=NULL) delete[] atomtype;
-}
+inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A, double c): prev(NULL), next(NULL),s(S), atomtype(NULL), p(P), v(V), a(A), charge(c), index (-1), clr(GetSpcColor(S)) { }
 
 inline void Atom::SetPos(const Vector & P) { p=P; }
 

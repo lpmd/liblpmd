@@ -11,18 +11,14 @@
 #ifndef __LPMD_SIMULATIONCELL_H__
 #define __LPMD_SIMULATIONCELL_H__
 
-#include <lpmd/particles.h>
+#include <lpmd/particleset.h>
 #include <lpmd/cell.h>
 #include <lpmd/neighbor.h>
 #include <lpmd/error.h>
 
-// Esto para marcar que la version menor del API soporta SimulationCell::MetaData() 
-#define __LPMD__SIMULATIONCELL__METADATA__
-
 namespace lpmd
 {
  class CellManager;           // forward declaration 
- class ParamList;             // forward declaration
 
  class CellManagerMissing: public Error
  {
@@ -33,7 +29,7 @@ namespace lpmd
 /**
  *  SimulationCell representa una celda de simulación, definida en una región del espacio y conteniendo un set de partículas.
  */
-class SimulationCell: public Particles, public Cell
+class SimulationCell: public ParticleSet, public Cell
 {
  public:
    // Constructores y destructor
@@ -48,9 +44,9 @@ class SimulationCell: public Particles, public Cell
    // Metodos
 
    void SetCell(const Cell & c);
-   void SetPart(const Particles & p);
+   void SetPart(const ParticleSet & p);
 
-   // Metodos que combinan las facilidades de Particles y Cell
+   // Metodos que combinan las facilidades de ParticleSet y Cell
 
    Vector FracPosition(long i) const;
    void SetPosition(long i, const Vector & p);                 // Setea la posicion real, corrigiendo si la particula sale de la caja
@@ -66,9 +62,6 @@ class SimulationCell: public Particles, public Cell
    double DistanceToReplica(long i, long j, long nx, long ny, long nz);
    double Distance2(long i,long j);
 
-   double BondLength(int s1, int s2) const;
-   double BondLength(const std::string & s1, const std::string & s2) const; 
-
    CellManager & GetCellManager() const;
    void SetCellManager(CellManager & cm);
    double CMCutoff() const;
@@ -78,12 +71,10 @@ class SimulationCell: public Particles, public Cell
    Vector VectorRealDistance(long i, long j);
    Vector VectorDistanceToReplica(long i, long j, long nx, long ny, long nz);
 
-   void BuildNeighborList(long i, std::list<Neighbor> & nlist, bool full, double rcut);
-   void BuildList(bool full, double rcut);
+   void BuildNeighborList(long i, std::vector<Neighbor> & nlist, bool full, double rcut);
 
    void RealPos();
    void FracPos();
-   void SuperCell(); // OBSOLETO! (use plugin replicate) Re-Genera una supercelda a partir de la opcion repeat dada en input;
    void Center();
    void UnCenter();
 
@@ -95,8 +86,6 @@ class SimulationCell: public Particles, public Cell
    void RescaleVector(Vector sx, Vector sy, Vector sz);
    void RescaleVector(Vector s, int i);
 
-   void SortBySpecies(void);
-
    // Propiedades fisicas
    double Pressure() const;
    double Density() const;
@@ -106,12 +95,10 @@ class SimulationCell: public Particles, public Cell
    void AddToVirial(double vir);
    double Virial() const; 
 
+   ParamList & MetaData() const;
+
    //set para asingacion de stress
    double& StressTensor(int alpha, int beta);
-
-   // Acceso a la lista de metadatos
-   // FIXME: La idea es ver como formalizar esto en el API 1.1
-   ParamList & MetaData() const;
 
  private:
    class SimCellImpl * impl;

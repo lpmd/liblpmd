@@ -1,9 +1,8 @@
 
 AC_INIT
 
-AC_CONFIG_HEADERS(config.h)
-
-AM_INIT_AUTOMAKE(liblpmd, 1.0.4)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(liblpmd, 1.1.0)
 
 AC_PROG_CXX
 
@@ -13,13 +12,5 @@ AC_PROG_LIBTOOL
 
 AC_STDC_HEADERS
 
-#AC_DEFINE([NUMBERED_RELEASE], [0], [Marks this revision as a numbered release])
-
-AC_ARG_ENABLE(omp,
- [  --enable-omp  Enable OpenMP parallelization of loops],
- [AC_SUBST(cpp_omp, "-fopenmp ") 
-  AC_SUBST(ld_omp, "-lgomp")]
- )
-
-AC_OUTPUT(Makefile lpunit/Makefile tests/Makefile liblpmd-1.0.pc)
+AC_OUTPUT(Makefile liblpmd-2.0.pc)
 

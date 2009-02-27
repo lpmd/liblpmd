@@ -2,12 +2,11 @@
 //
 //
 
-#include <lpmd/paramlist.h>
 #include <lpmd/simulationcell.h>
 #include <lpmd/cellmanager.h>
-#include <lpmd/physunits.h>
 #include <lpmd/util.h>
 #include <lpmd/error.h>
+#include <lpmd/session.h>
 
 #include "distcache.h"
 
@@ -30,7 +29,6 @@ class lpmd::SimCellImpl
    double s[3][3];
    CellManager * cm;
    DistanceCache * dc;
-
    ParamList mdata;
 
    SimCellImpl(): na(1), nb(1), nc(1), cm(NULL), dc(NULL) { }
@@ -52,16 +50,11 @@ SimulationCell::SimulationCell(int nra, int nrb, int nrc, bool pba, bool pbb, bo
  }
 }
 
-SimulationCell::SimulationCell(const SimulationCell & sc): Particles(sc), Cell(sc)
+SimulationCell::SimulationCell(const SimulationCell & sc): ParticleSet(sc), Cell(sc)
 {
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
  for (int i=0;i<3;++i) SetPeriodicity(i, sc.Periodic(i));
  if (sc.impl->dc != NULL) impl->dc = new DistanceCache(sc);
- std::list<std::string> keys = sc.MetaData().Parameters();
- for (std::list<std::string>::const_iterator it=keys.begin();it!=keys.end();++it)
- {
-  MetaData().AssignParameter(*it, sc.MetaData()[*it]);
- }
  //if (sc.impl->cm != NULL) SetCell(sc);
  SetCell(sc);
 }
@@ -70,7 +63,7 @@ SimulationCell::~SimulationCell() { delete impl; }
 
 SimulationCell & SimulationCell::operator=(const SimulationCell & sc)
 {
- Particles::operator=(sc);
+ ParticleSet::operator=(sc);
  delete impl;
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
  for (int i=0;i<3;++i) SetPeriodicity(i, sc.Periodic(i));
@@ -82,55 +75,41 @@ SimulationCell & SimulationCell::operator=(const SimulationCell & sc)
 
 void SimulationCell::RealPos()
 {
- const long n = Size();
- for (int i=0;i<n;i++)
+ for (unsigned long int i=0;i<size();i++)
  {
-  Atom tmp = GetAtom(i);
-  Vector a = tmp.Position();
-  tmp.SetPos(ScaleByCell(a));
-  SetAtom(tmp, i);
+  const Vector & a = operator[](i).Position();
+  operator[](i).SetPos(ScaleByCell(a));
  }
 }
 
 void SimulationCell::FracPos() 
 {
- const long n = Size();
- for (int i=0;i<n;i++)
+ for (unsigned long int i=0;i<size();i++)
  {
-  Vector a = GetAtom(i).Position(), n;
+  Vector n, a = operator[](i).Position();
   ConvertToInternal(a);
   for (int j=0;j<3;++j) n.Set(j, a.Get(j)/GetVector(j).Mod());
-  Atom tmp = GetAtom(i);
-  tmp.SetPos(n);
-  SetAtom(tmp, i);
+  operator[](i).SetPos(n);
  }
 }
 
 void SimulationCell::Center()
 {
- const long n = Size();
  Vector displacement = ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
- for (long i=0;i<n;i++)
+ for (unsigned long int i=0;i<size();i++)
  {
-  Atom tmp = GetAtom(i);
-  tmp.SetPos(tmp.Position() - displacement);
-  SetAtom(tmp, i);
+  operator[](i).SetPos(operator[](i).Position()-displacement);
  }
 }
 
 void SimulationCell::UnCenter()
 {
- const long n = Size();
  Vector displacement = ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
- for (long i=0;i<n;i++)
+ for (unsigned long int i=0;i<size();i++)
  {
-  Atom tmp = GetAtom(i);
-  tmp.SetPos(tmp.Position() + displacement);
-  SetAtom(tmp, i);
+  operator[](i).SetPos(operator[](i).Position()+displacement);
  }
 }
-
-void SimulationCell::SuperCell() { throw Error("SimulationCell::SuperCell() is obsolete! Please use the \"replicate\" plugin instead."); }
 
 CellManager & SimulationCell::GetCellManager() const { return *(impl->cm); }
 
@@ -159,16 +138,16 @@ void SimulationCell::SetCell(const Cell & c)
  for (int i=0;i<3;++i) SetVector(i, c.GetVector(i));
 }
 
-void SimulationCell::SetPart(const Particles & p)
+void SimulationCell::SetPart(const ParticleSet & p)
 {
- for (int i=0;i<p.Size();i++) AppendAtom(p.GetAtom(i));
+ for (unsigned long int i=0;i<p.size();i++) Create(new Atom(p[i]));
  NumEspec();
  if (impl->cm != NULL) (impl->cm)->UpdateCell(*this);
 }
 
 Vector SimulationCell::FracPosition(long i) const
 {
- Vector a = GetAtom(i).Position(), n;
+ Vector a = operator[](i).Position(), n;
  ConvertToInternal(a);
  for (int j=0;j<3;++j) n.Set(j, a.Get(j)/GetVector(j).Mod());
  return n;
@@ -190,10 +169,8 @@ void SimulationCell::SetPosition(long i, const Vector & p)
   }
  }
  ConvertToExternal(vtmp);
- Atom a = GetAtom(i);
- a.SetIndex(i);
- a.SetPos(vtmp);
- SetAtom(a, i);
+ operator[](i).SetIndex(i);
+ operator[](i).SetPos(vtmp);
 }
 
 void SimulationCell::SetFracPosition(long i, const Vector & fp)
@@ -201,90 +178,38 @@ void SimulationCell::SetFracPosition(long i, const Vector & fp)
  SetPosition(i, ScaleByCell(fp));
 }
 
-void SimulationCell::SetVelocity(long i, const Vector & v)
-{
- Atom a = GetAtom(i);
- a.SetVel(v);
- SetAtom(a, i);
-}
+void SimulationCell::SetVelocity(long i, const Vector & v) { operator[](i).SetVel(v); }
 
-void SimulationCell::SetAcceleration(long i, const Vector & ac)
-{
- Atom a = GetAtom(i);
- a.SetAccel(ac);
- SetAtom(a, i);
-}
+void SimulationCell::SetAcceleration(long i, const Vector & ac) { operator[](i).SetAccel(ac); }
 
 void SimulationCell::ClearForces()
 {
  const Vector zero;
- for (long i=0;i<Size();++i) SetAcceleration(i, zero);
+ for (unsigned long int i=0;i<size();++i) SetAcceleration(i, zero);
  if (impl->dc != NULL) (impl->dc)->Clear();
  if (impl->cm != NULL) (impl->cm)->UpdateCell(*this);
  impl->virial = 0.0;
 }
 
-void SimulationCell::BuildNeighborList(long i, std::list<Neighbor> & nlist, bool full, double rcut)
+void SimulationCell::BuildNeighborList(long i, std::vector<Neighbor> & nlist, bool full, double rcut)
 {
  if (impl->cm == NULL) throw CellManagerMissing();
  else (impl->cm)->BuildNeighborList(*this, i, nlist, full, rcut);
 }
 
-void SimulationCell::BuildList(bool full, double rcut)
-{
- if (impl->cm == NULL) throw CellManagerMissing();
- else (impl->cm)->BuildList(*this,full,rcut);
-}
-
 Vector SimulationCell::VectorDistance(long i, long j)
 {
  if (impl->dc != NULL) return (impl->dc)->VectorDistance(i, j);
- return Displacement(Particles::GetAtom(i).Position(), Particles::GetAtom(j).Position());
+ return Displacement(operator[](i).Position(), operator[](j).Position());
 }
 
-void SimulationCell::SortBySpecies(void)
-{
- //Generamos la lista de especies.
- std::list<std::string> lista=(*this).SpeciesList();
- std::vector<lpmd::Atom> *tmp = new std::vector<lpmd::Atom>[lista.size()]; 
- for(int i=0 ; i < (*this).Size() ; ++i)
- { 
-  int j=0;
-  for(std::list<std::string>::const_iterator it=lista.begin();it!=lista.end();++it)
-  {
-   if(ElemNum(*it)==(*this)[i].Species()) 
-   {
-    tmp[j].push_back((*this)[i]);
-   }
-   j++;
-  }
- }
- (*this).Clear();
- int j=0;
- for(std::list<std::string>::const_iterator it=lista.begin();it!=lista.end();++it)
- {
-  for(unsigned long int i=0 ; i < tmp[j].size() ; ++i)
-  {
-   (*this).AppendAtom((tmp[j])[i]);
-  }
-  j++;
- }
-}
-
-/*
-Vector SimulationCell::VectorDistance(const Atom & i, const Atom & j)
-{
- return Displacement(i.Position(), j.Position());
-}
-*/
-
-Vector SimulationCell::VectorRealDistance(long i, long j) { return GetAtom(i).Position() - GetAtom(j).Position(); }
+Vector SimulationCell::VectorRealDistance(long i, long j) { return operator[](i).Position() - operator[](j).Position(); }
 
 Vector SimulationCell::VectorDistanceToReplica(long i, long j, long nx, long ny, long nz)
 {
  if (impl->dc != NULL) return (impl->dc)->VectorDistanceToReplica(i, j, nx, ny, nz);
- Vector vi = Particles::GetAtom(i).Position();
- Vector vj = Particles::GetAtom(j).Position(); 
+ const Vector & vi = operator[](i).Position();
+ const Vector & vj = operator[](j).Position(); 
  if (nx==0 && (ny==0 && nz==0)) return vj-vi;  
  else return (ScaleByCell(Vector(nx, ny, nz)) + vj - vi);
 }
@@ -303,16 +228,6 @@ double SimulationCell::Distance2(long i,long j)
 {
  if (impl->dc != NULL) return (impl->dc)->Distance2(i, j);
  return VectorDistance(i, j).Mod2();
-}
-
-double SimulationCell::BondLength(int s1, int s2) const
-{
- return MetaData().GetDouble("bond-"+ElemSym[s1]+"-"+ElemSym[s2]);
-}
-
-double SimulationCell::BondLength(const std::string & s1, const std::string & s2) const
-{
- return MetaData().GetDouble("bond-"+s1+"-"+s2);
 }
 
 double SimulationCell::Angle(long i, long j, long k) 
@@ -378,17 +293,13 @@ void SimulationCell::AddToVirial(double vir) { impl->virial += vir; }
 double SimulationCell::Density() const
 {
  double m = 0.0e0, v = Volume();
- for(long i=0;i<Size();++i)
- {
-  Atom a = GetAtom(i);
-  m += a.Mass();
- }
- return m/v;
+ for (unsigned long int i=0;i<size();++i) m += operator[](i).Mass();
+ return GlobalSession.GetDouble("ua3togrcm3")*m/v;
 }
 
 double SimulationCell::ParticleDensity() const
 {
- double N = (double)Size();
+ double N = double(size());
  double V = Volume();
  return N/V;
 }
@@ -406,6 +317,7 @@ double & SimulationCell::StressTensor(int alpha, int beta) //Combina Get y Set
  else return impl->s[alpha][beta];
 }
 
+ParamList & SimulationCell::MetaData() const { return impl->mdata; }
 
 double SimulationCell::CMCutoff() const
 {
@@ -413,7 +325,4 @@ double SimulationCell::CMCutoff() const
  CellManager & cm = GetCellManager();
  return cm.Cutoff();
 }
-
-ParamList & SimulationCell::MetaData() const { return impl->mdata; }
-
 

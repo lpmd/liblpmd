@@ -11,7 +11,7 @@
 DistanceCache::DistanceCache(const SimulationCell & sc)
 { 
  parent = &sc;
- n = parent->Size();
+ n = parent->size();
  distcache = new DistanceInfo*[n];
  dcreplica = new ReplicaMatrix*[n];
  for (long i=0;i<n;++i) 
@@ -56,7 +56,8 @@ const lpmd::Vector DistanceCache::VectorDistance(long i, long j)
  if (p.active == true) return pinv.d*(-1.0);
  else
  {
-  const Vector & vd = parent->Displacement(parent->GetAtom(i).Position(), parent->GetAtom(j).Position());
+  const ParticleSet & set = (*parent);
+  const Vector & vd = parent->Displacement(set[i].Position(), set[j].Position());
   double r = vd.Mod();
   double r2 = r*r;
   //
@@ -82,7 +83,8 @@ double DistanceCache::Distance(long i, long j)
  if (p.active == true) return pinv.r;
  else
  {
-  const Vector & vd = parent->Displacement(parent->GetAtom(i).Position(), parent->GetAtom(j).Position());
+  const ParticleSet & set = (*parent);
+  const Vector & vd = parent->Displacement(set[i].Position(), set[j].Position());
   double r = vd.Mod();
   double r2 = r*r;
   //
@@ -106,7 +108,8 @@ double DistanceCache::Distance2(long i, long j)
  if (p.active == true) return p.r2;
  else
  {
-  const Vector & vd = parent->Displacement(parent->GetAtom(i).Position(), parent->GetAtom(j).Position());
+  const ParticleSet & set = (*parent);
+  const Vector & vd = parent->Displacement(set[i].Position(), set[j].Position());
   distcache[j][i].active = true;
   distcache[j][i].d = vd;
   double r = vd.Mod();
@@ -128,8 +131,9 @@ const lpmd::Vector DistanceCache::VectorDistanceToReplica(long i, long j, long n
   di.d = di.d*(-1.0);
   return di.d;
  }
- Vector vi = parent->GetAtom(i).Position();
- Vector vj = parent->GetAtom(j).Position(); 
+ const ParticleSet & set = (*parent);
+ const Vector & vi = set[i].Position();
+ const Vector & vj = set[j].Position(); 
  if (nx==0 && (ny==0 && nz==0)) di.d = vj-vi;  
  else di.d = parent->ScaleByCell(Vector(nx, ny, nz)) + vj - vi;
  di.active = true;
