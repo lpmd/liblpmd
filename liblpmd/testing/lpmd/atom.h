@@ -223,17 +223,17 @@ inline Vector Atom::GetSpcColor(int spc)
 }
 
 
-inline Atom::Atom(): prev(NULL), next(NULL), s(0), atomtype(NULL), charge(0.0e0),  index(-1), clr(DefCol) { }
+inline Atom::Atom(): prev(NULL), next(NULL), s(0), atomtype(NULL), atomneigh(NULL), charge(0.0e0),  index(-1), clr(DefCol) { }
 
-inline Atom::Atom(int S): prev(NULL), next(NULL), s(S), atomtype(NULL), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S): prev(NULL), next(NULL), s(S), atomtype(NULL), atomneigh(NULL), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(int S, const Vector & P):  prev(NULL), next(NULL),s(S), atomtype(NULL), p(P), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S, const Vector & P):  prev(NULL), next(NULL),s(S), atomtype(NULL), atomneigh(NULL), p(P), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(int S, const Vector & P, const Vector & V):  prev(NULL), next(NULL),s(S), atomtype(NULL), p(P), v(V), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S, const Vector & P, const Vector & V):  prev(NULL), next(NULL),s(S), atomtype(NULL), atomneigh(NULL), p(P), v(V), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A): prev(NULL), next(NULL),s(S), atomtype(NULL), p(P), v(V), a(A), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A): prev(NULL), next(NULL),s(S), atomtype(NULL), atomneigh(NULL), p(P), v(V), a(A), charge(0.0e0), index(-1), clr(GetSpcColor(S)) { }
 
-inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A, double c): prev(NULL), next(NULL),s(S), atomtype(NULL), p(P), v(V), a(A), charge(c), index (-1), clr(GetSpcColor(S)) { }
+inline Atom::Atom(int S, const Vector & P, const Vector & V, const Vector & A, double c): prev(NULL), next(NULL),s(S), atomtype(NULL), atomneigh(NULL), p(P), v(V), a(A), charge(c), index (-1), clr(GetSpcColor(S)) { }
 
 inline void Atom::SetPos(const Vector & P) { p=P; }
 
