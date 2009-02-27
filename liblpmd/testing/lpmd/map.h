@@ -9,6 +9,7 @@
 #include <string>
 #include <list>
 #include <cstdlib>
+#include <lpmd/vector.h>
 
 namespace lpmd
 {
@@ -44,10 +45,38 @@ namespace lpmd
 
    inline long GetInteger(const std::string & key) { return atoi((*this)[key].c_str()); }
 
-   bool GetBool(const std::string & key)
+   inline bool GetBool(const std::string & key)
    {
     if ((*this)[key] == "true") return true;
     else return false;
+   }
+
+   inline Vector GetVector(const std::string & key)
+   {
+    lpmd::Vector tmp(0,0,0);
+    std::string text = GetString(key);
+    RemoveUnnecessarySpaces(text);
+    if(text[0]!='<' || text[text.size()-1]!='>')
+    {
+     std::cerr << "Error during paremeters reading >> GetVector() Error!" << '\n';
+     exit (0);
+    }
+    text.erase(text.begin());
+    text.erase(text.end()-1);
+    size_t found;
+    found=text.find_first_of(",");
+    while (found!=std::string::npos)
+    {
+     text[found]=' ';
+     found=text.find_first_of(",",found+1);
+    }
+    std::istringstream iss(text);
+    double a=0.0e0,b=0.0e0,c=0.0e0;
+    iss >> a >> b >> c;
+    tmp.SetX(a);
+    tmp.SetY(b);
+    tmp.SetZ(c);
+    return tmp;
    }
 
 };

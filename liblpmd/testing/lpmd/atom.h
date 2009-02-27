@@ -6,6 +6,7 @@
 #define __LPMD_ATOM_H__
 
 #include <lpmd/vector.h>
+#include <lpmd/neighbor.h>
 #include <lpmd/paramlist.h>
 #include <iostream>
 #include <cstdlib>
@@ -45,6 +46,13 @@ class AtomType: public ParamList
    AtomType(const std::string & n);
 };
 
+class AtomNeighbors: public std::vector<Neighbor>
+{
+ public:
+  void Add(Neighbor n) { push_back(n); }
+  Neighbor & Get(int i) { return (*this)[i]; }
+};
+
 //
 //
 //
@@ -65,6 +73,23 @@ class Atom
     void SetSpc(int S);
     void SetCharge(double a);
     void SetIndex(long a);
+
+//Methods for atom neighbours.
+    void AddNeighbor(Neighbor n)
+    {
+     if(atomneigh==NULL) atomneigh = new AtomNeighbors;
+     atomneigh->Add(n);
+    }
+    void CleanNeighbors()
+    {
+     if(atomneigh!=NULL) delete atomneigh;
+     atomneigh=NULL;
+    }
+    AtomNeighbors & Neighbors()
+    {
+     if(atomneigh==NULL) atomneigh = new AtomNeighbors;
+     return (*atomneigh);
+    }
 
     const Vector & Position() const;
     const Vector & Velocity() const;
@@ -96,6 +121,7 @@ class Atom
    private:
     int s;                         // Species of atom
     AtomType * atomtype;           // Atomtype
+    AtomNeighbors * atomneigh;    // Neighbours of a atom.
     Vector p, v, a;                // Position, velocity and aceleration of the atom
     double charge;                 // charge of atom.
     long index;                    // index of atom, between 0 and N-1
