@@ -22,7 +22,7 @@ nobase_include_HEADERS =  lpmd/applicable.h lpmd/atom.h lpmd/cell.h lpmd/cellfor
 noinst_HEADERS = version.h distcache.h
 
 liblpmd_la_SOURCES =  applicable.cc atom.cc cell.cc cellformat.cc cellgenerator.cc cellmanager.cc cellreader.cc cellwriter.cc \
-                      cmdline.cc containable.cc coulomb.cc distcache.cc error.cc inputfile.cc instantproperty.cc integrator.cc matrix.cc md.cc \
+                      cmdline.cc color.cc containable.cc coulomb.cc distcache.cc error.cc inputfile.cc instantproperty.cc integrator.cc matrix.cc md.cc \
                       metalpotential.cc module.cc onestepintegrator.cc pairpotential.cc paramlist.cc particleset.cc plugin.cc pluginmanager.cc \
                       potential.cc potentialarray.cc replicamatrix.cc scalartable.cc scalarvalue.cc session.cc simulationcell.cc systemmodifier.cc \
                       systemmixer.cc temporalproperty.cc timer.cc twostepintegrator.cc util.cc vectorvalue.cc visualizer.cc
