@@ -124,11 +124,11 @@ class Atom
    private:
     int s;                         // Species of atom
     AtomType * atomtype;           // Atomtype
-    AtomNeighbors * atomneigh;    // Neighbours of a atom.
+    AtomNeighbors * atomneigh;     // Neighbours of a atom.
     Vector p, v, a;                // Position, velocity and aceleration of the atom
     double charge;                 // charge of atom.
     long index;                    // index of atom, between 0 and N-1
-    Vector clr;						  // Color of the atom in rgb format
+    Vector clr;                    // Color of the atom in rgb format
 };
 
 

@@ -27,6 +27,8 @@ namespace lpmd
 
  void RemoveUnnecessarySpaces(std::string & input_string);
 
+ std::vector<std::string> FindBetween(std::string & line);
+
  std::vector<std::string> SplitTextLine(const std::string & line, char delimiter=' ');
  
  std::list<std::string> ListOfTokens(const std::string & line, char delimiter=' ');

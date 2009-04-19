@@ -43,6 +43,7 @@ class Vector
    void Scale(double f);
    void Norm();
    void Zero();
+   std::string Write();
 
    Vector& operator=(const Vector & A);
    
@@ -128,6 +129,13 @@ inline void Vector::Zero()
  q[0]=0.0e0;
  q[1]=0.0e0;
  q[2]=0.0e0;
+}
+
+inline std::string Vector::Write()
+{
+ std::ostringstream ostr;
+ ostr << "<" <<q[0]<<","<<q[1]<<","<<q[2]<<">";
+ return ostr.str();
 }
 
 const Vector zero(0,0,0);
