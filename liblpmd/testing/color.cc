@@ -6,7 +6,7 @@
 
 using namespace lpmd;
 
-lpmd::Vector GetSpcColor(int spc)
+lpmd::Vector lpmd::GetSpcColor(int spc)
 {
         const lpmd::Vector DefCol(0,0.8,0.8);
         lpmd::Vector ans;
