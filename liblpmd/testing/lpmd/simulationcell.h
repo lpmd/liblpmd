@@ -53,6 +53,8 @@ class SimulationCell: public ParticleSet, public Cell
    void SetVelocity(long i, const Vector & v);                 // Setea la velocidad, sin cambios
    void SetAcceleration(long i, const Vector & ac);            // Setea la aceleracion, sin cambios
    void SetFracPosition(long i, const Vector & fp);            // Setea la posicion real (dentro de la caja) pero recibiendo un argumento fraccionario
+   void SetColor(long i, const Vector & c);
+   void SetColor(long i, const double & c);
 
    void UseDistanceCache(bool activ);
    void ClearForces();

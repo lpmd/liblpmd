@@ -182,6 +182,10 @@ void SimulationCell::SetVelocity(long i, const Vector & v) { operator[](i).SetVe
 
 void SimulationCell::SetAcceleration(long i, const Vector & ac) { operator[](i).SetAccel(ac); }
 
+void SimulationCell::SetColor(long i, const Vector & c) {operator[](i).SetColor(c);}
+
+void SimulationCell::SetColor(long i, const double & c) {operator[](i).SetColor(c);}
+
 void SimulationCell::ClearForces()
 {
  const Vector zero;
