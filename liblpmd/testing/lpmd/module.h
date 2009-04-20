@@ -19,6 +19,7 @@
 
 namespace lpmd
 {
+ class PluginManager;        // forward declaration
 
 /**
  *  Module es la clase base de la cual deben derivar todos los módulos que LPMD usa como plugins.
@@ -43,6 +44,8 @@ class Module: public ParamList
    bool Used() const;
    void SetUsed();
 
+   PluginManager & GetManager() const;
+
    // 
    void AssignParameter(const std::string & key, std::string value);
    void DefineKeyword(const std::string kw, const std::string defvalue);
@@ -65,6 +68,9 @@ class Module: public ParamList
    virtual std::string Keywords() const;
 
    void (*unloader)(Module *);
+
+   // FIXME : Cambiar este metodo por un parametro extra en el constructor
+   void SetManager(PluginManager & pm);
 
  private:
    class ModuleImpl * impl;
