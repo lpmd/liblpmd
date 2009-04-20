@@ -103,6 +103,7 @@ class Atom
     int Species() const;
     int Index() const;
     double Charge() const;
+    double ColorS() const;
 
     bool IsTypeSet() const;
     void SetType(AtomType & at);
@@ -158,7 +159,7 @@ inline void Atom::SetColor(const Vector & CLR) { clr=CLR;}
 
 inline void Atom::SetColor(const double & x)
 {
- double R,G,B,A;
+ double R,G,B,A=0.5;
  if      (0<=x && x<=A){ R=1.0-x/A; G=x/A; B=0; }
  else if (A<=x && x<=1.0){ R=0; G=(x-1)/(A-1); B=(x-A)/(1-A); }
  else {R=0; G=0.8; B=0.8;}
@@ -179,6 +180,8 @@ inline const Vector & Atom::Velocity() const { return v; }
 inline const Vector & Atom::Acceleration() const { return a; }
 
 inline const Vector & Atom::Color() const { return clr;}
+
+inline double Atom::ColorS() const { return (clr.GetX()+clr.GetY()+clr.GetZ())/3.0;}
 
 inline int Atom::Species() const { return s; }
 
