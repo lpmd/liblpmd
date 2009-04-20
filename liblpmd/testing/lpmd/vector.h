@@ -240,12 +240,10 @@ inline int operator!=(const Vector & A, const Vector & B)
 
 inline std::ostream & operator<<(std::ostream & co, const Vector & A)
 {
-#ifdef VPRE
    co << std::setiosflags(std::ios::showpoint);
-#endif
-   co << std::setw(20) << std::setprecision(10) << A.Get(0);
-   co << std::setw(20) << std::setprecision(10) << A.Get(1);
-   co << std::setw(20) << std::setprecision(10) << A.Get(2);
+   co << std::setw(20) << std::setprecision(12) << A.Get(0);
+   co << std::setw(20) << std::setprecision(12) << A.Get(1);
+   co << std::setw(20) << std::setprecision(12) << A.Get(2);
    return co;
 }
 
