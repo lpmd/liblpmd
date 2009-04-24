@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <cmath>
+#include <string.h>
 
 class Vector
 {
