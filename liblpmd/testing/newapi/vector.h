@@ -34,7 +34,7 @@ class Vector
     for (int q=0;q<3;++q) v[q] = w[q];
    }  
 
-   Vector(char * str)
+   Vector(const char * str)
    {
     char * s = (char *)(malloc((strlen(str)+1)*sizeof(char)));
     strncpy(s, str, strlen(str));

@@ -10,7 +10,7 @@
 void test1()
 {
  Vector e[3];
- e[0]=Vector(1,0,0);e[1]=Vector(0,1,0);e[2]=Vector(0,0,1);
+ e[0]=e1;e[1]=e2;e[2]=e3;
  Cell a;
  for (int i=0 ; i< 3 ; ++i) {assert((a[i]-e[i]).Module() < 1E-10);}
 }
@@ -27,7 +27,6 @@ void test3()
 {
  double aa=1,b=1,c=1,alpha=90,beta=90,gamma=90;
  Cell a(aa,b,c,alpha,beta,gamma);
- Vector e1(1,0,0),e2(0,1,0),e3(0,0,1);
  assert((a[0]-e1).Module() < 1E-10);
  assert((a[1]-e2).Module() < 1E-10);
  assert((a[2]-e3).Module() < 1E-10);
@@ -36,20 +35,28 @@ void test3()
 void test4()
 {
  Cell a("<1,2,3> <4 ,5,6> <7,8,9>");
- Cell b("1 2 3 4 5 6 7 8 9");
- Cell c("5 7 5 90 90 90");
  assert((a[0]-Vector(1,2,3)).Module()<1E-10); 
  assert((a[1]-Vector(4,5,6)).Module()<1E-10);
  assert((a[2]-Vector(7,8,9)).Module()<1E-10);
+}
+
+void test5()
+{
+ Cell b("1 2 3 4 5 6 7 8 9");
  assert((b[0]-Vector(1,2,3)).Module()<1E-10); 
  assert((b[1]-Vector(4,5,6)).Module()<1E-10);
  assert((b[2]-Vector(7,8,9)).Module()<1E-10);
+}
+
+void test6()
+{
+ Cell c("5 7 5 90 90 90");
  assert((c[0]-Vector(5,0,0)).Module()<1E-10);
  assert((c[1]-Vector(0,7,0)).Module()<1E-10);
  assert((c[2]-Vector(0,0,5)).Module()<1E-10);
 }
 
-void test5()
+void test7()
 {
  Cell a;
  assert(a.Periodicity(0)==true);
@@ -63,7 +70,7 @@ void test5()
  assert(a.Periodicity(2)==false);
 }
 
-void test6()
+void test8()
 {
  Vector a(1,2,3);
  Vector b(4,5,6);
@@ -85,6 +92,8 @@ int main()
  test4();
  test5();
  test6();
+ test7();
+ test8();
 
  return 0;
 }

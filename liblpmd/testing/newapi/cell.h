@@ -15,6 +15,9 @@
 #include "vector.h"
 #include "util.h"
 
+// Se va a util....?
+inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
+
 class Cell
 {
  public:
@@ -23,26 +26,32 @@ class Cell
    v[0]=e1;v[1]=e2;v[2]=e3;
    for (int i=0;i<3;++i) p[i] = true;
   }
+
   Cell(const Vector a, const Vector b, const Vector c)
   {
    v[0]=a;v[1]=b;v[2]=c;
    for (int i=0;i<3;++i) p[i] = true;
   }
+
   Cell(const double a, const double b, const double c, const double alpha, const double beta, const double gamma)
   {
+   double ar = DegreesToRadians(alpha);
+   double br = DegreesToRadians(beta);
+   double gr = DegreesToRadians(gamma);
    v[0][0] = a;
    v[0][1] = 0.0e0;
    v[0][2] = 0.0e0;
-   v[1][0] = b*cos(gamma);
-   v[1][1] = b*sin(gamma);	          
+   v[1][0] = b*cos(gr);
+   v[1][1] = b*sin(gr);	          
    v[1][2] = 0.0e0;		   
-   v[2][0] = c*cos(beta);		   
-   double tmp=(cos(alpha)-cos(gamma)*cos(beta))/sin(gamma);			  
+   v[2][0] = c*cos(br);		   
+   double tmp=(cos(ar)-cos(gr)*cos(br))/sin(gr);			  
    v[2][1] = c*tmp;			      
-   v[2][3] = c*sqrt(sin(beta)*sin(beta)-tmp*tmp);		
+   v[2][2] = c*sqrt(sin(br)*sin(br)-tmp*tmp);		
    for (int i=0;i<3;++i) p[i] = true;
    //UpdateTransfMatrix();
   }
+
   Cell(std::string str)
   {
    RemoveUnnecessarySpaces(str);

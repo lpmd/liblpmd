@@ -3,15 +3,15 @@
 #
 
 all: 
-	$(MAKE) test
-	./test
+	$(MAKE) testvector
+	./testvector
 	$(MAKE) testatom
 	./testatom
 	$(MAKE) testcell
 	./testcell
 
-test: test.cc vector.h
-	g++ -g -O3 -Wall -pedantic -o test test.cc -lm
+testvector: testvector.cc vector.h
+	g++ -g -O3 -Wall -pedantic -o testvector testvector.cc -lm
 
 testatom: testatom.cc atom.h
 	g++ -g -O3 -Wall -pedantic -o testatom testatom.cc -lm
@@ -22,5 +22,5 @@ testcell: testcell.cc cell.h
 .PHONY: clean
 
 clean:
-	rm -f test testatom testcell *.o
+	rm -f testvector testatom testcell *.o
 
