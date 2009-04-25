@@ -7,13 +7,9 @@
 #ifndef __LPMD_ATOM_H__
 #define __LPMD_ATOM_H__
 
-#include <iostream>
 #include <cstdlib>
-#include <cassert>
-#include <cmath>
 #include <string.h>
 #include "vector.h"
-
 
 const std::string ElemSym[119]=
 {
@@ -34,19 +30,6 @@ const double ElemMass[119]=
  222.0176,223.0197,226.0254,227.0278,232.0381,231.03588,238.0289,237.048,244.0642,243.0614,247.0703,247.0703,251.0796,252.083,257.0951,258.1,259.1009,262.11,261,262,266,264,269,268,269,272,277,0,289,0,0,0,0
 };
 
-const double ElemRad[119]=
-{
- 0.0e0,0.32,0.0e0,1.63,0.9,0.81,0.77,0.75,0.74,0.72,
- 0.71,1.54,1.36,1.18,1.18,1.10,1.04,0.99,
- 0.98,2.03,1.74,1.44,1.32,1.22,1.18,1.17,1.17,1.16,1.15,1.17,1.25,1.25,1.22,1.21,1.17,1.14,
- 1.12,2.16,1.91,1.62,1.45,1.34,1.30,1.27,1.25,1.25,1.28,1.34,1.48,1.44,1.40,1.41,1.37,1.33,
- 1.31,2.35,1.98,1.69,1.65,1.65,1.64,1.63,1.66,1.85,1.61,1.59,1.59,1.58,1.57,1.56,1.70,1.56,1.44,1.34,1.30,1.28,1.26,1.26,1.29,1.34,1.44,1.48,1.46,1.46,1.46,1.45,
- 0.0e0,0.0,0.0,0.0,1.65,0.0,1.42,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-};
-
-
-
-
 inline int ElemNum(std::string el)
 {
  int r=0;
@@ -65,26 +48,16 @@ inline int ElemNum(std::string el)
 class Atom
 {
  public: 
-  Atom() 
-  {
-   p = Vector(0,0,0);
-   v = Vector(0,0,0);
-   a = Vector(0,0,0);
-   index = 0;
-   z = 0;
-  }
-  Atom(const std::string a)
-  {
-   z = ElemNum(a);
-  }
-  Atom(const int zeta)
-  {
-   z = zeta ;
-  }
+  Atom(): z(0), index(0) { }
+
+  Atom(const std::string a) { z = ElemNum(a); }
+
+  Atom(const int zeta): z(zeta) { }
+
   Atom(const std::string a, Vector & pos)
   {
-   z = ElemNum(a) ;
-   p = pos ;
+   z = ElemNum(a);
+   p = pos;
   }
   Atom(const std::string a, Vector & pos, Vector & vel)
   {

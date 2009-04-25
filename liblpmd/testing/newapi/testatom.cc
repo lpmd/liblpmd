@@ -12,6 +12,7 @@ void test1()
  Atom at("H");
  assert(at.Z() == 1);
  assert(at.Symbol() == "H");
+ assert(at.Position().Module() < 1.0E-10);
  Atom at2(26);
  assert(at2.Z() == 26);
  assert(at2.Symbol() == "Fe");
