@@ -15,6 +15,15 @@
 
 void RemoveUnnecessarySpaces(std::string & input_string)
 {
+ // Remove multiple tabs
+ for (std::string::size_type i = 0; ; )
+ {	
+  i = input_string.find_first_of('\t', i);	 
+  if (i == std::string::npos) break;      
+  ++i;	 
+  while(isspace(input_string[i])) input_string.erase(i,1);	 
+  ++i;	 
+ }
  // Remove spaces at start
  while (isspace(input_string[0])) input_string.erase(0,1);
  // Remove spaces from end
@@ -26,15 +35,6 @@ void RemoveUnnecessarySpaces(std::string & input_string)
   i = input_string.find_first_of(' ', i);
   if (i == std::string::npos) break; 
   ++i;
-  while(isspace(input_string[i])) input_string.erase(i,1);	 
-  ++i;	 
- }
- // Remove multiple tabs
- for (std::string::size_type i = 0; ; )
- {	
-  i = input_string.find_first_of('\t', i);	 
-  if (i == std::string::npos) break;      
-  ++i;	 
   while(isspace(input_string[i])) input_string.erase(i,1);	 
   ++i;	 
  }
