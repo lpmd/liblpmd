@@ -98,7 +98,8 @@ Matrix & Matrix::operator=(const Matrix & m)
 
 Matrix & Matrix::operator+=(const Matrix & m)
 {
- if ((Rows() == m.Rows()) && (Columns() == m.Columns()))
+ if ((Rows() == 0) && (Columns() == 0)) return (this->operator=(m));
+ else if ((Rows() == m.Rows()) && (Columns() == m.Columns()))
  {
   for (long i=0;i<Columns();++i) col_labels.push_back(m.GetLabel(i));
   for (long j=0;j<m.Rows();++j)
@@ -133,6 +134,14 @@ Matrix lpmd::operator*(const Matrix & a, double f)
  Matrix s = a;
  for (long j=0;j<a.Rows();++j)
    for (long i=0;i<a.Columns();++i) s.Set(i, j, s.Get(i, j)*f);
+ return s;
+}
+
+Matrix lpmd::operator/(const Matrix & a, double f)
+{
+ Matrix s = a;
+ for (long j=0;j<a.Rows();++j)
+   for (long i=0;i<a.Columns();++i) s.Set(i, j, s.Get(i, j)/f);
  return s;
 }
 

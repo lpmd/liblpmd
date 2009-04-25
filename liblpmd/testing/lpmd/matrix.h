@@ -45,6 +45,7 @@ class Matrix
 // Sobrecarga operadores aritmeticos 
 Matrix operator+(const Matrix & a, const Matrix & b);
 Matrix operator*(const Matrix & a, double f);
+Matrix operator/(const Matrix & a, double f);
 
 // Operador de salida
 std::ostream & operator<<(std::ostream & os, const Matrix & m);
