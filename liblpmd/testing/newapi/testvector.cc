@@ -118,6 +118,18 @@ void test10()
  }
 }
 
+void test11()
+{
+ Vector v(2,2,2);
+ v.Normalize();
+ for (int i=0 ; i< 3 ; ++i) assert ((v[i] - 0.57735)<1E-5);
+ v = Vector(2,3,4);
+ v.Normalize();
+ assert ((v[0]-0.37139)<1E-5);
+ assert ((v[1]-0.55708)<1E-5);
+ assert ((v[2]-0.74278)<1E-5);
+}
+
 int main()
 {
  test1();
@@ -130,6 +142,7 @@ int main()
  test8();
  test9();
  test10();
+ test11();
 
  return 0;
 }

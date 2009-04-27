@@ -81,6 +81,7 @@ class Vector
    inline double & operator[](int q) { return v[q]; }
    inline const double & operator[](int q) const { return v[q]; }
 
+   inline void Normalize() { double mod = sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); for(int i=0 ; i< 3 ; ++i) v[i]=v[i]/mod; }
    inline double Module() const { return sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); }
    inline double SquareModule() const { return v[0]*v[0]+v[1]*v[1]+v[2]*v[2]; }
    inline double Azimuth() const { return atan2(v[1], v[0]); }
