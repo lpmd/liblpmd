@@ -9,6 +9,9 @@
 
 #include "atominterface.h"
 
+namespace lpmd
+{
+
 class IndirectAtom: public AtomInterface
 {
  public:
@@ -16,8 +19,10 @@ class IndirectAtom: public AtomInterface
    IndirectAtom(int z): AtomInterface(z) {  }
    ~IndirectAtom() {  }
   
-   inline void SetAddress(Vector * p) { iv = p; }
+   inline void SetAddress(BasicVector * p) { iv = p; }
 };
+
+}
 
 #endif
 

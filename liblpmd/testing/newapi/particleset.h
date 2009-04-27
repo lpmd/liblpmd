@@ -11,6 +11,9 @@
 #include "indirectvector.h"
 #include "indirectatom.h"
 
+namespace lpmd
+{
+
 class ParticleSet
 {
  public: 
@@ -42,6 +45,7 @@ class ParticleSet
    double * storage;
 };
 
+}
 
 #endif
 

@@ -2,20 +2,22 @@
 //
 //
 
-#include "vector3.h"
+#include "vector.h"
 #include <iostream>
 #include <cmath>
 #include <cassert>
 
+using namespace lpmd;
+
 void test1()
 {
- Vector3 v;
+ Vector v;
  for (int q=0;q<3;++q) assert(fabs(v[q]) < 1.0E-10);
 }
 
 void test2()
 {
- Vector3 v(1.0, 2.0, 3.0);
+ Vector v(1.0, 2.0, 3.0);
  assert(fabs(v[0]-1.0) < 1.0E-10);
  assert(fabs(v[1]-2.0) < 1.0E-10);
  assert(fabs(v[2]-3.0) < 1.0E-10);
@@ -23,8 +25,8 @@ void test2()
 
 void test3()
 {
- Vector3 v1("< 1.0, 2.0, 3.0 >");
- Vector3 v2("4.0 5.0 6.0");
+ Vector v1("< 1.0, 2.0, 3.0 >");
+ Vector v2("4.0 5.0 6.0");
  for (int q=0;q<3;++q) assert(fabs(v1[q]-(q+1.0)) < 1.0E-10);
  for (int q=0;q<3;++q) assert(fabs(v2[q]-(q+4.0)) < 1.0E-10);
 }
@@ -32,7 +34,7 @@ void test3()
 void test4()
 {
  double a[3] = { 1.0, 2.0, 3.0 };
- Vector3 v(a);
+ Vector v(a);
  for (int q=0;q<3;++q) assert(fabs(v[q]-(q+1)) < 1.0E-10);
 }
 
@@ -48,18 +50,18 @@ void test5()
 
 void test6()
 {
- Vector3 v;
+ Vector v;
  assert(fabs(v[0]) < 1.0E-10);
  v = e1;
  assert(fabs(v[0]-1.0) < 1.0E-10);
- Vector3 w(3.0, 4.0, 5.0);
+ Vector w(3.0, 4.0, 5.0);
  v = w;
  for (int q=0;q<3;++q) assert(fabs(v[q]-w[q]) < 1.0E-10);
 }
 
 void test7()
 {
- Vector3 v;
+ Vector v;
  v = e1;
  v[1] = 3.0;
  v[2] = 7.0;
@@ -70,7 +72,7 @@ void test7()
 
 void test8()
 {
- Vector3 v;
+ Vector v;
  v = e1;
  assert(fabs(v[0]-1.0) < 1.0E-10);
  assert(fabs(v[1]-0.0) < 1.0E-10);
@@ -79,24 +81,24 @@ void test8()
 
 void test9()
 {
- Vector3 v = RandomVector();
+ Vector v = RandomVector();
  assert(fabs(v.Module()-1.0) < 1.0E-10);
- Vector3 w = RandomVector(42.0);
+ Vector w = RandomVector(42.0);
  assert(fabs(w.Module()-42.0) < 1.0E-10);
 }
 
 void test10()
 {
- Vector3 v1 = RandomVector();
- Vector3 v2 = RandomVector();
- Vector3 w1 = v1+v2;
- Vector3 w2 = v1-v2;
+ Vector v1 = RandomVector();
+ Vector v2 = RandomVector();
+ Vector w1 = v1+v2;
+ Vector w2 = v1-v2;
  for (int q=0;q<3;++q)
  {
   assert(fabs(w1[q]-v1[q]-v2[q]) < 1.0E-10);
   assert(fabs(w2[q]-v1[q]+v2[q]) < 1.0E-10);
  }
- Vector3 v(3.0, 4.0, 5.0);
+ Vector v(3.0, 4.0, 5.0);
  assert(fabs(Dot(v, e1)-3.0) < 1.0E-10);
  assert(fabs(Dot(v, e2)-4.0) < 1.0E-10);
  assert(fabs(Dot(v, e3)-5.0) < 1.0E-10);
@@ -107,7 +109,7 @@ void test10()
 
 void test11()
 {
- Vector3 v(3.0, 4.0, 5.0);
+ Vector v(3.0, 4.0, 5.0);
  assert(fabs(v.Module()-sqrt(50.0)) < 1.0E-10);
  assert(fabs(v.SquareModule()-50.0) < 1.0E-10);
 
@@ -119,21 +121,21 @@ void test11()
 
  for (int n=0;n<100;++n)
  {
-  Vector3 w1 = RandomVector();
+  Vector w1 = RandomVector();
   double r = w1.Module();
   double phi = w1.Azimuth();
   double theta = w1.Zenith();
-  Vector3 w2(r*cos(phi)*sin(theta), r*sin(phi)*sin(theta), r*cos(theta));
+  Vector w2(r*cos(phi)*sin(theta), r*sin(phi)*sin(theta), r*cos(theta));
   assert(fabs((w2-w1).Module()) < 1.0E-10);
  }
 }
 
 void test12()
 {
- Vector3 v(2,2,2);
+ Vector v(2,2,2);
  v.Normalize();
  for (int i=0 ; i< 3 ; ++i) assert ((v[i] - 0.57735)<1E-5);
- v = Vector3(2,3,4);
+ v = Vector(2,3,4);
  v.Normalize();
  assert ((v[0]-0.37139)<1E-5);
  assert ((v[1]-0.55708)<1E-5);
@@ -142,8 +144,8 @@ void test12()
 
 void test13()
 {
- Vector3 v(2,2,2);
- Vector3 w = v*0.5;
+ Vector v(2,2,2);
+ Vector w = v*0.5;
  assert ((w[0]-1.0e0)<1E-10);
  assert ((w[1]-1.0e0)<1E-10);
  assert ((w[2]-1.0e0)<1E-10);
@@ -151,8 +153,8 @@ void test13()
 
 void test14()
 {
- Vector3 v(3.5,4,2.6);
- Vector3 w = 2*v;
+ Vector v(3.5,4,2.6);
+ Vector w = 2*v;
  assert ((w[0]-7.0e0)<1E-10);
  assert ((w[1]-8.0e0)<1E-10);
  assert ((w[2]-5.2e0)<1E-10);
@@ -160,11 +162,19 @@ void test14()
 
 void test15()
 {
- Vector3 v(3,3,3);
- Vector3 w = v/2.0e0;
+ Vector v(3,3,3);
+ Vector w = v/2.0e0;
  assert ((w[0]-1.5e0)<1E-10);
  assert ((w[1]-1.5e0)<1E-10);
  assert ((w[2]-1.5e0)<1E-10);
+}
+
+void test16()
+{
+ Vector v(1, 2, 3);
+ std::cout << v << '\n';
+ FormattedWrite(std::cout, v);
+ std::cout << '\n';
 }
 
 int main()
@@ -184,6 +194,7 @@ int main()
  test13();
  test14();
  test15();
+ test16();
 
  return 0;
 }

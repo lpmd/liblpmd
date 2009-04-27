@@ -12,8 +12,11 @@
 #include <cassert>
 #include <cmath>
 #include <string.h>
-#include "vector3.h"
+#include "vector.h"
 #include "util.h"
+
+namespace lpmd
+{
 
 // Se va a util....?
 inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
@@ -58,9 +61,9 @@ class Cell
    std::vector<std::string> vecs = SplitTextLine(str,' ');
    if(vecs.size()==3)
    {
-    v[0] = Vector3(vecs[0].c_str());
-    v[1] = Vector3(vecs[1].c_str());
-    v[2] = Vector3(vecs[2].c_str());
+    v[0] = Vector(vecs[0].c_str());
+    v[1] = Vector(vecs[1].c_str());
+    v[2] = Vector(vecs[2].c_str());
    }
    else if(vecs.size()==6)
    {
@@ -91,13 +94,11 @@ class Cell
 
   inline bool & Periodicity(int i) {return p[i];}
  private:
-   Vector3 v[3];
+   Vector v[3];
    bool p[3];
 };
 
-//
-//
-//
+}
 
 #endif
 

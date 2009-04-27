@@ -17,7 +17,7 @@ all:
 testutil: testutil.cc util.h
 	g++ -g -O3 -Wall -pedantic -o testutil testutil.cc -lm
 
-testvector: testvector.cc vector3.h vector.h
+testvector: testvector.cc vector.h basicvector.h
 	g++ -g -O3 -Wall -pedantic -o testvector testvector.cc -lm
 
 testatom: testatom.cc atom.h

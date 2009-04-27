@@ -7,15 +7,18 @@
 #ifndef __LPMD_INDIRECT_VECTOR_H__
 #define __LPMD_INDIRECT_VECTOR_H__
 
-#include "vector.h"
+#include "basicvector.h"
 
-class IndirectVector: public Vector
+namespace lpmd
+{
+
+class IndirectVector: public BasicVector
 {
  public:
    IndirectVector() {   };
    ~IndirectVector() {   };
   
-   IndirectVector & operator=(const Vector & v)
+   IndirectVector & operator=(const BasicVector & v)
    {
     if (this != &v) 
     {
@@ -26,6 +29,8 @@ class IndirectVector: public Vector
 
    inline void SetAddress(double * p) { inner = p; }
 };
+
+}
 
 #endif
 

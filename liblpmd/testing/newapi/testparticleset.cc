@@ -4,7 +4,9 @@
 
 #include <cassert>
 #include "particleset.h"
-#include "vector3.h"
+#include "vector.h"
+
+using namespace lpmd;
 
 void test1()
 {
@@ -21,7 +23,7 @@ void test2()
 void test3()
 {
  ParticleSet ps(50);
- const Vector3 pos(1.0, 2.0, 3.0);
+ const Vector pos(1.0, 2.0, 3.0);
  for (long int i=0;i<ps.Length();++i) ps[i].Position() = pos;
  for (long int i=0;i<ps.Length();++i) assert((ps[i].Position()-pos).Module() < 1.0E-10);
 }
