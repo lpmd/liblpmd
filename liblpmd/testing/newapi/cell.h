@@ -12,7 +12,7 @@
 #include <cassert>
 #include <cmath>
 #include <string.h>
-#include "vector.h"
+#include "vector3.h"
 #include "util.h"
 
 // Se va a util....?
@@ -27,7 +27,7 @@ class Cell
    for (int i=0;i<3;++i) p[i] = true;
   }
 
-  Cell(const Vector a, const Vector b, const Vector c)
+  Cell(const Vector & a, const Vector & b, const Vector & c)
   {
    v[0]=a;v[1]=b;v[2]=c;
    for (int i=0;i<3;++i) p[i] = true;
@@ -58,9 +58,9 @@ class Cell
    std::vector<std::string> vecs = SplitTextLine(str,' ');
    if(vecs.size()==3)
    {
-    v[0] = Vector(vecs[0].c_str());
-    v[1] = Vector(vecs[1].c_str());
-    v[2] = Vector(vecs[2].c_str());
+    v[0] = Vector3(vecs[0].c_str());
+    v[1] = Vector3(vecs[1].c_str());
+    v[2] = Vector3(vecs[2].c_str());
    }
    else if(vecs.size()==6)
    {
@@ -91,7 +91,7 @@ class Cell
 
   inline bool & Periodicity(int i) {return p[i];}
  private:
-   Vector v[3];
+   Vector3 v[3];
    bool p[3];
 };
 

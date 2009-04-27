@@ -3,6 +3,7 @@
 //
 
 #include "atom.h"
+#include "vector3.h"
 #include <iostream>
 #include <cmath>
 #include <cassert>
@@ -21,20 +22,20 @@ void test1()
 void test2()
 {
  Atom at("H");
- Vector pos(2.0, 3.0, 4.0);
+ Vector3 pos(2.0, 3.0, 4.0);
  at.Position() = pos;
  assert((at.Position()-pos).Module() < 1.0E-10); 
- Vector vel(0.5, 0.2, 3.4);
+ Vector3 vel(0.5, 0.2, 3.4);
  at.Velocity() = vel;
  assert((at.Velocity()-vel).Module() < 1.0E-10); 
- Vector acc(50.0, 70.0, 35.0);
+ Vector3 acc(50.0, 70.0, 35.0);
  at.Acceleration() = acc;
  assert((at.Acceleration()-acc).Module() < 1.0E-10); 
 }
 
 void test3()
 {
- Vector pos(2.0, 3.0, 4.0), vel(0.5, 0.2, 3.4), acc(50.0, 70.0, 35.0);
+ Vector3 pos(2.0, 3.0, 4.0), vel(0.5, 0.2, 3.4), acc(50.0, 70.0, 35.0);
  Atom at("H", pos);
  assert(at.Z() == 1);
  assert(at.Symbol() == "H");

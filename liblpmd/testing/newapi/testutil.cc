@@ -31,7 +31,7 @@ void test2()
  assert (tmp=="a");
  tmp = "\t   a\t\t   \tb \t    c\t  ";
  RemoveUnnecessarySpaces(tmp);
- std::cerr << tmp << '\n';
+ std::cerr << "[" << tmp << "]" << '\n';
  assert (tmp=="a b c");
 }
 
@@ -44,11 +44,9 @@ void test3()
 int main()
 {
  test1();
-// test2();
+ //test2();
  test3();
 
  return 0;
 }
-
-
 
