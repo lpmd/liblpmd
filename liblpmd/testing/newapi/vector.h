@@ -109,6 +109,17 @@ inline Vector operator-(const Vector & a, const Vector & b)
  return Vector(a[0]-b[0], a[1]-b[1], a[2]-b[2]);
 }
 
+inline Vector operator*(const Vector & a, const double b)
+{
+ return Vector(a[0]*b, a[1]*b, a[2]*b);
+}
+
+inline Vector operator/(const Vector & a, const double b)
+{
+ if (b==0) {std::cerr << "Dividing vector by zero!" << '\n' ; exit (0) ;}
+ return Vector(a[0]/b, a[1]/b, a[2]/b);
+}
+
 inline Vector RandomVector(double m=1.0)
 {
  double w[3];
