@@ -73,12 +73,13 @@ SimulationCell & SimulationCell::operator=(const SimulationCell & sc)
  return (*this);
 }
 
+//FIXME : TODOS los SCALE* de SimulationCell COMENTADOS!!! VALORES ERRADOS!!
 void SimulationCell::RealPos()
 {
  for (unsigned long int i=0;i<size();i++)
  {
   const Vector & a = operator[](i).Position();
-  operator[](i).SetPos(ScaleByCell(a));
+//  operator[](i).SetPos(ScaleByCell(a));
  }
 }
 
@@ -95,7 +96,7 @@ void SimulationCell::FracPos()
 
 void SimulationCell::Center()
 {
- Vector displacement = ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
+ Vector displacement;//FIXME : CORREGIR =// ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
  for (unsigned long int i=0;i<size();i++)
  {
   operator[](i).SetPos(operator[](i).Position()-displacement);
@@ -104,7 +105,7 @@ void SimulationCell::Center()
 
 void SimulationCell::UnCenter()
 {
- Vector displacement = ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
+ Vector displacement;//FIXME: CORREGIR = ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
  for (unsigned long int i=0;i<size();i++)
  {
   operator[](i).SetPos(operator[](i).Position()+displacement);
@@ -175,7 +176,7 @@ void SimulationCell::SetPosition(long i, const Vector & p)
 
 void SimulationCell::SetFracPosition(long i, const Vector & fp)
 {
- SetPosition(i, ScaleByCell(fp));
+ //SetPosition(i, ScaleByCell(fp));
 }
 
 void SimulationCell::SetVelocity(long i, const Vector & v) { operator[](i).SetVel(v); }
@@ -215,7 +216,7 @@ Vector SimulationCell::VectorDistanceToReplica(long i, long j, long nx, long ny,
  const Vector & vi = operator[](i).Position();
  const Vector & vj = operator[](j).Position(); 
  if (nx==0 && (ny==0 && nz==0)) return vj-vi;  
- else return (ScaleByCell(Vector(nx, ny, nz)) + vj - vi);
+ else {return Vector(0,0,0);}//FIXME : Corregir Vector 0 nada que ver -> //(ScaleByCell(Vector(nx, ny, nz)) + vj - vi);
 }
 
 double SimulationCell::Distance(long i, long j)
@@ -244,44 +245,44 @@ double SimulationCell::Angle(long i, long j, long k)
 void SimulationCell::Rescale(double f)
 {
  FracPos();
- for (int i=0;i<3;++i) Cell::Scale(i, f);
+ for (int i=0;i<3;++i) //FIXME : CORREGIR -> Cell::Scale(i, f);
  RealPos();
 }
 
 void SimulationCell::Rescale(double f, int i)
 {
  FracPos();
- Cell::Scale(i, f);
+ //FIXME : CORREGIR Cell::Scale(i, f);
  RealPos();
 }
 
 void SimulationCell::RescalePercent(double p)
 {
  FracPos();
- for (int i=0;i<3;++i) Cell::ScalePercent(i, p);
+ for (int i=0;i<3;++i) //FIXME : CORREGIR Cell::ScalePercent(i, p);
  RealPos();
 }
 
 void SimulationCell::RescalePercent(double p, int i)
 {
  FracPos();
- Cell::ScalePercent(i,p);
+ //FIXME : CORREGIR Cell::ScalePercent(i,p);
  RealPos();
 }
 
 void SimulationCell::RescaleVector(Vector sx, Vector sy, Vector sz)
 {
  FracPos();
- Cell::ScaleVector(0,sx);
- Cell::ScaleVector(1,sy);
- Cell::ScaleVector(2,sz);
+ //FIXME : CORREGIR Cell::ScaleVector(0,sx);
+ //FIXME : CORREGIR Cell::ScaleVector(1,sy);
+ //FIXME : CORREGIR Cell::ScaleVector(2,sz);
  RealPos();
 }
 
 void SimulationCell::RescaleVector(Vector s, int i)
 {
  FracPos();
- Cell::ScaleVector(i,s);
+ //FIXME : CORREGIR Cell::ScaleVector(i,s);
  RealPos();
 }
 

@@ -44,7 +44,8 @@ class Cell
 
     // Transformacion de coordenadas
     void UpdateTransfMatrix();
-    Vector ScaleByCell(const Vector & v) const;
+//FIXME : Comentado por nuevo vector.h
+    //    Vector ScaleByCell(const Vector & v) const;
     void ConvertToInternal(Vector & v) const;
     void ConvertToExternal(Vector & v) const;
 
@@ -53,10 +54,10 @@ class Cell
 
     //Extra Functions
     double Volume() const;
-
-    void Scale(int i, double f);
-    void ScalePercent(int i, double p);
-    void ScaleVector(int i, lpmd::Vector s);
+//Comentadas las 3 por el nuevo vector.h
+//    void Scale(int i, double f);
+//    void ScalePercent(int i, double p);
+//    void ScaleVector(int i, lpmd::Vector s);
 
     friend std::ostream & operator<<(std::ostream &, const Cell &);
 

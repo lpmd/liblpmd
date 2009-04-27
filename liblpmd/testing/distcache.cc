@@ -134,8 +134,9 @@ const lpmd::Vector DistanceCache::VectorDistanceToReplica(long i, long j, long n
  const ParticleSet & set = (*parent);
  const Vector & vi = set[i].Position();
  const Vector & vj = set[j].Position(); 
- if (nx==0 && (ny==0 && nz==0)) di.d = vj-vi;  
- else di.d = parent->ScaleByCell(Vector(nx, ny, nz)) + vj - vi;
+ if (nx==0 && (ny==0 && nz==0)) di.d = vj-vi;
+//FIXME : ScaleBycell comentado por nuevo vector.h 
+// else di.d = parent->ScaleByCell(Vector(nx, ny, nz)) + vj - vi;
  di.active = true;
  di.r = di.d.Module();
  di.r2 = di.r*di.r;

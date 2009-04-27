@@ -2,12 +2,12 @@
 #
 #
 
-TESTS = celltest paramtest vectortest inputfiletest
+TESTS = vectortest
 
-celltest_SOURCES = celltest.unit
-paramtest_SOURCES = paramtest.unit
+#celltest_SOURCES = celltest.unit
+#paramtest_SOURCES = paramtest.unit
 vectortest_SOURCES = vectortest.unit
-inputfiletest_SOURCES = inputfiletest.unit
+#inputfiletest_SOURCES = inputfiletest.unit
 
 #
 #

@@ -11,7 +11,7 @@ liblpmd_la_LDFLAGS = -version-info 2:0:0
 
 nobase_includeHEADERS_INSTALL = $(INSTALL) -D -p -c -m 644
 
-nobase_include_HEADERS =  lpmd/applicable.h lpmd/atom.h lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h lpmd/cellmanager.h \
+nobase_include_HEADERS =  lpmd/applicable.h lpmd/atom.h lpmd/basicvector.h lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h lpmd/cellmanager.h \
                           lpmd/cellreader.h lpmd/cellwriter.h lpmd/cmdline.h lpmd/color.h lpmd/containable.h lpmd/coulomb.h lpmd/error.h \
                           lpmd/inputfile.h lpmd/instantproperty.h lpmd/integrator.h lpmd/map.h lpmd/matrix.h lpmd/md.h lpmd/metalpotential.h \
                           lpmd/module.h lpmd/onestepintegrator.h lpmd/pairpotential.h lpmd/paramlist.h lpmd/particleset.h lpmd/plugin.h \

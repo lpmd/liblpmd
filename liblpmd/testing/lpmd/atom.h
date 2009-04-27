@@ -117,8 +117,9 @@ class Atom
     friend int operator==(const Atom & a, const Atom & b);
     friend int operator!=(const Atom & a, const Atom & b);
 
-    friend std::ostream& operator<<(std::ostream & co, const Atom & a);
-    friend std::istream& operator>>(std::istream & ci, Atom & a);
+    //FIXME : Comentadas por nuevo vector.h
+//    friend std::ostream& operator<<(std::ostream & co, const Atom & a);
+//    friend std::istream& operator>>(std::istream & ci, Atom & a);
 
     Atom *prev,*next; // for use in double linked lists
 

@@ -169,11 +169,12 @@ std::vector<int> ParticleSet::NSpecies() const
  return tmp;
 }
 
-void ParticleSet::WriteAll(std::ostream & out)
-{
- out << size() << std::endl;
- for (unsigned long int i=0;i<size();i++) out << operator[](i) << std::endl;
-}
+//FIXME : Comentada WriteAll por operador <<
+//void ParticleSet::WriteAll(std::ostream & out)
+//{
+// out << size() << std::endl;
+// for (unsigned long int i=0;i<size();i++) out << operator[](i) << std::endl;
+//}
 
 void ParticleSet::InitVelocities()
 {
