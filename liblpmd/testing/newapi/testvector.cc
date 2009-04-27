@@ -141,6 +141,15 @@ void test12()
 
 void test13()
 {
+ Vector v(3.5,4,2.6);
+ Vector w = 2*v;
+ assert ((w[0]-7.0e0)<1E-10);
+ assert ((w[1]-8.0e0)<1E-10);
+ assert ((w[2]-5.2e0)<1E-10);
+}
+
+void test14()
+{
  Vector v(3,3,3);
  Vector w = v/2.0e0;
  assert ((w[0]-1.5e0)<1E-10);
@@ -163,6 +172,7 @@ int main()
  test11();
  test12();
  test13();
+ test14();
 
  return 0;
 }
