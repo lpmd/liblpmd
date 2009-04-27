@@ -181,7 +181,7 @@ inline const Vector & Atom::Acceleration() const { return a; }
 
 inline const Vector & Atom::Color() const { return clr;}
 
-inline double Atom::ColorS() const { return (clr.GetX()+clr.GetY()+clr.GetZ())/3.0;}
+inline double Atom::ColorS() const { return (clr[0]+clr[1]+clr[2])/3.0;}
 
 inline int Atom::Species() const { return s; }
 
@@ -211,36 +211,36 @@ inline Atom& Atom::operator=(const Atom & A)
  return(*this);
 }
 
-inline int operator==(const Atom & A, const Atom & B)
-{
- if ((A.Species() == B.Species()) && (A.Position() == B.Position())) return 1;
- else return 0;
-}
+//inline int operator==(const Atom & A, const Atom & B)
+//{
+// if ((A.Species() == B.Species()) && (A.Position() == B.Position())) return 1;
+// else return 0;
+//}
 
-inline int operator!=(const Atom & A, const Atom & B)
-{
- if ((A.Species() != B.Species()) || (A.Position() != B.Position())) return 1;
- else return 0;
-}
+//inline int operator!=(const Atom & A, const Atom & B)
+//{
+// if ((A.Species() != B.Species()) || (A.Position() != B.Position())) return 1;
+// else return 0;
+//}
 
-inline std::ostream & operator<<(std::ostream & co, const lpmd::Atom & A)
-{
+//inline std::ostream & operator<<(std::ostream & co, const lpmd::Atom & A)
+//{
  //FIXME : El atomo debe mostrar su propiedad atomtype, esto es usado en WriteAll de particles, para dumping.
- co << A.Symb() << " " << A.Position() << " " << A.Velocity() << " " << A.Acceleration();
- return co;
-}
+// co << A.Symb() << " " << A.Position() << " " << A.Velocity() << " " << A.Acceleration();
+// return co;
+//}
 
-inline std::istream& operator>>(std::istream & ci, Atom & A)
-{
- Vector pos, vel, ace;
- std::string symb;
- ci >> symb >> pos >> vel >> ace;
- A.SetSpc(ElemNum(symb));
- A.SetPos(pos);
- A.SetVel(vel);
- A.SetAccel(ace);
- return ci;
-}
+//inline std::istream& operator>>(std::istream & ci, Atom & A)
+//{
+// Vector pos, vel, ace;
+// std::string symb;
+// ci >> symb >> pos >> vel >> ace;
+// A.SetSpc(ElemNum(symb));
+// A.SetPos(pos);
+// A.SetVel(vel);
+// A.SetAccel(ace);
+// return ci;
+//}
 
 //
 //

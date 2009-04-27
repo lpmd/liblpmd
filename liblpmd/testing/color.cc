@@ -12,7 +12,7 @@ lpmd::Vector lpmd::GetSpcColor(int spc)
         lpmd::Vector ans;
 	if 		(spc==1) ans=(e1+e2+e3);		//Hydrogen (colorless)
 	else if 	(spc==2) ans=(e1+e2+e3);		//Helium (colorless)
-	else if 	(spc==3) ans=0.75*(e1+e2+e3);		//Lithium (silvery)
+	else if 	(spc==3) ans=(e1+e2+e3)*0.75;		//Lithium (silvery)
 	else if 	(spc==4) ans=0.35*(e1+e2+e3);		//Beryllium (gray)
 	else if 	(spc==5) ans=(139*e1+69*e2+19*e3)/255.0;//Boron (brownish)
 	else if 	(spc==6) ans=0.1*(e1+e2+e3);		//Carbon (black)

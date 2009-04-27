@@ -88,7 +88,7 @@ void SimulationCell::FracPos()
  {
   Vector n, a = operator[](i).Position();
   ConvertToInternal(a);
-  for (int j=0;j<3;++j) n.Set(j, a.Get(j)/GetVector(j).Mod());
+  for (int j=0;j<3;++j) n[j] = a[j]/GetVector(j).Module();
   operator[](i).SetPos(n);
  }
 }
@@ -149,7 +149,7 @@ Vector SimulationCell::FracPosition(long i) const
 {
  Vector a = operator[](i).Position(), n;
  ConvertToInternal(a);
- for (int j=0;j<3;++j) n.Set(j, a.Get(j)/GetVector(j).Mod());
+ for (int j=0;j<3;++j) n[j] = a[j]/GetVector(j).Module();
  return n;
 }
 
@@ -159,13 +159,13 @@ void SimulationCell::SetPosition(long i, const Vector & p)
  ConvertToInternal(vtmp);
  for (int j=0;j<3;++j)
  {
-  double q = vtmp.Get(j);
-  const double ll = GetVector(j).Mod();
+  double q = vtmp[j];
+  const double ll = GetVector(j).Module();
   if (Periodic(j))
   {
    if (q < 0) q += ll*(1+floor(-q/ll)); 
    else if (q > ll) q -= ll*floor(q/ll);
-   vtmp.Set(j, q);
+   vtmp[j] = q;
   }
  }
  ConvertToExternal(vtmp);
@@ -221,24 +221,24 @@ Vector SimulationCell::VectorDistanceToReplica(long i, long j, long nx, long ny,
 double SimulationCell::Distance(long i, long j)
 {
  if (impl->dc != NULL) return (impl->dc)->Distance(i, j);
- return VectorDistance(i, j).Mod();
+ return VectorDistance(i, j).Module();
 }
 
-double SimulationCell::RealDistance(long i, long j) { return VectorRealDistance(i,j).Mod(); }
+double SimulationCell::RealDistance(long i, long j) { return VectorRealDistance(i,j).Module(); }
 
-double SimulationCell::DistanceToReplica(long i, long j, long nx, long ny, long nz) { return VectorDistanceToReplica(i,j,nx,ny,nz).Mod(); }
+double SimulationCell::DistanceToReplica(long i, long j, long nx, long ny, long nz) { return VectorDistanceToReplica(i,j,nx,ny,nz).Module(); }
 
 double SimulationCell::Distance2(long i,long j)
 {
  if (impl->dc != NULL) return (impl->dc)->Distance2(i, j);
- return VectorDistance(i, j).Mod2();
+ return VectorDistance(i, j).SquareModule();
 }
 
 double SimulationCell::Angle(long i, long j, long k) 
 {
  Vector a = VectorDistance(i,j);
  Vector b = VectorDistance(k,j);
- return acos(Dot(a, b) / (a.Mod()*b.Mod())); 
+ return acos(Dot(a, b) / (a.Module()*b.Module())); 
 }
 
 void SimulationCell::Rescale(double f)

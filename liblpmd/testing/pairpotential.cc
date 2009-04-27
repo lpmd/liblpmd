@@ -50,9 +50,9 @@ void PairPotential::UpdateForces(SimulationCell & sc)
     //sera mas lento? - El signo parec provenir de la fuerza, ojo con eso
     for (int k=0;k<3;k++)
     {
-     stress[0][k] += -(nn.rij).GetX()*ff.Get(k);
-     stress[1][k] += -(nn.rij).GetY()*ff.Get(k);
-     stress[2][k] += -(nn.rij).GetZ()*ff.Get(k);
+     stress[0][k] += -(nn.rij)[0]*ff[k];
+     stress[1][k] += -(nn.rij)[1]*ff[k];
+     stress[2][k] += -(nn.rij)[2]*ff[k];
     }
    }
   }

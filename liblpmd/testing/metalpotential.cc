@@ -87,9 +87,9 @@ void MetalPotential::UpdateForces(SimulationCell & sc)
     //sera mas lento?
     for (int k=0;k<3;k++)
     {
-     stress[0][k] += (nn.rij).GetX()*(pf+mb).Get(k);
-     stress[1][k] += (nn.rij).GetY()*(pf+mb).Get(k);
-     stress[2][k] += (nn.rij).GetZ()*(pf+mb).Get(k);
+     stress[0][k] += (nn.rij)[0]*(pf+mb)[k];
+     stress[1][k] += (nn.rij)[1]*(pf+mb)[k];
+     stress[2][k] += (nn.rij)[2]*(pf+mb)[k];
     }
    }
   }

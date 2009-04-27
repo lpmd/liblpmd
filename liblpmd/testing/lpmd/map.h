@@ -10,6 +10,7 @@
 #include <list>
 #include <cstdlib>
 #include <lpmd/vector.h>
+#include <lpmd/util.h>
 
 namespace lpmd
 {
@@ -73,9 +74,9 @@ namespace lpmd
     std::istringstream iss(text);
     double a=0.0e0,b=0.0e0,c=0.0e0;
     iss >> a >> b >> c;
-    tmp.SetX(a);
-    tmp.SetY(b);
-    tmp.SetZ(c);
+    tmp[0] = a;
+    tmp[1] = b;
+    tmp[2] = c;
     return tmp;
    }
 

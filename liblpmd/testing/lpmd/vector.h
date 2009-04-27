@@ -1,18 +1,17 @@
-//
-//
-//
+/*
+ *
+ *
+ *
+ */
 
 #ifndef __LPMD_VECTOR_H__
 #define __LPMD_VECTOR_H__
 
-#include <lpmd/util.h>
-
 #include <iostream>
-#include <cmath>
-#include <iomanip>
-#include <sstream>
-#include <vector>
 #include <cstdlib>
+#include <cassert>
+#include <cmath>
+#include <string.h>
 
 namespace lpmd
 {
@@ -20,266 +19,135 @@ namespace lpmd
 class Vector
 {
  public:
-   Vector();
-   Vector(double x, double y, double z);
-   Vector(const Vector & c);
-   Vector(const std::string & s);
-   ~Vector();
- 
-   void SetX(double x);
-   void SetY(double y);
-   void SetZ(double z);
 
-   void Set(int i, double v);
-   void Set(double x, double y, double z);
+   Vector() 
+   {
+    for (int q=0;q<3;++q) v[q] = 0.0; 
+   }
 
-   const double & Get(int i) const;
-   const double & GetX() const;
-   const double & GetY() const;
-   const double & GetZ() const;
+   Vector(double x, double y, double z)
+   {
+    v[0] = x;
+    v[1] = y;
+    v[2] = z;
+   }
 
-   double Mod() const;
-   double Mod2() const;
-   void Scale(double f);
-   void Norm();
-   void Zero();
-   std::string Write();
+   Vector(double * w) 
+   {
+    for (int q=0;q<3;++q) v[q] = w[q];
+   }  
 
-   Vector& operator=(const Vector & A);
-   
-   const Vector & operator+=(const Vector & a);
-   const Vector & operator-=(const Vector & a);
-   const Vector & operator*=(const double a);
-   const Vector & operator/=(const double a);
+   Vector(const char * str)
+   {
+    char * s = (char *)(malloc((strlen(str)+1)*sizeof(char)));
+    strncpy(s, str, strlen(str));
+    char * p = s, * start = NULL;
+    int k = 0;
+    while (isblank(*p)) p++;
+    if (*p == '<')
+    {
+     start = ++p;
+     while (*p != '\0')
+     {
+      if ((*p == ',') || (*p == '>'))
+      {
+       if (k == 3) { } // FIXME: raise error, too many commas
+       (*p) = '\0';
+       v[k++] = atof(start);
+       p++;
+       start = p;
+      }
+      else p++;
+     }
+     assert(k == 3);  // change assert to an exception
+    }
+    else
+    {
+     start = p;
+     while (1)
+     {
+      if (isblank(*p) || (*p == '\0'))
+      {
+       if (k == 3) { } // FIXME: raise error, too many delimiters
+       (*p) = '\0';
+       v[k++] = atof(start);
+       p++;
+       start = p;
+       if (k == 3) break;
+      }
+      else p++;
+     }
+    }
+    free(s);
+   }
 
-   friend Vector operator+(const Vector &A, const Vector &B);
-   friend Vector operator+(const Vector &A, const double &a);
-   friend Vector operator-(const Vector &A);
-   friend Vector operator-(const Vector &A, const Vector &B);
-   friend Vector operator-(const Vector &A, const double &a);
-   friend Vector operator*(const Vector &A, const Vector &B);
-   friend Vector operator*(const Vector &A, const double &a);
-   friend Vector operator*(const double &a, const Vector &A);
-   friend Vector operator/(const Vector &A, const double &a);
-   friend Vector operator/(const Vector &A, const Vector &B);
+   inline double & operator[](int q) { return v[q]; }
+   inline const double & operator[](int q) const { return v[q]; }
 
-private:
-   double q[3];
+   inline void Normalize() { double mod = sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); for(int i=0 ; i< 3 ; ++i) v[i]=v[i]/mod; }
+   inline double Module() const { return sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); }
+   inline double SquareModule() const { return v[0]*v[0]+v[1]*v[1]+v[2]*v[2]; }
+   inline double Azimuth() const { return atan2(v[1], v[0]); }
+   inline double Zenith() const { return acos(v[2]/Module()); }
+
+ private:
+   double v[3];
 };
 
 //
 //
 //
 
-inline Vector::Vector() { q[0]=0.0e0; q[1]=0.0e0; q[2]=0.0e0; }
+const Vector e1(1.0, 0.0, 0.0);
+const Vector e2(0.0, 1.0, 0.0);
+const Vector e3(0.0, 0.0, 1.0);
 
-inline Vector::Vector(double x, double y, double z) { q[0]=x; q[1]=y; q[2]=z; }
-
-inline Vector::Vector(const Vector & c) { q[0]=c.q[0]; q[1]=c.q[1]; q[2]=c.q[2]; }
-
-inline Vector::Vector(const std::string & s)
+inline Vector operator+(const Vector & a, const Vector & b)
 {
- std::string tmps(s);
- if (tmps.size()<7) {std::cerr << "[Warning] Setting a vector from a string less than 7 characters long" << '\n';}
- tmps.erase(0,1);
- tmps.erase(tmps.size()-1,1);
- std::vector<std::string> v = SplitTextLine(tmps,',');
- if (v.size()!=3) {std::cerr << "[Warning] Setting a vector from a string different from 3 numbers!!! " << '\n';}
- SetX(atof(v[0].c_str()));
- SetY(atof(v[1].c_str()));
- SetZ(atof(v[2].c_str()));
+ return Vector(a[0]+b[0], a[1]+b[1], a[2]+b[2]);
 }
 
-inline Vector::~Vector() { }
-
-inline void Vector::SetX(double x) { q[0]=x; }
-
-inline void Vector::SetY(double y) { q[1]=y; }
-
-inline void Vector::SetZ(double z) { q[2]=z; }
-
-inline void Vector::Set(int i, double v) { q[i]=v; }
-
-inline void Vector::Set(double x, double y, double z) { q[0]=x; q[1]=y; q[2]=z; }
-
-inline const double & Vector::Get(int i) const { return q[i]; }
-
-inline const double & Vector::GetX() const { return q[0]; }
-
-inline const double & Vector::GetY() const { return q[1]; }
-
-inline const double & Vector::GetZ() const { return q[2]; }
-
-inline double Vector::Mod() const { return sqrt(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]); }
-
-inline double Vector::Mod2() const { return q[0]*q[0]+q[1]*q[1]+q[2]*q[2]; }
-
-inline void Vector::Scale(double f) { for (int i=0;i<3;++i) q[i] = q[i]*f; }
-
-inline void Vector::Norm()
+inline Vector operator-(const Vector & a, const Vector & b)
 {
- double m=Mod();
- q[0]=q[0]/m;
- q[1]=q[1]/m;
- q[2]=q[2]/m;
+ return Vector(a[0]-b[0], a[1]-b[1], a[2]-b[2]);
 }
 
-inline void Vector::Zero() 
-{ 
- q[0]=0.0e0;
- q[1]=0.0e0;
- q[2]=0.0e0;
-}
-
-inline std::string Vector::Write()
+inline Vector operator*(const Vector & a, const double b)
 {
- std::ostringstream ostr;
- ostr << "<" <<q[0]<<","<<q[1]<<","<<q[2]<<">";
- return ostr.str();
+  return Vector(a[0]*b, a[1]*b, a[2]*b);
 }
 
-const Vector zero(0,0,0);
-const Vector e1(1,0,0);
-const Vector e2(0,1,0);
-const Vector e3(0,0,1);
-
-inline Vector operator+(const Vector &A, const Vector &B)
+inline Vector operator*(const double & b, const Vector & a)
 {
- return Vector(A.q[0]+B.q[0],A.q[1]+B.q[1],A.q[2]+B.q[2]);
+  return Vector(a[0]*b, a[1]*b, a[2]*b);
 }
 
-inline Vector operator+(const Vector &A, const double &a)
+inline Vector operator/(const Vector & a, const double b)
 {
- return Vector(A.q[0]+a,A.q[1]+a,A.q[2]+a);
+  if (b==0) {std::cerr << "Dividing vector by zero!" << '\n' ; exit (0) ;}
+  return Vector(a[0]/b, a[1]/b, a[2]/b);
 }
 
-inline Vector operator-(const Vector &A)
+inline Vector RandomVector(double m=1.0)
 {
- return Vector(0.0-A.q[0],0.0-A.q[1],0.0-A.q[2]);
+ double w[3];
+ for (int q=0;q<3;++q) w[q] = 2.0*drand48()-1.0;
+ double r = Vector(w).Module();
+ return Vector(m*w[0]/r, m*w[1]/r, m*w[2]/r);
 }
 
-inline Vector operator-(const Vector &A, const Vector &B)
+inline double Dot(const Vector & a, const Vector & b)
 {
- return Vector(A.q[0]-B.q[0],A.q[1]-B.q[1],A.q[2]-B.q[2]);
+ return (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]);
 }
 
-
-inline Vector operator-(const Vector &A, const double &a)
+inline Vector Cross(const Vector & a, const Vector & b)
 {
- return Vector(A.q[0]-a,A.q[1]-a,A.q[2]-a);
+ return Vector(a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]);
 }
 
-inline Vector operator*(const Vector &A, const Vector &B)
-{
- return Vector(A.q[0]*B.q[0],A.q[1]*B.q[1],A.q[2]*B.q[2]);
-}
-
-inline Vector operator*(const Vector &A, const double &a)
-{
- return Vector(A.q[0]*a,A.q[1]*a,A.q[2]*a);
-}
-
-inline Vector operator*(const double &a, const Vector &A)
-{
- return Vector(A.q[0]*a,A.q[1]*a,A.q[2]*a);
-}
-
-inline Vector operator/(const Vector &A, const double &a)
-{
- return Vector(A.q[0]/a,A.q[1]/a,A.q[2]/a);
-}
-
-inline Vector operator/(const Vector &A, const Vector &B)
-{
- return Vector(A.q[0]/B.q[0],A.q[1]/B.q[1],A.q[2]/B.q[2]);
-}
-
-inline const Vector & Vector::operator+=(const Vector & a)
-{
- for (int j=0;j<3;++j) q[j] += a.q[j];
- return (*this);
-}
-
-inline const Vector & Vector::operator-=(const Vector & a)
-{
- for (int j=0;j<3;++j) q[j] -= a.q[j];
- return (*this);
-}
-
-inline const Vector & Vector::operator*=(const double a)
-{
- for (int j=0;j<3;++j) q[j] *= a; 
- return (*this); 
-}
-
-inline const Vector & Vector::operator/=(const double a)
-{
- for (int j=0;j<3;++j) q[j] /= a;
- return (*this); 
-}
-
-inline Vector & Vector::operator=(const Vector & A)
-{ 
- q[0]=A.q[0];
- q[1]=A.q[1];
- q[2]=A.q[2];
- return(*this);
-}
-
-inline int operator==(const Vector & A, const Vector & B)
-{
- if (A.Get(0) == B.Get(0) && (A.Get(1)==B.Get(1) && A.Get(2)==B.Get(2))) return 1;
- else return 0;
-}
-
-inline int operator!=(const Vector & A, const Vector & B)
-{
- if (A.Get(0)!=B.Get(0) || (A.Get(1)!=B.Get(1) || A.Get(2)!=B.Get(2))) return 1;
- else return 0;
-}
-
-inline std::ostream & operator<<(std::ostream & co, const Vector & A)
-{
-   co << std::setiosflags(std::ios::showpoint);
-   co << std::setw(20) << std::setprecision(12) << A.Get(0);
-   co << std::setw(20) << std::setprecision(12) << A.Get(1);
-   co << std::setw(20) << std::setprecision(12) << A.Get(2);
-   return co;
-}
-
-inline std::istream & operator>>(std::istream & ci, Vector &A)
-{
- double x, y, z;
- ci >> x >> y >> z;
- A.SetX(x);
- A.SetY(y);
- A.SetZ(z);
- return ci;
-}
-
-inline double Dot(const Vector & A, const Vector & B)
-{
- return (A.Get(0)*B.Get(0) + A.Get(1)*B.Get(1) + A.Get(2)*B.Get(2));
-}
-
-inline double Ang(const Vector & A, const Vector & B)
-{
- double dot=Dot(A,B);
- double moda=A.Mod();
- double modb=B.Mod();
- return acos(dot/(moda*modb));
-}
-
-inline Vector Crux(const Vector & A, const Vector & B)
-{
- Vector C;
- C.SetX(A.Get(1)*B.Get(2)-A.Get(2)*B.Get(1));
- C.SetY(A.Get(2)*B.Get(0)-A.Get(0)*B.Get(2));
- C.SetZ(A.Get(0)*B.Get(1)-A.Get(1)*B.Get(0));
- return C;
-}
-
-} // lpmd
-
+}//lpmd
 
 #endif
+
+

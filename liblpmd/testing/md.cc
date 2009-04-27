@@ -68,36 +68,38 @@ void MD::DoSteps(int nsteps)
  for (step=0;step<nsteps;++step) DoStep();
 }
 
-void MD::Dump(std::string filename)
-{
- SimulationCell & cell = GetCell();
- std::ofstream output(filename.c_str());
- output << step << std::endl;
- for (int q=0;q<3;++q) output << cell.GetVector(q) << std::endl;
- cell.WriteAll(output);
- output.close();
-}
+//FIXME : Comentado por nuevo vector.h para 0.6
+//void MD::Dump(std::string filename)
+//{
+// SimulationCell & cell = GetCell();
+// std::ofstream output(filename.c_str());
+// output << step << std::endl;
+// for (int q=0;q<3;++q) output << cell.GetVector(q) << std::endl;
+// cell.WriteAll(output);
+// output.close();
+//}
 
-void MD::LoadDump(std::string filename)
-{
- SimulationCell & cell = GetCell();
- std::ifstream input(filename.c_str());
- input >> step;
- for (int q=0;q<3;++q)
- {
-  Vector tmp;
-  input >> tmp;
-  cell.SetVector(q, tmp);
- }
- int N=0;
- input >> N;
- for(int i=0;i<N;i++) 
- {
-  Atom * at = new Atom();
-  input >> (*at);
-  cell.Create(at);
- }
- input.close();
-}
+//FIXME : Comentado por nuevo vector.h para 0.6
+//void MD::LoadDump(std::string filename)
+//{
+// SimulationCell & cell = GetCell();
+// std::ifstream input(filename.c_str());
+// input >> step;
+// for (int q=0;q<3;++q)
+// {
+//  Vector tmp;
+//  input >> tmp;
+//  cell.SetVector(q, tmp);
+// }
+// int N=0;
+// input >> N;
+// for(int i=0;i<N;i++) 
+// {
+//  Atom * at = new Atom();
+//  input >> (*at);
+//  cell.Create(at);
+// }
+// input.close();
+//}
 
 

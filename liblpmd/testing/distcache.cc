@@ -58,7 +58,7 @@ const lpmd::Vector DistanceCache::VectorDistance(long i, long j)
  {
   const ParticleSet & set = (*parent);
   const Vector & vd = parent->Displacement(set[i].Position(), set[j].Position());
-  double r = vd.Mod();
+  double r = vd.Module();
   double r2 = r*r;
   //
   distcache[j][i].active = true;
@@ -85,7 +85,7 @@ double DistanceCache::Distance(long i, long j)
  {
   const ParticleSet & set = (*parent);
   const Vector & vd = parent->Displacement(set[i].Position(), set[j].Position());
-  double r = vd.Mod();
+  double r = vd.Module();
   double r2 = r*r;
   //
   distcache[j][i].active = true;
@@ -112,7 +112,7 @@ double DistanceCache::Distance2(long i, long j)
   const Vector & vd = parent->Displacement(set[i].Position(), set[j].Position());
   distcache[j][i].active = true;
   distcache[j][i].d = vd;
-  double r = vd.Mod();
+  double r = vd.Module();
   double r2 = r*r;
   distcache[j][i].r = r;
   distcache[j][i].r2 = r2;
@@ -137,7 +137,7 @@ const lpmd::Vector DistanceCache::VectorDistanceToReplica(long i, long j, long n
  if (nx==0 && (ny==0 && nz==0)) di.d = vj-vi;  
  else di.d = parent->ScaleByCell(Vector(nx, ny, nz)) + vj - vi;
  di.active = true;
- di.r = di.d.Mod();
+ di.r = di.d.Module();
  di.r2 = di.r*di.r;
  dcreplica[j][i].SetReplica(nx, ny, nz, di);
  return di.d;

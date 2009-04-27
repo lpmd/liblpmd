@@ -185,7 +185,7 @@ void ParticleSet::InitVelocities()
   totalp = totalp + vel*operator[](i).Mass();
   operator[](i).SetVel(vel);
  }
- totalp /= nparts;
+ totalp = totalp/nparts;
  for (unsigned long int i=0;i<nparts;++i)
  {
   vel = operator[](i).Velocity();
@@ -202,7 +202,7 @@ void ParticleSet::SetTemperature(double temp, double dt, double tau)
  {
   vel = operator[](i).Velocity();
   xi = sqrt(1.0 + (double(dt)/tau)*(temp/ti - 1.0));
-  vel.Scale(xi);
+  vel = vel * xi;
   operator[](i).SetVel(vel);
  }
 }
@@ -214,7 +214,7 @@ double ParticleSet::KineticEnergy() const
  for (unsigned long int i=0;i<size();++i)
  {
   vel = operator[](i).Velocity();
-  K += 0.5*operator[](i).Mass()*vel.Mod2();
+  K += 0.5*operator[](i).Mass()*vel.SquareModule();
  }
  return K*GlobalSession.GetDouble("kin2ev");
 }
@@ -232,7 +232,7 @@ double ParticleSet::Momentum() const
   vel = operator[](i).Velocity();
   totalp = totalp + vel*operator[](i).Mass();
  }
- return totalp.Mod();
+ return totalp.Module();
 }
 
 

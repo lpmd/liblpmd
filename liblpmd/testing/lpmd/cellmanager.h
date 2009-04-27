@@ -6,6 +6,7 @@
 #define __LPMD_CELLMANAGER_H__
 
 #include <list>
+#include <vector>
 #include <lpmd/neighbor.h>
 
 namespace lpmd

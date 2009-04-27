@@ -40,10 +40,10 @@ double Coulomb::pairEnergy(const double & r) const
 
 Vector Coulomb::pairForce(const Vector & r) const
 {
- double rr = r.Mod();
+ double rr = r.Module();
  double ff = q1*q2/(rr*rr*rr);
- Vector fv = r;
- fv.Scale(ff);
+ Vector fv = r*ff;
+// fv.Scale(ff);
  return fv;
 }
 

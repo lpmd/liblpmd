@@ -43,7 +43,9 @@ void ReplicaMatrix::SetNumberOfReplicas(long nrx, long nry, long nrz)
      matrix[i][j][k].active = false;
      matrix[i][j][k].r = 0.0;
      matrix[i][j][k].r2 = 0.0;
-     matrix[i][j][k].d.Zero();
+     matrix[i][j][k].d[0] = 0.0e0;
+     matrix[i][j][k].d[1] = 0.0e0;
+     matrix[i][j][k].d[2] = 0.0e0;
     }
    }
   }
