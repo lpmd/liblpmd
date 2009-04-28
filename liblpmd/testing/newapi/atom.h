@@ -9,7 +9,7 @@
 
 #include <cstdlib>
 #include <string>
-#include "vector.h"
+#include <lpmd/vector.h>
 #include "atominterface.h"
 #include "elements.h"
 

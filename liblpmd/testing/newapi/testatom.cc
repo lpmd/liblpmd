@@ -3,7 +3,7 @@
 //
 
 #include "atom.h"
-#include "vector.h"
+#include <lpmd/vector.h>
 #include <iostream>
 #include <cmath>
 #include <cassert>

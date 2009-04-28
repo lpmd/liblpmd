@@ -12,7 +12,7 @@
 #include <cassert>
 #include <cmath>
 #include <string.h>
-#include "vector.h"
+#include <lpmd/vector.h>
 #include "util.h"
 
 namespace lpmd

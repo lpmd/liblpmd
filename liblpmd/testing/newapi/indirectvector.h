@@ -7,7 +7,7 @@
 #ifndef __LPMD_INDIRECT_VECTOR_H__
 #define __LPMD_INDIRECT_VECTOR_H__
 
-#include "basicvector.h"
+#include <lpmd/basicvector.h>
 
 namespace lpmd
 {

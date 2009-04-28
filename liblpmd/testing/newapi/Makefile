@@ -2,11 +2,10 @@
 #
 #
 
+CXXFLAGS=-g -O3 -Wall -pedantic -I.. 
 all: 
 	$(MAKE) testutil
 	./testutil
-	$(MAKE) testvector
-	./testvector
 	$(MAKE) testatom
 	./testatom
 	$(MAKE) testcell
@@ -15,22 +14,19 @@ all:
 	./testparticleset
 
 testutil: testutil.cc util.h
-	g++ -g -O3 -Wall -pedantic -o testutil testutil.cc -lm
-
-testvector: testvector.cc vector.h basicvector.h
-	g++ -g -O3 -Wall -pedantic -o testvector testvector.cc -lm
+	g++ $(CXXFLAGS) -o testutil testutil.cc -lm
 
 testatom: testatom.cc atom.h
-	g++ -g -O3 -Wall -pedantic -o testatom testatom.cc -lm
+	g++ $(CXXFLAGS) -o testatom testatom.cc -lm
 
 testcell: testcell.cc cell.h
-	g++ -g -O3 -Wall -pedantic -o testcell testcell.cc -lm
+	g++ $(CXXFLAGS) -o testcell testcell.cc -lm
 
 testparticleset: testparticleset.cc particleset.h
-	g++ -g -O3 -Wall -pedantic -o testparticleset testparticleset.cc -lm
+	g++ $(CXXFLAGS) -o testparticleset testparticleset.cc -lm
 
 .PHONY: clean
 
 clean:
-	rm -f testutil testvector testatom testcell testparticleset *.o
+	rm -f testutil testatom testcell testparticleset *.o
 

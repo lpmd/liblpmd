@@ -4,7 +4,7 @@
 
 #include <cassert>
 #include "particleset.h"
-#include "vector.h"
+#include <lpmd/vector.h>
 
 using namespace lpmd;
 

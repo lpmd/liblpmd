@@ -7,7 +7,7 @@
 #ifndef __LPMD_ATOMINTERFACE_H__
 #define __LPMD_ATOMINTERFACE_H__
 
-#include "basicvector.h"
+#include <lpmd/basicvector.h>
 #include "elements.h"
 
 namespace lpmd
