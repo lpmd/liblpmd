@@ -138,7 +138,6 @@ class Cell
   }
   inline void ConvertToExternal(Vector & a)
   {
-   std::cerr << "nonortg = " << nonortg << '\n';
    if (nonortg > 1.0E-10)
    {
     const double x = a[0];
