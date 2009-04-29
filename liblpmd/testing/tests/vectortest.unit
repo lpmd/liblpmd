@@ -201,6 +201,7 @@ using namespace lpmd;
 
 @test Testeando operador de salida y metodo FormattedWrite
 {
+ std::cout << '\n';
  Vector v(1, 2, 3);
  std::cout << v << '\n';
  FormattedWrite(std::cout, v);
@@ -208,3 +209,11 @@ using namespace lpmd;
 }
 @end
 
+@test Testeando operador *= para Vector
+{
+ Vector a(0.5,4.3,28.5);
+ a *= .8;
+ Vector b(0.5*0.8,4.3*0.8,28.5*0.8);
+ @approx (a-b).Module(), 0.0e0, 1E-10
+}
+@end

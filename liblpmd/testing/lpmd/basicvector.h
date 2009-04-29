@@ -35,7 +35,11 @@ class BasicVector
    inline double SquareModule() const { return inner[0]*inner[0]+inner[1]*inner[1]+inner[2]*inner[2]; }
    inline double Azimuth() const { return atan2(inner[1], inner[0]); }
    inline double Zenith() const { return acos(inner[2]/Module()); }
-
+   inline BasicVector & operator*=(const double a)
+   {
+    for (int j=0;j<3;++j) inner[j] *= a;
+    return (*this);
+   }
  protected:
    double * inner;
 };
@@ -59,6 +63,7 @@ inline void FormattedWrite(std::ostream & os, const BasicVector & v)
 {
  os << "< " << v[0] << ", " << v[1] << ", " << v[2] << " >";
 }
+
 
 }
 
