@@ -91,6 +91,11 @@ class Cell
 
   inline Vector & operator[](int q) { return v[q]; }  
   inline const Vector & operator[](int q) const { return v[q]; }
+  inline const Cell & operator*=(double a)
+  {
+   for (int i=0;i<3;++i) v[i] *= a;
+   return (*this);
+  }
 
   inline bool & Periodicity(int i) {return p[i];}
  private:

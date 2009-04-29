@@ -87,6 +87,35 @@ void test8()
  assert ((CELL[2]-c).Module()<1E-10);
 }
 
+void test9() //scale de los vectores base independientes
+{
+ Vector a1(1,2,3);
+ Vector a2(4,5,6);
+ Vector a3(10,9,8);
+ Cell c(a1,a2,a3);
+ c[0] *= .9;
+ c[1] *=1.5;
+ c[2] *= .8;
+ Vector b1(1*0.9,2*0.9,3*0.9);
+ Vector b2(1.5*4,1.5*5,1.5*6);
+ Vector b3(.8*10,.8*9,.8*8);
+ assert ((c[0]-b1).Module()<1E-10);
+ assert ((c[1]-b2).Module()<1E-10);
+ assert ((c[2]-b3).Module()<1E-10);
+}
+
+void test10() //scale hidrostatico de vectores base
+{
+ Vector a1(10,9,8);
+ Vector a2(10,30,50);
+ Vector a3(20,40,60);
+ Cell c(a1,a2,a3);
+ c *= .5;
+ assert ((c[0]-Vector(5.0,4.5,4.0)).Module()<1E-10);
+ assert ((c[1]-Vector(5.0,15.0,25.0)).Module()<1E-10);
+ assert ((c[2]-Vector(10,20,30)).Module()<1E-10);
+}
+
 int main()
 {
  test1();
@@ -97,6 +126,8 @@ int main()
  test6();
  test7();
  test8();
+ test9();
+ test10();
 
  return 0;
 }
