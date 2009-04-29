@@ -41,11 +41,28 @@ void test3()
  for(int i=0 ; i< 10 ; ++i) assert(atof(vec[i].c_str())==i+1);
 }
 
+void test4()
+{
+ double g=180;
+ double rad=DegreesToRadians(g);
+ assert (rad == M_PI);
+ g = 360;
+ rad = DegreesToRadians(g);
+ assert (rad == 2*M_PI);
+ g = 0;
+ rad = DegreesToRadians(g);
+ assert (rad == 0);
+ g = 45;
+ rad = DegreesToRadians(g);
+ assert (rad == M_PI/4);
+}
+
 int main()
 {
  test1();
- //test2();
+ test2();
  test3();
+ test4();
 
  return 0;
 }

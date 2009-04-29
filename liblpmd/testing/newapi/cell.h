@@ -18,9 +18,6 @@
 namespace lpmd
 {
 
-// Se va a util....?
-inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
-
 class Cell
 {
  public:
