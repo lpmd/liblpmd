@@ -142,6 +142,18 @@ void test13() //Non-Ortogonal Convert to Internal->External->Internal
  assert ((a1-Vector(10,15,10)).Module()<1E-10);
 }
 
+void test14() //Convert to Internal : Condicion suficiente.
+{
+ Cell c("40 40 30 80 120 100");
+ Vector a1(10,15,10);
+ c.ConvertToInternal(a1);
+ Vector ee1 = c[0]/c[0].Module();
+ Vector ee2 = c[1]/c[1].Module();
+ Vector ee3 = c[2]/c[2].Module();
+ Vector suma = a1[0]*ee1 + a1[1]*ee2 + a1[2]*ee3;
+ assert ((suma-Vector(10,15,10)).Module()<1E-10);
+}
+
 int main()
 {
  test1();
@@ -157,6 +169,7 @@ int main()
  test11();
  test12();
  test13();
+ test14();
 
  return 0;
 }
