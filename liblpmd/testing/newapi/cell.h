@@ -95,6 +95,13 @@ class Cell
   }
 
   inline bool & Periodicity(int i) {return p[i];}
+  inline Vector ScaleByCell(const Vector & cv) const
+  {
+   Vector nv;
+   for (int j=0;j<3;++j) nv = nv + v[j]*cv[j];
+   return nv;
+  }
+
  private:
    Vector v[3];
    bool p[3];

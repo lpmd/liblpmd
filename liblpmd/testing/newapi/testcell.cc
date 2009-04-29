@@ -116,6 +116,14 @@ void test10() //scale hidrostatico de vectores base
  assert ((c[2]-Vector(10,20,30)).Module()<1E-10);
 }
 
+void test11() //ScaleByCell
+{
+ Cell c("10 10 10 90 90 90");
+ Vector a1(0.5,0.5,0.5);
+ Vector a = c.ScaleByCell(a1);
+ assert ((a-Vector(5,5,5)).Module()<1E-10);
+}
+
 int main()
 {
  test1();
@@ -128,6 +136,7 @@ int main()
  test8();
  test9();
  test10();
+ test11();
 
  return 0;
 }

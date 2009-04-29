@@ -9,7 +9,7 @@
 
 #include <string>
 
-const std::string ElemSym[119]=
+std::string ElemSym[119]=
 {
  "e","H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl",
  "Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn","Ga","Ge","As","Se","Br",
@@ -18,7 +18,7 @@ const std::string ElemSym[119]=
  "Rn","Fr","Ra","Ac","Th","Pa","U","Np","Pu","Am","Cm","Bk","Cf","Es","Fm","Md","No","Lr","Rf","Db","Sg","Bh","Hs","Mt","Uun","Uuu","Uub","Uut","Uuq","Uup","Uuh","Uus","Uuo"
 };
 
-const double ElemMass[119]=
+double ElemMass[119]=
 {
  5.4859e-4,1.00794,4.002602,6.941,9.01218,10.811,12.011,14.00674,15.9994,18.9984303,
  20.1797,22.989768,24.305,26.981539,28.0855,30.973762,32.066,35.4527,
