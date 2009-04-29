@@ -124,6 +124,23 @@ void test11() //ScaleByCell
  assert ((a-Vector(5,5,5)).Module()<1E-10);
 }
 
+void test12() //Ortogonal Convert to External
+{
+ Cell c("20 20 20 90 90 90");
+ Vector a1(0.5,0.75,0.5);
+ c.ConvertToExternal(a1);
+ std::cerr << "a1 = " << a1 << '\n';
+ assert ((a1-Vector(20*0.5,20*0.75,20*0.5)).Module()<1E-10);
+}
+
+void test13() //Ortogonal Convert to Internal
+{
+ Cell c("20 20 20 90 90 90");
+ Vector a1(10,15,10);
+ c.ConvertToInternal(a1);
+ assert ((a1-Vector(0.5,0.75,0.5)).Module()<1E-10);
+}
+
 int main()
 {
  test1();
@@ -137,6 +154,8 @@ int main()
  test9();
  test10();
  test11();
+ test12();
+ test13();
 
  return 0;
 }

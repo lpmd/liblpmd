@@ -20,17 +20,20 @@ namespace lpmd
 
 class Cell
 {
+
  public:
   Cell()
   {
    v[0]=e1;v[1]=e2;v[2]=e3;
    for (int i=0;i<3;++i) p[i] = true;
+   UpdateTransfMatrix();
   }
 
   Cell(const Vector & a, const Vector & b, const Vector & c)
   {
    v[0]=a;v[1]=b;v[2]=c;
    for (int i=0;i<3;++i) p[i] = true;
+   UpdateTransfMatrix();
   }
 
   Cell(const double a, const double b, const double c, const double alpha, const double beta, const double gamma)
@@ -49,7 +52,7 @@ class Cell
    v[2][1] = c*tmp;			      
    v[2][2] = c*sqrt(sin(br)*sin(br)-tmp*tmp);		
    for (int i=0;i<3;++i) p[i] = true;
-   //UpdateTransfMatrix();
+   UpdateTransfMatrix();
   }
 
   Cell(std::string str)
@@ -83,6 +86,7 @@ class Cell
    {
     //FIXME : Error!
    }
+   UpdateTransfMatrix();
   }
 
 
@@ -102,9 +106,67 @@ class Cell
    return nv;
   }
 
+  inline void UpdateTransfMatrix()
+  {
+   Vector vnorm[3];
+   for (int i=0;i<3;++i)
+   {
+    vnorm[i] = v[i];
+    vnorm[i].Normalize();
+   }
+   tm[0][0] = vnorm[1][1]*vnorm[2][2]-vnorm[2][1]*vnorm[1][2];
+   tm[1][0] = vnorm[2][0]*vnorm[1][2]-vnorm[1][0]*vnorm[2][2];
+   tm[2][0] = vnorm[1][0]*vnorm[2][1]-vnorm[2][0]*vnorm[1][1];
+   tm[0][1] = vnorm[2][1]*vnorm[0][2]-vnorm[0][1]*vnorm[2][2];
+   tm[1][1] = vnorm[0][0]*vnorm[2][2]-vnorm[2][0]*vnorm[0][2];
+   tm[2][1] = vnorm[2][0]*vnorm[0][1]-vnorm[0][0]*vnorm[2][1];
+   tm[0][2] = vnorm[0][1]*vnorm[1][2]-vnorm[1][1]*vnorm[0][2];
+   tm[1][2] = vnorm[1][0]*vnorm[0][2]-vnorm[0][0]*vnorm[1][2];
+   tm[2][2] = vnorm[0][0]*vnorm[1][1]-vnorm[1][0]*vnorm[0][1];
+   const double d = tm[0][0]*vnorm[0][0] + tm[0][1]*vnorm[1][0] + tm[0][2]*vnorm[2][0];
+   nonortg = 0.0;
+   double x;
+   for (int j=0;j<3;++j)
+    for (int i=0;i<3;++i)
+    {
+     itm[j][i] = vnorm[j][i];
+     tm[j][i] = (tm[j][i] / d);
+     x = ((i == j) ? 1.0 : 0.0);
+     nonortg += ((x-tm[j][i])*(x-tm[j][i]));
+    }
+   nonortg = sqrt(nonortg);
+  }
+  inline void ConvertToExternal(Vector & a)
+  {
+   std::cerr << "nonortg = " << nonortg << '\n';
+   if (nonortg > 1.0E-10)
+   {
+    const double x = a[0];
+    const double y = a[1];
+    const double z = a[2];
+    a[0] = x*itm[0][0]+y*itm[1][0]+z*itm[2][0];
+    a[1] = x*itm[0][1]+y*itm[1][1]+z*itm[2][1];
+    a[2] = x*itm[0][2]+y*itm[1][2]+z*itm[2][2];
+   }
+  }
+  inline void ConvertToInternal(Vector & a)
+  {     
+   if (nonortg > 1.0e-10)
+   {
+    const double x = a[0];
+    const double y = a[1];
+    const double z = a[2];
+    a[0] = x*tm[0][0]+y*tm[1][0]+z*tm[2][0];
+    a[1] = x*tm[0][1]+y*tm[1][1]+z*tm[2][1];
+    a[2] = x*tm[0][2]+y*tm[1][2]+z*tm[2][2];
+   }
+  }
+
  private:
    Vector v[3];
    bool p[3];
+   double tm[3][3],itm[3][3];
+   double nonortg;
 };
 
 }
