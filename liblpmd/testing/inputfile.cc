@@ -49,7 +49,7 @@ std::string InputFile::MatchCommand(std::list<std::string> & w)
  for (std::map<std::string, std::string>::const_iterator it=reservedkw.begin();it != reservedkw.end();++it)
  {
   std::string key = it->first;
-  std::list<std::string> lt = ListOfTokens(key);
+  std::list<std::string> lt = StringSplit< std::list<std::string> >(key);
   bool badmatch = false;
   std::list<std::string>::const_iterator kt = w.begin();
   for (std::list<std::string>::const_iterator jt=lt.begin();jt != lt.end();++jt)
@@ -83,13 +83,13 @@ std::string InputFile::ParseCommandArguments(const std::string & cmd, const std:
 {
  unsigned int argcount = 0;
  std::string kvpairs = "";
- const std::vector<std::string> kvect = SplitTextLine(validkeywords);
+ const std::vector<std::string> kvect = StringSplit< std::vector<std::string> >(validkeywords);
  Map & param = (*this);
  while (words.size() > 0)
  {
   std::string arg = words.front(); 
   words.pop_front();
-  std::list<std::string> alist = ListOfTokens(arg, '=');
+  std::list<std::string> alist = StringSplit< std::list<std::string> >(arg, '=');
   if (alist.size() == 1)
   {
    // El argumento actual no es de tipo keyword, se evaluara posicionalmente
@@ -177,7 +177,7 @@ void InputFile::Read(std::istream & istr, const ParamList & options, const std::
   }
   if (tmp.find("$(", 0) != std::string::npos) throw InputError("Variable(s) undefined in input file \""+inpfile+"\"", line_count, tmp);
   //
-  words = ListOfTokens(tmp);
+  words = StringSplit< std::list<std::string> >(tmp);
   if (words.size() == 0) continue;
   if (words.front()[0] == '#') continue;
   std::string first_word = words.front();

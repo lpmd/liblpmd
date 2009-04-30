@@ -105,6 +105,7 @@ std::vector<std::string> lpmd::FindBetween(std::string &line)
 //
 //
 //
+/*
 std::vector<std::string> lpmd::SplitTextLine(const std::string & line, char delimiter)
 {
  std::string tmpline(line);
@@ -150,12 +151,7 @@ std::list<std::string> lpmd::ListOfTokens(const std::string & line, char delimit
  }
  return words;
 }
-
-//
-std::vector<std::string> lpmd::SplitSpeciesPair(const std::string & pair)
-{
- return lpmd::SplitTextLine(pair, '-');
-}
+*/
 
 
 

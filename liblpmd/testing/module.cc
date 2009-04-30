@@ -91,7 +91,7 @@ void Module::ProcessArguments(std::string line)
      impl->defvalues.AssignParameter(*it, GetString(*it));
  // Asigna los nuevos valores, dados en line
  std::string tmp;
- impl->words = ListOfTokens(line);
+ impl->words = StringSplit< std::list<std::string> >(line);
  if (impl->words.size() == 0) impl->emptycall = true;
  else
  {
@@ -168,7 +168,7 @@ void Module::Show(std::ostream & os) const
  if (Defined("module") && (GetString("module") != Name())) os << " (loaded as \"" << GetString("module") << "\")";
  os << ": " << '\n'; 
  std::list<std::string> kwds;
- if (impl->strictkw) kwds = ListOfTokens(Keywords());
+ if (impl->strictkw) kwds = StringSplit< std::list<std::string> >(Keywords());
  else kwds = Parameters();
  for (std::list<std::string>::const_iterator it=kwds.begin();it!=kwds.end();++it)
  {

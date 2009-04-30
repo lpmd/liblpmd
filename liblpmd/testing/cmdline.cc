@@ -84,7 +84,7 @@ void CmdLineParser::Parse(int argc, char *argv[])
     }
    }
    if (optfound == false) throw UnknownCmdLineOption("--"+optname);
-   optargs = ListOfTokens(curropt.args);
+   optargs = StringSplit< std::list<std::string> >(curropt.args);
    AssignParameter(curropt.longname, "true");
   }
   else if ((strlen(argv[i]) > 0) && (argv[i][0] == '-'))
@@ -102,7 +102,7 @@ void CmdLineParser::Parse(int argc, char *argv[])
     }
    }
    if (optfound == false) throw UnknownCmdLineOption("-"+optname);
-   optargs = ListOfTokens(curropt.args);
+   optargs = StringSplit< std::list<std::string> >(curropt.args);
    AssignParameter(curropt.longname, "true");
   }
   else

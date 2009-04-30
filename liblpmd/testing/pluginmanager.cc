@@ -24,7 +24,7 @@ PluginManager::PluginManager()
  const char * pathvariable = getenv("LPMD_PATH");
  if (pathvariable != NULL) path = path + std::string(pathvariable);
  path = path + ":" + PLUGINPATH;
- const std::list<std::string> lst = ListOfTokens(path, ':'); 
+ const std::list<std::string> lst = StringSplit< std::list<std::string> >(path, ':'); 
  for (std::list<std::string>::const_iterator it=lst.begin();it!=lst.end();++it)
  {
   if ((*it) != "") AddToPluginPath(*it);
@@ -52,7 +52,7 @@ void PluginManager::LoadPluginFile(std::string path, std::string id, std::string
  mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
  // Agrega nuevas propiedades a la lista
- std::list<std::string> proplist = ListOfTokens(mm->Provides());
+ std::list<std::string> proplist = StringSplit< std::list<std::string> >(mm->Provides());
  for (std::list<std::string>::const_iterator it=proplist.begin();it!=proplist.end();++it) { namedprops[*it] = mm; }
 }
 
@@ -70,7 +70,7 @@ void PluginManager::LoadPlugin(std::string name, std::string id, std::string arg
  mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
  // Agrega nuevas propiedades a la lista
- std::list<std::string> proplist = ListOfTokens(mm->Provides());
+ std::list<std::string> proplist = StringSplit< std::list<std::string> >(mm->Provides());
  for (std::list<std::string>::const_iterator it=proplist.begin();it!=proplist.end();++it) { namedprops[*it] = mm; }
 }
 
@@ -83,7 +83,7 @@ void PluginManager::UnloadPlugin(std::string id)
  if (m != NULL)
  {
   // Elimina las propiedades de la lista
-  std::list<std::string> proplist = ListOfTokens(m->Provides());
+  std::list<std::string> proplist = StringSplit< std::list<std::string> >(m->Provides());
   for (std::list<std::string>::const_iterator it=proplist.begin();it!=proplist.end();++it) { namedprops.erase(*it); }
   delete m;
  }
