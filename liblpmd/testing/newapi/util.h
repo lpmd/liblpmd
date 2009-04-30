@@ -1,6 +1,8 @@
 //
 //
 //
+#ifndef __LPMD_UTIL_H__
+#define __LPMD_UTIL_H__
 
 #include <iostream>
 #include <string>
@@ -9,11 +11,12 @@
 #include <cctype>
 #include <cmath>
 
+
 //
 //Convertidor de Grados a Radianes.
 //
 
-inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
+double DegreesToRadians(double d) { return (M_PI*d/180.0); }
 
 //
 //Remueve espacios innecesarios de un string
@@ -61,3 +64,5 @@ std::vector<std::string> SplitTextLine(const std::string & line, char delimiter)
  while (std::getline(iss, l, delimiter)) words.push_back(l);
  return words;
 }
+
+#endif
