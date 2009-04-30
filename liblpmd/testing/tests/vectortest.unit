@@ -2,6 +2,7 @@
 //
 //
 
+#include <sstream>
 #include <lpmd/vector.h>
 
 using namespace lpmd;
@@ -201,11 +202,11 @@ using namespace lpmd;
 
 @test Testeando operador de salida y metodo FormattedWrite
 {
- std::cout << '\n';
+ std::ostringstream os;
  Vector v(1, 2, 3);
- std::cout << v << '\n';
- FormattedWrite(std::cout, v);
- std::cout << '\n';
+ os << v << " ";
+ FormattedWrite(os, v);
+ @equal os.str(), "1 2 3 < 1, 2, 3 >" 
 }
 @end
 
