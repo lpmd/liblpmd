@@ -9,7 +9,7 @@ macros = { 'pass': [ 'lpunit::Assert(true);' ],
            'equal': [ 'LPUNIT_EQUAL(({1}), ({2}), {s1}, {s2});' ],
            'notequal': [ 'LPUNIT_NOTEQUAL(({1}), ({2}), {s1}, {2});' ],
            'approx': [ 'LPUNIT_APPROX(({1}),({2}),{s1}, {s2},({3}));' ],
-           'notapprox': [ 'LPUNIT_NOTAPPROX(({1}),({2}),{s1},{s2},({3});' ],
+           'notapprox': [ 'LPUNIT_NOTAPPROX(({1}),({2}),{s1},{s2},({3}));' ],
            'message': [ 'std::cout << "{*}" << std::endl;\n' ],
            'warning': [ 'std::cout << "[Warning] " << "{*}" << std::endl;\n' ],
          }
