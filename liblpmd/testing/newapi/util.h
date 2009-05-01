@@ -16,10 +16,22 @@
 //
 inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
 
+double LeverRule(long i, long start, long end, double from_v, double to_v)
+{
+ if (start == end) return from_v;
+ return (from_v + double(i-start)/double(end-start)*(to_v - from_v));
+}
+
+bool MustDo(long i, long start, long end, long step)
+{
+ if ((i < start) || (i > end)) return false;
+ if (((i - start) % step) == 0) return true;
+ return false;
+}
+
 //
 //Remueve espacios innecesarios de un string
 //
-
 void RemoveUnnecessarySpaces(std::string & input_string)
 {
  // Replace tabs by spaces.
@@ -86,12 +98,47 @@ template <class T> T StringSplit(const std::string & line, char delimiter=' ')
  return words;
 }
 
+//
+inline std::vector<std::string> SplitSpeciesPair(const std::string & pair)
+{
+ return StringSplit< std::vector<std::string> >(pair, '-');
+}
+
 template <class T> const std::string ToString(const T & object)
 {
  std::ostringstream os;
  os << std::boolalpha << object;
  return(os.str());
 }
+
+std::vector<std::string> FindBetween(std::string & line)
+{
+ std::string tmpline(line);
+ RemoveUnnecessarySpaces(tmpline);
+ std::vector<std::string> words;
+ size_t pc=0;
+ size_t uc=0;
+ int counter=0;
+ while(1) 
+ { 
+  pc=tmpline.find_first_of("\"",uc+1);
+  if(pc==std::string::npos) break;
+  uc=tmpline.find_first_of("\"",pc+1);
+  std::string t1=tmpline.substr(pc,uc-pc+1);
+  t1.erase(0,1);
+  t1.erase(t1.size()-1,1);
+  words.push_back(t1);
+  std::stringstream sst;
+  sst << counter ;
+  std::string t2="%"+sst.str();
+  line.replace(pc,uc-pc+1,t2);
+  counter++;
+ }
+ return words;
+}
+
+
+
 
 #endif
 

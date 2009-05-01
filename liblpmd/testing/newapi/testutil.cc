@@ -79,6 +79,48 @@ void test6()
  assert(ToString<bool>(false) == "false");
 }
 
+void test7()
+{
+ std::vector<std::string> sp;
+ sp = SplitSpeciesPair("Ar-Kr");
+ assert((sp[0] == "Ar") && (sp[1] == "Kr"));
+ sp = SplitSpeciesPair("N-N");
+ assert((sp[0] == "N") && (sp[1] == "N"));
+}
+
+void test8()
+{
+ int start=5, end=210, each=50;
+ std::string accum = "";
+ for (int i=0;i<250;++i) 
+ {
+  if (MustDo(i, start, end, each)) accum += (ToString<int>(i)+" ");
+ }
+ assert(accum == "5 55 105 155 205 ");
+ // ojo: posible bug en la implementacion original de MustDo! incluia el punto end siempre
+}
+
+void test9()
+{
+ std::string line = "hola mundo \"esta es una\" prueba";
+ std::vector<std::string> vec = FindBetween(line);
+ assert(line == "hola mundo %0 prueba");
+ assert(vec.size() == 1);
+ assert(vec[0] == "esta es una");
+ // que pasa con mas de un par de comillas?
+}
+
+void test10()
+{
+ double initial = 0.0, final = 100.0;
+ int start = 50, end = 1050;
+ assert(fabs(LeverRule(start, start, end, initial, final)-initial) < 1.0E-10); 
+ assert(fabs(LeverRule(end, start, end, initial, final)-final) < 1.0E-10); 
+ assert(fabs(LeverRule(550, start, end, initial, final)-50.0) < 1.0E-10);
+ assert(fabs(LeverRule(250, start, end, initial, final)-20.0) < 1.0E-10);
+ assert(fabs(LeverRule(750, start, end, initial, final)-70.0) < 1.0E-10);
+}
+
 int main()
 {
  test1();
@@ -87,6 +129,10 @@ int main()
  test4();
  test5();
  test6();
+ test7();
+ test8();
+ test9();
+ test10();
 
  return 0;
 }
