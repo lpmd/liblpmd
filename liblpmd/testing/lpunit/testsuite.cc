@@ -2,6 +2,7 @@
 #include <lpunit/testsuite.h>
 #include <iostream>
 #include <vector>
+#include <stdio.h>
 
 using namespace lpunit;
 
@@ -47,33 +48,32 @@ int TestSuite::PerformAllTests()
  {
   std::cout << "   -> " << impl->tests[q]->Description() << ": ";
   std::cout.flush();
-  if (impl->setupfunc != NULL) 
-     (*(impl->setupfunc))();            // calls the setup function for the suite
+  if (impl->setupfunc != NULL) (*(impl->setupfunc))(); // calls the setup function for the suite
   bool r;
+  std::string errormsg="";
   try { r = impl->tests[q]->Check(); }
   catch (std::exception & e) 
   { 
-   std::cout << "[Fail] Exception raised: " << e.what() << '\n';
-   r = false; 
+   errormsg = ("[Fail] Exception raised: "+std::string(e.what())+"\n");
+   r = false;
   }
-  if (impl->tdfunc != NULL) 
-     (*(impl->tdfunc))();               // calls the teardown function for the suite
-  if (r == true) std::cout << "OK\n";
+  if (impl->tdfunc != NULL) (*(impl->tdfunc))(); // calls the teardown function for the suite
+  if (r == true) printf("\e[32mOK\e[0m\n");
   else
   {
-   std::cout << "FAILED\n";
+   if (errormsg != "") std::cout << errormsg << '\n';
    cfailed++;
   }
  }
  std::cout << "\n-> " << impl->description << ": ";
  if (cfailed > 0)
  {
-  std::cout << "*** " << cfailed << " of " << n << " tests (" << 100.0*float(cfailed)/float(n) << "%) failed ***" << '\n';
+  printf("*** %d of %d tests (%.3f %%) \e[31mFAILED\e[0m ***\n", cfailed, n, 100.0*float(cfailed)/n);
   return 1; // some test(s) failed
  }
  else 
  {
-  std::cout << "!!! All " << n << " tests passed !!!" << '\n';
+  printf("!!! All %d tests \e[32mPASSED\e[0m !!!\n", n);
   return 0;  // all tests OK!
  }
 }

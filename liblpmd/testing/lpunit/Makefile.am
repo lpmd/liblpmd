@@ -1,5 +1,5 @@
 
-AM_CPPFLAGS = -g -Wall -pedantic 
+AM_CPPFLAGS = -g -ansi 
 
 EXTRA_DIST = README lpmaketest.py
 
