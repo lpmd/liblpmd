@@ -56,7 +56,7 @@ class SimulationCell: public ParticleSet, public Cell
    void SetColor(long i, const Vector & c);
    void SetColor(long i, const double & c);
 
-   void UseDistanceCache(bool activ);
+   void UseDistanceCache(bool activ) { } // FIXME: eliminar 
    void ClearForces();
 
    double Distance(long i, long j);

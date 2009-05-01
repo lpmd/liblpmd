@@ -19,12 +19,12 @@ nobase_include_HEADERS =  lpmd/applicable.h lpmd/atom.h lpmd/basicvector.h lpmd/
                           lpmd/systemmodifier.h lpmd/temporalproperty.h lpmd/timer.h lpmd/twostepintegrator.h lpmd/util.h lpmd/vector.h \
                           lpmd/value.h lpmd/visualizer.h lpmd/neighbor.h lpmd/api.h
 
-noinst_HEADERS = version.h distcache.h
+noinst_HEADERS = version.h
 
 liblpmd_la_SOURCES =  applicable.cc atom.cc cell.cc cellformat.cc cellgenerator.cc cellmanager.cc cellreader.cc cellwriter.cc \
-                      cmdline.cc color.cc containable.cc coulomb.cc distcache.cc error.cc inputfile.cc instantproperty.cc integrator.cc matrix.cc md.cc \
+                      cmdline.cc color.cc containable.cc coulomb.cc error.cc inputfile.cc instantproperty.cc integrator.cc matrix.cc md.cc \
                       metalpotential.cc module.cc onestepintegrator.cc pairpotential.cc paramlist.cc particleset.cc plugin.cc pluginmanager.cc \
-                      potential.cc potentialarray.cc replicamatrix.cc session.cc simulationcell.cc systemmodifier.cc \
+                      potential.cc potentialarray.cc session.cc simulationcell.cc systemmodifier.cc \
                       systemmixer.cc temporalproperty.cc timer.cc twostepintegrator.cc util.cc visualizer.cc
 
 #

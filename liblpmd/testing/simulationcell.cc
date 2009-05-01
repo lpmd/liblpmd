@@ -8,8 +8,6 @@
 #include <lpmd/error.h>
 #include <lpmd/session.h>
 
-#include "distcache.h"
-
 #include <cmath>
 
 using namespace lpmd;
@@ -28,12 +26,11 @@ class lpmd::SimCellImpl
    double virial;
    double s[3][3];
    CellManager * cm;
-   DistanceCache * dc;
    ParamList mdata;
 
-   SimCellImpl(): na(1), nb(1), nc(1), cm(NULL), dc(NULL) { }
-   SimCellImpl(int nra, int nrb, int nrc): na(nra), nb(nrb), nc(nrc), cm(NULL), dc(NULL) { }
-   ~SimCellImpl() { if (dc != NULL) delete dc; }
+   SimCellImpl(): na(1), nb(1), nc(1), cm(NULL) { }
+   SimCellImpl(int nra, int nrb, int nrc): na(nra), nb(nrb), nc(nrc), cm(NULL) { }
+   ~SimCellImpl() { }
 };
 
 SimulationCell::SimulationCell() { impl = new SimCellImpl();}
@@ -54,7 +51,6 @@ SimulationCell::SimulationCell(const SimulationCell & sc): ParticleSet(sc), Cell
 {
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
  for (int i=0;i<3;++i) SetPeriodicity(i, sc.Periodic(i));
- if (sc.impl->dc != NULL) impl->dc = new DistanceCache(sc);
  //if (sc.impl->cm != NULL) SetCell(sc);
  SetCell(sc);
 }
@@ -67,7 +63,6 @@ SimulationCell & SimulationCell::operator=(const SimulationCell & sc)
  delete impl;
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
  for (int i=0;i<3;++i) SetPeriodicity(i, sc.Periodic(i));
- if (sc.impl->dc != NULL) impl->dc = new DistanceCache(sc);
  //if (sc.impl->cm != NULL) SetCell(sc);
  SetCell(sc);
  return (*this);
@@ -78,7 +73,7 @@ void SimulationCell::RealPos()
 {
  for (unsigned long int i=0;i<size();i++)
  {
-  const Vector & a = operator[](i).Position();
+//  const Vector & a = operator[](i).Position();
 //  operator[](i).SetPos(ScaleByCell(a));
  }
 }
@@ -119,19 +114,6 @@ void SimulationCell::SetCellManager(CellManager & cellman)
  cellman.Reset();
  impl->cm = &cellman;
  (impl->cm)->UpdateCell(*this);
-}
-
-void SimulationCell::UseDistanceCache(bool activ)
-{
- if (activ)
- {
-  if (impl->dc == NULL) impl->dc = new DistanceCache(*this);
- }
- else if (impl->dc != NULL) 
- {
-  delete impl->dc;
-  impl->dc = NULL;
- }
 }
 
 void SimulationCell::SetCell(const Cell & c)
@@ -191,7 +173,6 @@ void SimulationCell::ClearForces()
 {
  const Vector zero;
  for (unsigned long int i=0;i<size();++i) SetAcceleration(i, zero);
- if (impl->dc != NULL) (impl->dc)->Clear();
  if (impl->cm != NULL) (impl->cm)->UpdateCell(*this);
  impl->virial = 0.0;
 }
@@ -204,7 +185,6 @@ void SimulationCell::BuildNeighborList(long i, std::vector<Neighbor> & nlist, bo
 
 Vector SimulationCell::VectorDistance(long i, long j)
 {
- if (impl->dc != NULL) return (impl->dc)->VectorDistance(i, j);
  return Displacement(operator[](i).Position(), operator[](j).Position());
 }
 
@@ -212,7 +192,6 @@ Vector SimulationCell::VectorRealDistance(long i, long j) { return operator[](i)
 
 Vector SimulationCell::VectorDistanceToReplica(long i, long j, long nx, long ny, long nz)
 {
- if (impl->dc != NULL) return (impl->dc)->VectorDistanceToReplica(i, j, nx, ny, nz);
  const Vector & vi = operator[](i).Position();
  const Vector & vj = operator[](j).Position(); 
  if (nx==0 && (ny==0 && nz==0)) return vj-vi;  
@@ -221,7 +200,6 @@ Vector SimulationCell::VectorDistanceToReplica(long i, long j, long nx, long ny,
 
 double SimulationCell::Distance(long i, long j)
 {
- if (impl->dc != NULL) return (impl->dc)->Distance(i, j);
  return VectorDistance(i, j).Module();
 }
 
@@ -231,7 +209,6 @@ double SimulationCell::DistanceToReplica(long i, long j, long nx, long ny, long 
 
 double SimulationCell::Distance2(long i,long j)
 {
- if (impl->dc != NULL) return (impl->dc)->Distance2(i, j);
  return VectorDistance(i, j).SquareModule();
 }
 
