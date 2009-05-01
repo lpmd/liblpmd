@@ -1,6 +1,7 @@
 
 #include <lpunit/testsuite.h>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <stdio.h>
 
@@ -46,7 +47,8 @@ int TestSuite::PerformAllTests()
  int cfailed = 0;
  for (unsigned long int q=0;q<n;++q)
  {
-  std::cout << "   -> " << impl->tests[q]->Description() << ": ";
+  std::string title = impl->tests[q]->Description();
+  std::cout << "   -> " << std::left << std::setw(65) << title << "  ";
   std::cout.flush();
   if (impl->setupfunc != NULL) (*(impl->setupfunc))(); // calls the setup function for the suite
   bool r;
