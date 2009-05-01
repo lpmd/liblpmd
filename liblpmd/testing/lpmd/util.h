@@ -10,6 +10,7 @@
 #include <sstream>
 #include <cctype>
 #include <cmath>
+#include <cstdlib>
 
 namespace lpmd
 {
