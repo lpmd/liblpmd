@@ -1,0 +1,37 @@
+//
+//
+//
+
+#include "particleset.h"
+#include <lpmd/vector.h>
+
+using namespace lpmd;
+
+@testsuite Tests de ParticleSet
+
+@test Constructor por defecto
+{
+ ParticleSet ps;
+ @equal ps.Length(), 0
+}
+@end
+
+@test Constructor con numero de atomos
+{
+ ParticleSet ps(100);
+ @equal ps.Length(), 100
+}
+@end
+
+@test Asignacion y lectura de IndirectAtom 
+{
+ ParticleSet ps(50);
+ const Vector pos(1.0, 2.0, 3.0);
+ for (long int i=0;i<ps.Length();++i) ps[i].Position() = pos;
+ for (long int i=0;i<ps.Length();++i) 
+ {
+  @approx (ps[i].Position()-pos).Module(), 0.0, 1.0E-10
+ }
+}
+@end
+

@@ -58,37 +58,73 @@ class Cell
   Cell(std::string str)
   {
    RemoveUnnecessarySpaces(str);
-   std::vector<std::string> vecs = StringSplit< std::vector<std::string> >(str,' ');
-   if(vecs.size()==3)
+   if (str[0] == '<') 
    {
-    v[0] = Vector(vecs[0].c_str());
-    v[1] = Vector(vecs[1].c_str());
-    v[2] = Vector(vecs[2].c_str());
-   }
-   else if(vecs.size()==6)
-   {
-    Cell tmp(atof(vecs[0].c_str()),atof(vecs[1].c_str()),atof(vecs[2].c_str()),atof(vecs[3].c_str()),atof(vecs[4].c_str()),atof(vecs[5].c_str()));
-    (*this) = tmp;
-   }
-   else if(vecs.size()==9)
-   {
-    v[0][0] = atof(vecs[0].c_str());
-    v[0][1] = atof(vecs[1].c_str());
-    v[0][2] = atof(vecs[2].c_str());
-    v[1][0] = atof(vecs[3].c_str());
-    v[1][1] = atof(vecs[4].c_str());
-    v[1][2] = atof(vecs[5].c_str());
-    v[2][0] = atof(vecs[6].c_str());
-    v[2][1] = atof(vecs[7].c_str());
-    v[2][2] = atof(vecs[8].c_str());
+    //
+    //
+    //
+    std::string bv[3];
+    int start = 0, k=0;
+    for (unsigned int i=0;i<str.size();++i)
+    {
+     if (str[i] == '>') 
+     {
+      bv[k++] = str.substr(start, i-start+1);
+      start = -1;
+     } 
+     if ((start == -1) && (str[i] == '<'))
+     {
+      start = i;
+     }
+    }
+    (*this) = Cell(Vector(bv[0].c_str()), Vector(bv[1].c_str()), Vector(bv[2].c_str()));
    }
    else
    {
-    //FIXME : Error!
+    //
+    //
+    // 
+    std::vector<std::string> vecs = StringSplit< std::vector<std::string> >(str,' ');
+    if(vecs.size()==3)
+    {
+     v[0] = Vector(vecs[0].c_str());
+     v[1] = Vector(vecs[1].c_str());
+     v[2] = Vector(vecs[2].c_str());
+    }
+    else if(vecs.size()==6)
+    {
+     Cell tmp(atof(vecs[0].c_str()),atof(vecs[1].c_str()),atof(vecs[2].c_str()),atof(vecs[3].c_str()),atof(vecs[4].c_str()),atof(vecs[5].c_str()));
+     (*this) = tmp;
+    }
+    else if(vecs.size()==9)
+    {
+     v[0][0] = atof(vecs[0].c_str());
+     v[0][1] = atof(vecs[1].c_str());
+     v[0][2] = atof(vecs[2].c_str());
+     v[1][0] = atof(vecs[3].c_str());
+     v[1][1] = atof(vecs[4].c_str());
+     v[1][2] = atof(vecs[5].c_str());
+     v[2][0] = atof(vecs[6].c_str());
+     v[2][1] = atof(vecs[7].c_str());
+     v[2][2] = atof(vecs[8].c_str());
+    }
+    else
+    {
+     //FIXME : Error!
+    }
+    UpdateTransfMatrix();
    }
-   UpdateTransfMatrix();
   }
 
+  inline Cell & operator=(const Cell & c)
+  {
+   if (this != &c)
+   {
+    for (int q=0;q<3;++q) v[q] = c[q];
+    UpdateTransfMatrix();
+   }
+   return (*this);
+  }
 
   inline Vector & operator[](int q) { return v[q]; }  
   inline const Vector & operator[](int q) const { return v[q]; }

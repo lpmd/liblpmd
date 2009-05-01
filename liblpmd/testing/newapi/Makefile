@@ -2,7 +2,7 @@
 #
 #
 
-CXXFLAGS=-g -O3 -Wall -pedantic -I.. 
+CXXFLAGS=-g -O3 -Wall -ansi -I.. 
 all: 
 	$(MAKE) testatom
 	./testatom
@@ -11,17 +11,20 @@ all:
 	$(MAKE) testparticleset
 	./testparticleset
 
-testatom: testatom.cc atom.h
-	g++ $(CXXFLAGS) -o testatom testatom.cc -lm
+testatom: testatom.unit atom.h
+	../lpunit/lpmaketest.py testatom.unit testatom.cc 
+	g++ $(CXXFLAGS) -o testatom testatom.cc -L../lpunit -llpunit -lm
 
-testcell: testcell.cc cell.h
-	g++ $(CXXFLAGS) -o testcell testcell.cc -lm
+testcell: testcell.unit cell.h
+	../lpunit/lpmaketest.py testcell.unit testcell.cc
+	g++ $(CXXFLAGS) -o testcell testcell.cc -L../lpunit -llpunit -lm
 
-testparticleset: testparticleset.cc particleset.h
-	g++ $(CXXFLAGS) -o testparticleset testparticleset.cc -lm
+testparticleset: testparticleset.unit particleset.h
+	../lpunit/lpmaketest.py testparticleset.unit testparticleset.cc
+	g++ $(CXXFLAGS) -o testparticleset testparticleset.cc -L../lpunit -llpunit -lm
 
 .PHONY: clean
 
 clean:
-	rm -f testatom testcell testparticleset *.o
+	rm -f testatom testatom.cc testcell testcell.cc testparticleset testparticleset.cc *.o
 
