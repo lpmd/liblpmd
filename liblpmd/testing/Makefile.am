@@ -25,7 +25,7 @@ liblpmd_la_SOURCES =  applicable.cc atom.cc cell.cc cellformat.cc cellgenerator.
                       cmdline.cc color.cc containable.cc coulomb.cc error.cc inputfile.cc instantproperty.cc integrator.cc matrix.cc md.cc \
                       metalpotential.cc module.cc onestepintegrator.cc pairpotential.cc paramlist.cc particleset.cc plugin.cc pluginmanager.cc \
                       potential.cc potentialarray.cc session.cc simulationcell.cc systemmodifier.cc \
-                      systemmixer.cc temporalproperty.cc timer.cc twostepintegrator.cc util.cc visualizer.cc
+                      systemmixer.cc temporalproperty.cc timer.cc twostepintegrator.cc visualizer.cc
 
 #
 #

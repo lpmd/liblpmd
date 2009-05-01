@@ -13,7 +13,7 @@
 #include <cmath>
 #include <string.h>
 #include <lpmd/vector.h>
-#include "util.h"
+#include <lpmd/util.h>
 
 namespace lpmd
 {

@@ -9,7 +9,7 @@ using namespace lpmd;
 
 @testsuite Tests de la clase Vector
 
-@test Test de constructor vacio
+@test Constructor vacio
 {
  Vector v;
  @approx fabs(v[0]), 0.0e0, 1E-10
@@ -18,7 +18,7 @@ using namespace lpmd;
 }
 @end
 
-@test Test de constructor con argumentos
+@test Constructor con argumentos
 {
  Vector v(1,2,3);
  @approx fabs(v[0]-1.0e0), 0.0e0, 1E-10
@@ -27,7 +27,7 @@ using namespace lpmd;
 }
 @end
 
-@test Test de construccion con strings
+@test Construccion con strings
 {
  Vector v1("< 1.0, 2.0, 3.0>");
  Vector v2("4 5 6");
@@ -40,7 +40,7 @@ using namespace lpmd;
 }
 @end
 
-@test Test de Asignacion por array
+@test Asignacion por array
 {
  double a[3] = { 1.0, 2.0, 3.0 };
  Vector v(a);
@@ -51,7 +51,7 @@ using namespace lpmd;
 }
 @end
 
-@test Test de Vectores Base
+@test Vectores Base
 {
  @approx fabs(e1[0]-1.0), 0.0e0, 1E-10
  @approx fabs(e1[1]), 0.0e0, 1E-10
@@ -65,7 +65,7 @@ using namespace lpmd;
 }
 @end
 
-@test Test de Construccion por copia.
+@test Construccion por copia.
 {
  Vector v;
  @approx fabs(v[0]), 0.0e0, 1E-10
@@ -80,7 +80,7 @@ using namespace lpmd;
 }
 @end
 
-@test Test de Asignacion
+@test Asignacion
 {
  Vector v;
  v = e1;
@@ -170,7 +170,7 @@ using namespace lpmd;
 }
 @end
 
-@test Testeando operador vector*double
+@test Operador vector*double
 {
  Vector v(2,2,2);
  Vector w = v*0.5;
@@ -180,7 +180,7 @@ using namespace lpmd;
 }
 @end
 
-@test Testeando operador double*vector
+@test Operador double*vector
 {
  Vector v(3.5,4,2.6);
  Vector w = 2*v;
@@ -190,7 +190,7 @@ using namespace lpmd;
 }
 @end
 
-@test Testeando operador Vector/double
+@test Operador Vector/double
 {
  Vector v(3,3,3);
  Vector w = v/2.0e0;
@@ -200,7 +200,7 @@ using namespace lpmd;
 }
 @end
 
-@test Testeando operador de salida y metodo FormattedWrite
+@test Operador de salida y metodo FormattedWrite
 {
  std::ostringstream os;
  Vector v(1, 2, 3);
@@ -210,7 +210,7 @@ using namespace lpmd;
 }
 @end
 
-@test Testeando operador *= para Vector
+@test Operador *=
 {
  Vector a(0.5,4.3,28.5);
  a *= .8;

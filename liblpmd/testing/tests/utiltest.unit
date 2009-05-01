@@ -1,0 +1,138 @@
+//
+//
+//
+
+#include <lpmd/util.h>
+
+#include <vector>
+#include <list>
+
+using namespace lpmd;
+
+@testsuite Tests de util.h
+
+@test RemoveUnnecessarySpaces
+{
+ std::string tmp = "     a";
+ RemoveUnnecessarySpaces(tmp);
+ @equal tmp, "a"
+ tmp = "a      ";
+ RemoveUnnecessarySpaces(tmp);
+ @equal tmp, "a"
+ tmp ="      a       b       c       ";
+ RemoveUnnecessarySpaces(tmp);
+ @equal tmp, "a b c"
+}
+@end
+
+@test RemoveUnnecessarySpaces con tabs
+{
+ std::string tmp="\ta";
+ RemoveUnnecessarySpaces(tmp);
+ @equal tmp, "a"
+ tmp = "   a\t\t";
+ RemoveUnnecessarySpaces(tmp);
+ @equal tmp, "a"
+ tmp = "\t   a\t\t   \tb \t    c\t  ";
+ RemoveUnnecessarySpaces(tmp);
+ @equal tmp, "a b c"
+}
+@end
+
+@test StringSplit devolviendo std::vector
+{
+ std::vector <std::string> vec = StringSplit< std::vector<std::string> >("1 2 3 4 5 6 7 8 9 10",' ');
+ @equal vec.size(), 10
+ for(int i=0;i<10;++i) 
+ {
+  @equal int(atof(vec[i].c_str())), i+1
+ }
+}
+@end
+
+@test StringSplit devolviendo std::list
+{
+ std::list <std::string> lst =StringSplit< std::list<std::string> >("1 2 3 4 5 6 7 8 9 10",' ');
+ int i = 1;
+ for (std::list<std::string>::const_iterator it=lst.begin();it!=lst.end();++it)
+ {
+  @equal int(atof((*it).c_str())), i
+  i++;
+ }
+}
+@end
+
+@test DegreesToRadians
+{
+ double g=180;
+ double rad=DegreesToRadians(g);
+ @approx rad, M_PI, 1.0E-10
+ g = 360;
+ rad = DegreesToRadians(g);
+ @approx rad, 2.0*M_PI, 1.0E-10
+ g = 0;
+ rad = DegreesToRadians(g);
+ @approx rad, 0.0, 1.0E-10
+ g = 45;
+ rad = DegreesToRadians(g);
+ @approx rad, M_PI/4, 1.0E-10
+}
+@end
+
+@test ToString< >
+{
+ @equal ToString<int>(42), "42"
+ @equal ToString<double>(3.14159), "3.14159"
+ @equal ToString<bool>(true), "true"
+ @equal ToString<bool>(false), "false"
+}
+@end
+
+@test SplitSpeciesPair
+{
+ std::vector<std::string> sp;
+ sp = SplitSpeciesPair("Ar-Kr");
+ @equal sp[0], "Ar"
+ @equal sp[1], "Kr"
+ sp = SplitSpeciesPair("N-N");
+ @equal sp[0], "N"
+ @equal sp[1], "N"
+}
+@end
+
+@test MustDo
+{
+ int start=5, end=210, each=50;
+ std::string accum = "";
+ for (int i=0;i<250;++i) 
+ {
+  if (MustDo(i, start, end, each)) accum += (ToString<int>(i)+" ");
+ }
+ @equal accum, "5 55 105 155 205 "
+ // ojo: posible bug en la implementacion original de MustDo! incluia el punto end siempre
+}
+@end
+
+@test FindBetween
+{
+ std::string line = "hola mundo \"esta es una\" prueba";
+ std::vector<std::string> vec = FindBetween(line);
+ @equal line, "hola mundo %0 prueba"
+ @equal vec.size(), 1
+ @equal vec[0], "esta es una"
+ // que pasa con mas de un par de comillas?
+}
+@end
+
+@test LeverRule
+{
+ double initial = 0.0, final = 100.0;
+ int start = 50, end = 1050;
+ @approx LeverRule(start, start, end, initial, final), initial, 1.0E-10
+ @approx LeverRule(end, start, end, initial, final), final, 1.0E-10
+ @approx LeverRule(550, start, end, initial, final), 50.0, 1.0E-10
+ @approx LeverRule(250, start, end, initial, final), 20.0, 1.0E-10
+ @approx LeverRule(750, start, end, initial, final), 70.0, 1.0E-10
+}
+@end
+
