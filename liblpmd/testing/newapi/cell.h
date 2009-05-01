@@ -58,7 +58,7 @@ class Cell
   Cell(std::string str)
   {
    RemoveUnnecessarySpaces(str);
-   std::vector<std::string> vecs = SplitTextLine(str,' ');
+   std::vector<std::string> vecs = StringSplit< std::vector<std::string> >(str,' ');
    if(vecs.size()==3)
    {
     v[0] = Vector(vecs[0].c_str());

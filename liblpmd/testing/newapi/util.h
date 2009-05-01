@@ -11,12 +11,10 @@
 #include <cctype>
 #include <cmath>
 
-
 //
 //Convertidor de Grados a Radianes.
 //
-
-double DegreesToRadians(double d) { return (M_PI*d/180.0); }
+inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
 
 //
 //Remueve espacios innecesarios de un string
@@ -51,18 +49,49 @@ void RemoveUnnecessarySpaces(std::string & input_string)
 }
 
 //
-// Devuelve un vector de strings de un std::string separando por un caracter.
+// Devuelve una coleccion de strings desde un string separando por un delimitador
 //
-
-std::vector<std::string> SplitTextLine(const std::string & line, char delimiter)
+template <class T> T StringSplit(const std::string & line, char delimiter=' ')
 {
  std::string tmpline(line);
  RemoveUnnecessarySpaces(tmpline);
- std::istringstream iss(tmpline);
- std::vector<std::string> words;
+ T words;
  std::string l;
- while (std::getline(iss, l, delimiter)) words.push_back(l);
+ // Para manejar correctamente espacios y tabs
+ if (delimiter == ' ')
+ {
+  std::string::size_type sp = std::string::npos;
+  for (std::string::size_type p=0;p<tmpline.size();p++)
+  {
+   if (! isspace(tmpline[p])) 
+   {
+    if (sp == std::string::npos) sp = p;
+   }
+   else
+   {
+    if (sp != std::string::npos)
+    {
+     words.push_back(tmpline.substr(sp, p-sp));
+     sp = std::string::npos;
+    }
+   }
+  }
+  if (sp != std::string::npos) words.push_back(tmpline.substr(sp, tmpline.size()-sp));
+ }
+ else 
+ {
+  std::istringstream iss(tmpline);
+  while (std::getline(iss, l, delimiter)) words.push_back(l);
+ }
  return words;
 }
 
+template <class T> const std::string ToString(const T & object)
+{
+ std::ostringstream os;
+ os << std::boolalpha << object;
+ return(os.str());
+}
+
 #endif
+
