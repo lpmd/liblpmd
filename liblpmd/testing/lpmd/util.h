@@ -11,12 +11,8 @@
 #include <cctype>
 #include <cmath>
 
-#include "config.h"
-
 namespace lpmd
 {
-
-inline std::string LibraryVersion() { return VERSION; }
 
 inline void EndWithError(const std::string & text)
 {
@@ -33,19 +29,6 @@ inline void ShowWarning(const std::string who, const std::string text)
 //Convertidor de Grados a Radianes.
 //
 inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
-
-inline double LeverRule(long i, long start, long end, double from_v, double to_v)
-{
- if (start == end) return from_v;
- return (from_v + double(i-start)/double(end-start)*(to_v - from_v));
-}
-
-inline bool MustDo(long i, long start, long end, long step)
-{
- if ((i < start) || (i > end)) return false;
- if (((i - start) % step) == 0) return true;
- return false;
-}
 
 //
 //Remueve espacios innecesarios de un string

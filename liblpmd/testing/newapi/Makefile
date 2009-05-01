@@ -3,12 +3,10 @@
 #
 
 CXXFLAGS=-g -O3 -Wall -ansi -I.. 
-all: 
-	$(MAKE) testatom
+
+all: testatom testcell testparticleset 
 	./testatom
-	$(MAKE) testcell
 	./testcell
-	$(MAKE) testparticleset
 	./testparticleset
 
 testatom: testatom.unit atom.h

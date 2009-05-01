@@ -3,6 +3,7 @@
 //
 
 #include <lpmd/session.h>
+#include "config.h"
 
 using namespace lpmd;
 
@@ -17,6 +18,9 @@ Session::Session(): Module("session")
 {
  simpl = NULL; 
  ProcessArguments("module session"); 
+ 
+ AssignParameter("libraryversion", VERSION);
+
  AssignParameter("forcefactor", "0.0096485341");  // Conversion: 1 (eV/(angstrom*amu)) = FORCEFACTOR (angstrom/(fs^2))
  AssignParameter("kboltzmann", "8.6173422E-05");  // k_B in (eV/K)
  AssignParameter("kin2ev", "103.64269");          // Conversion: 1 (amu*(angstrom/fs)^2) = KIN2EV (eV)

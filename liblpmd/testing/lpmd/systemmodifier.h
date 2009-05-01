@@ -5,7 +5,7 @@
 #ifndef __LPMD_SYSTEMMODIFIER_H__
 #define __LPMD_SYSTEMMODIFIER_H__
 
-#include <lpmd/applicable.h>
+#include <lpmd/stepper.h>
 
 namespace lpmd
 {
@@ -13,7 +13,7 @@ namespace lpmd
  class MD;             // forward declaration
  class SimulationCell; // 
 
- class SystemModifier: public IApplicable
+ class SystemModifier: public Stepper
  {
   public:
    //

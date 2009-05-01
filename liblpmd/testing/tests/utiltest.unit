@@ -100,19 +100,6 @@ using namespace lpmd;
 }
 @end
 
-@test MustDo
-{
- int start=5, end=210, each=50;
- std::string accum = "";
- for (int i=0;i<250;++i) 
- {
-  if (MustDo(i, start, end, each)) accum += (ToString<int>(i)+" ");
- }
- @equal accum, "5 55 105 155 205 "
- // ojo: posible bug en la implementacion original de MustDo! incluia el punto end siempre
-}
-@end
-
 @test FindBetween
 {
  std::string line = "hola mundo \"esta es una\" prueba";
@@ -124,15 +111,4 @@ using namespace lpmd;
 }
 @end
 
-@test LeverRule
-{
- double initial = 0.0, final = 100.0;
- int start = 50, end = 1050;
- @approx LeverRule(start, start, end, initial, final), initial, 1.0E-10
- @approx LeverRule(end, start, end, initial, final), final, 1.0E-10
- @approx LeverRule(550, start, end, initial, final), 50.0, 1.0E-10
- @approx LeverRule(250, start, end, initial, final), 20.0, 1.0E-10
- @approx LeverRule(750, start, end, initial, final), 70.0, 1.0E-10
-}
-@end
 

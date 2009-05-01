@@ -5,14 +5,14 @@
 #ifndef __LPMD_VISUALIZER_H__
 #define __LPMD_VISUALIZER_H__
 
-#include <lpmd/applicable.h>
+#include <lpmd/stepper.h>
 
 namespace lpmd
 {
 
  class MD;             // forward declaration
 
- class Visualizer: public IApplicable
+ class Visualizer: public Stepper
  {
   public:
    //

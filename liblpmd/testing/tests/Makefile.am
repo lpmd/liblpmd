@@ -2,12 +2,14 @@
 #
 #
 
-TESTS = vectortest utiltest
+TESTS = vectortest utiltest steppertest
+
+vectortest_SOURCES = vectortest.unit
+utiltest_SOURCES = utiltest.unit
+steppertest_SOURCES = steppertest.unit
 
 #celltest_SOURCES = celltest.unit
 #paramtest_SOURCES = paramtest.unit
-vectortest_SOURCES = vectortest.unit
-utiltest_SOURCES = utiltest.unit
 #inputfiletest_SOURCES = inputfiletest.unit
 
 #
