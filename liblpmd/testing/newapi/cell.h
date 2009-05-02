@@ -60,9 +60,6 @@ class Cell
    RemoveUnnecessarySpaces(str);
    if (str[0] == '<') 
    {
-    //
-    //
-    //
     std::string bv[3];
     int start = 0, k=0;
     for (unsigned int i=0;i<str.size();++i)
@@ -81,15 +78,10 @@ class Cell
    }
    else
    {
-    //
-    //
-    // 
     std::vector<std::string> vecs = StringSplit< std::vector<std::string> >(str,' ');
-    if(vecs.size()==3)
+    if (vecs.size() == 3)
     {
-     v[0] = Vector(vecs[0].c_str());
-     v[1] = Vector(vecs[1].c_str());
-     v[2] = Vector(vecs[2].c_str());
+     for (int q=0;q<3;++q) v[q] = Vector(vecs[q].c_str());
     }
     else if(vecs.size()==6)
     {
@@ -98,15 +90,8 @@ class Cell
     }
     else if(vecs.size()==9)
     {
-     v[0][0] = atof(vecs[0].c_str());
-     v[0][1] = atof(vecs[1].c_str());
-     v[0][2] = atof(vecs[2].c_str());
-     v[1][0] = atof(vecs[3].c_str());
-     v[1][1] = atof(vecs[4].c_str());
-     v[1][2] = atof(vecs[5].c_str());
-     v[2][0] = atof(vecs[6].c_str());
-     v[2][1] = atof(vecs[7].c_str());
-     v[2][2] = atof(vecs[8].c_str());
+     for (int p=0;p<3;++p)
+       for (int q=0;q<3;++q) v[p][q] = atof(vecs[q+3*p].c_str());
     }
     else
     {
@@ -126,15 +111,24 @@ class Cell
    return (*this);
   }
 
-  inline Vector & operator[](int q) { return v[q]; }  
+  inline Vector & operator[](int q)
+  { 
+   mustupdate = true;   
+   return v[q]; 
+  }  
+
   inline const Vector & operator[](int q) const { return v[q]; }
+
   inline const Cell & operator*=(double a)
   {
    for (int i=0;i<3;++i) v[i] *= a;
+   mustupdate = true;   
    return (*this);
   }
 
-  inline bool & Periodicity(int i) {return p[i];}
+  inline bool & Periodicity(int i) { return p[i]; }
+  inline const bool & Periodicity(int i) const { return p[i]; }
+
   inline Vector ScaleByCell(const Vector & cv) const
   {
    Vector nv;
@@ -145,10 +139,10 @@ class Cell
   inline void UpdateTransfMatrix()
   {
    Vector vnorm[3];
-   for (int i=0;i<3;++i)
+   for (int q=0;q<3;++q)
    {
-    vnorm[i] = v[i];
-    vnorm[i].Normalize();
+    vnorm[q] = v[q];
+    vnorm[q].Normalize();
    }
    tm[0][0] = vnorm[1][1]*vnorm[2][2]-vnorm[2][1]*vnorm[1][2];
    tm[1][0] = vnorm[2][0]*vnorm[1][2]-vnorm[1][0]*vnorm[2][2];
@@ -171,29 +165,36 @@ class Cell
      nonortg += ((x-tm[j][i])*(x-tm[j][i]));
     }
    nonortg = sqrt(nonortg);
+   mustupdate = false;
   }
+
   inline void ConvertToExternal(Vector & a)
   {
    if (nonortg > 1.0E-10)
    {
-    const double x = a[0];
-    const double y = a[1];
-    const double z = a[2];
-    a[0] = x*itm[0][0]+y*itm[1][0]+z*itm[2][0];
-    a[1] = x*itm[0][1]+y*itm[1][1]+z*itm[2][1];
-    a[2] = x*itm[0][2]+y*itm[1][2]+z*itm[2][2];
+    if (mustupdate) UpdateTransfMatrix();
+    double v[3];
+    for (int q=0;q<3;++q) v[q] = a[q];
+    for (int q=0;q<3;++q)
+    {
+     a[q] = 0.0;
+     for (int p=0;p<3;++p) a[q] += v[p]*itm[p][q];
+    }
    }
   }
+
   inline void ConvertToInternal(Vector & a)
   {     
    if (nonortg > 1.0e-10)
    {
-    const double x = a[0];
-    const double y = a[1];
-    const double z = a[2];
-    a[0] = x*tm[0][0]+y*tm[1][0]+z*tm[2][0];
-    a[1] = x*tm[0][1]+y*tm[1][1]+z*tm[2][1];
-    a[2] = x*tm[0][2]+y*tm[1][2]+z*tm[2][2];
+    if (mustupdate) UpdateTransfMatrix();
+    double v[3];
+    for (int q=0;q<3;++q) v[q] = a[q];
+    for (int q=0;q<3;++q)
+    {
+     a[q] = 0.0;
+     for (int p=0;p<3;++p) a[q] += v[p]*tm[p][q];
+    }
    }
   }
 
@@ -202,6 +203,7 @@ class Cell
    bool p[3];
    double tm[3][3],itm[3][3];
    double nonortg;
+   bool mustupdate;
 };
 
 }

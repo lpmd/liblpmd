@@ -170,3 +170,17 @@ using namespace lpmd;
 }
 @end
 
+@test Actualizacion automatica de la matriz de transformaciones
+{
+ Cell c("40 40 30 80 120 100");
+ Vector a1(10,15,10);
+ Vector a2;
+ a2 = a1;
+ c.ConvertToInternal(a1);
+ c[0] = c[0] + 0.05*c[2];
+ c[1] = c[1] + 0.07*c[0];
+ c.ConvertToInternal(a2);
+ @notapprox (a1-a2).Module(), 0.0, 1.0E-10
+}
+@end
+
