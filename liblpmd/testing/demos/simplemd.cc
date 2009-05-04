@@ -13,9 +13,9 @@ int main()
  PluginManager pm;                                 // define pm como un manejador de plugins
 
  SimulationCell cell(1, 1, 1, true, true, true);   // cell es la celda de simulacion
- cell.SetVector(0, 17.1191*e1);                   // define los vectores de la celda
- cell.SetVector(1, 17.1191*e2);
- cell.SetVector(2, 17.1191*e3);
+ cell.GetCell()[0] = 17.1191*e1;                   // define los vectores de la celda
+ cell.GetCell()[1] = 17.1191*e2;
+ cell.GetCell()[2] = 17.1191*e3;
  md.SetCell(cell);                                 // asigna la celda de simulacion al objeto MD 
 
  // Carga de plugins con sus parametros

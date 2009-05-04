@@ -200,6 +200,14 @@ using namespace lpmd;
 }
 @end
 
+@test Operator += 
+{
+ Vector v(1.0, 1.0, 1.0);
+ v += Vector(1.0, 1.0, 1.0);
+ @approx (v - Vector(2.0, 2.0, 2.0)).Module(), 0.0, 1.0E-10
+}
+@end
+
 @test Operador de salida y metodo FormattedWrite
 {
  std::ostringstream os;

@@ -24,7 +24,6 @@ void Integrator::UseOldCell(SimulationCell & sc)
  if (oldcell == NULL)
  {
   oldcell = new SimulationCell(sc);
-  oldcell->UseDistanceCache(false);
   oldcell->SetCellManager(sc.GetCellManager()); // No deberia ser problema que ambas sc compartan el mismo CellManager
   GoBack(*oldcell);
  }

@@ -114,12 +114,12 @@ class Atom
 
     Atom & operator=(const Atom & A);
    
-    friend int operator==(const Atom & a, const Atom & b);
-    friend int operator!=(const Atom & a, const Atom & b);
+//    friend int operator==(const Atom & a, const Atom & b);
+//    friend int operator!=(const Atom & a, const Atom & b);
 
     //FIXME : Comentadas por nuevo vector.h
-//    friend std::ostream& operator<<(std::ostream & co, const Atom & a);
-//    friend std::istream& operator>>(std::istream & ci, Atom & a);
+    friend std::ostream& operator<<(std::ostream & co, const Atom & a);
+    friend std::istream& operator>>(std::istream & ci, Atom & a);
 
     Atom *prev,*next; // for use in double linked lists
 
@@ -212,36 +212,44 @@ inline Atom& Atom::operator=(const Atom & A)
  return(*this);
 }
 
-//inline int operator==(const Atom & A, const Atom & B)
-//{
-// if ((A.Species() == B.Species()) && (A.Position() == B.Position())) return 1;
-// else return 0;
-//}
+/* FIXME: commented
+inline int operator==(const Atom & A, const Atom & B)
+{
+ if ((A.Species() == B.Species()) && (A.Position() == B.Position())) return 1;
+ else return 0;
+}
+*/
 
-//inline int operator!=(const Atom & A, const Atom & B)
-//{
-// if ((A.Species() != B.Species()) || (A.Position() != B.Position())) return 1;
-// else return 0;
-//}
+/* FIXME: commented
+inline int operator!=(const Atom & A, const Atom & B)
+{
+ if ((A.Species() != B.Species()) || (A.Position() != B.Position())) return 1;
+ else return 0;
+}
+*/
 
-//inline std::ostream & operator<<(std::ostream & co, const lpmd::Atom & A)
-//{
- //FIXME : El atomo debe mostrar su propiedad atomtype, esto es usado en WriteAll de particles, para dumping.
-// co << A.Symb() << " " << A.Position() << " " << A.Velocity() << " " << A.Acceleration();
-// return co;
-//}
+/* FIXME: commented
+inline std::ostream & operator<<(std::ostream & co, const lpmd::Atom & A)
+{
+///FIXME : El atomo debe mostrar su propiedad atomtype, esto es usado en WriteAll de particles, para dumping.
+ co << A.Symb() << " " << A.Position() << " " << A.Velocity() << " " << A.Acceleration();
+ return co;
+}
+*/
 
-//inline std::istream& operator>>(std::istream & ci, Atom & A)
-//{
-// Vector pos, vel, ace;
-// std::string symb;
-// ci >> symb >> pos >> vel >> ace;
-// A.SetSpc(ElemNum(symb));
-// A.SetPos(pos);
-// A.SetVel(vel);
-// A.SetAccel(ace);
-// return ci;
-//}
+/* FIXME: commented
+inline std::istream& operator>>(std::istream & ci, Atom & A)
+{
+ Vector pos, vel, ace;
+ std::string symb;
+ ci >> symb >> pos >> vel >> ace;
+ A.SetSpc(ElemNum(symb));
+ A.SetPos(pos);
+ A.SetVel(vel);
+ A.SetAccel(ace);
+ return ci;
+}
+*/
 
 //
 //

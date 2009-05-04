@@ -19,7 +19,7 @@ CellManagerMissing::CellManagerMissing(): Error("No CellManager plugin enabled, 
 //
 //
 //
-class lpmd::SimCellImpl
+class lpmd::SimCellImpl: public Cell
 {
  public:
    unsigned int na, nb, nc;
@@ -31,6 +31,23 @@ class lpmd::SimCellImpl
    SimCellImpl(): na(1), nb(1), nc(1), cm(NULL) { }
    SimCellImpl(int nra, int nrb, int nrc): na(nra), nb(nrb), nc(nrc), cm(NULL) { }
    ~SimCellImpl() { }
+
+   lpmd::SimCellImpl & operator=(const lpmd::SimCellImpl & ci)
+   {
+    if (this != &ci)
+    {
+     na = ci.na;
+     nb = ci.nb;
+     nc = ci.nc;
+     virial = ci.virial;
+     for (int i=0;i<3;++i)
+       for (int j=0;j<3;++j) s[i][j] = ci.s[i][j];
+     cm = ci.cm;    // FIXME: deberia clonar el CellManager???
+     mdata = ci.mdata;
+    }
+    return (*this);
+   }
+
 };
 
 SimulationCell::SimulationCell() { impl = new SimCellImpl();}
@@ -38,21 +55,23 @@ SimulationCell::SimulationCell() { impl = new SimCellImpl();}
 SimulationCell::SimulationCell(int nra, int nrb, int nrc, bool pba, bool pbb, bool pbc) 
 {
  impl = new SimCellImpl(nra, nrb, nrc); 
- SetPeriodicity(0, pba);
- SetPeriodicity(1, pbb);
- SetPeriodicity(2, pbc);
+ Cell & ic = (*impl);
+ ic.Periodicity(0) = pba;
+ ic.Periodicity(1) = pbb;
+ ic.Periodicity(2) = pbc;
  for (int i=0;i<3;i++) 
  {
   for (int j=0;j<3;j++) impl->s[i][j]=0.0e0;
  }
 }
 
-SimulationCell::SimulationCell(const SimulationCell & sc): ParticleSet(sc), Cell(sc)
+SimulationCell::SimulationCell(const SimulationCell & sc): ParticleSet(sc)
 {
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
- for (int i=0;i<3;++i) SetPeriodicity(i, sc.Periodic(i));
- //if (sc.impl->cm != NULL) SetCell(sc);
- SetCell(sc);
+ Cell & ic = (*impl);
+ impl->operator=(*(sc.impl));
+ for (int i=0;i<3;++i) ic.Periodicity(i) = sc.Periodicity(i);
+ SetCell(ic);
 }
 
 SimulationCell::~SimulationCell() { delete impl; }
@@ -62,36 +81,45 @@ SimulationCell & SimulationCell::operator=(const SimulationCell & sc)
  ParticleSet::operator=(sc);
  delete impl;
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
- for (int i=0;i<3;++i) SetPeriodicity(i, sc.Periodic(i));
- //if (sc.impl->cm != NULL) SetCell(sc);
- SetCell(sc);
+ Cell & ic = (*impl);
+ for (int i=0;i<3;++i) ic.Periodicity(i) = sc.Periodicity(i);
+ SetCell(ic);
  return (*this);
 }
 
-//FIXME : TODOS los SCALE* de SimulationCell COMENTADOS!!! VALORES ERRADOS!!
+Cell & SimulationCell::GetCell() const { return (*impl); }   // FIXME: que nombre ponerle?
+
+void SimulationCell::SetCell(const Cell & c) 
+{ 
+ for (int q=0;q<3;++q) (*impl)[q] = c[q];
+}
+
 void SimulationCell::RealPos()
 {
+ //FIXME : chequear
  for (unsigned long int i=0;i<size();i++)
  {
-//  const Vector & a = operator[](i).Position();
-//  operator[](i).SetPos(ScaleByCell(a));
+  const Vector & a = operator[](i).Position();
+  operator[](i).SetPos(ScaleByCell(a));
  }
 }
 
 void SimulationCell::FracPos() 
 {
+ Cell & ic = (*impl);
  for (unsigned long int i=0;i<size();i++)
  {
   Vector n, a = operator[](i).Position();
   ConvertToInternal(a);
-  for (int j=0;j<3;++j) n[j] = a[j]/GetVector(j).Module();
+  for (int j=0;j<3;++j) n[j] = a[j]/ic[j].Module();
   operator[](i).SetPos(n);
  }
 }
 
 void SimulationCell::Center()
 {
- Vector displacement;//FIXME : CORREGIR =// ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
+ // FIXME: chequear
+ Vector displacement = ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
  for (unsigned long int i=0;i<size();i++)
  {
   operator[](i).SetPos(operator[](i).Position()-displacement);
@@ -100,7 +128,8 @@ void SimulationCell::Center()
 
 void SimulationCell::UnCenter()
 {
- Vector displacement;//FIXME: CORREGIR = ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
+ // FIXME: chequear
+ Vector displacement = ScaleByCell(Vector(0.5e0, 0.5e0, 0.5e0));
  for (unsigned long int i=0;i<size();i++)
  {
   operator[](i).SetPos(operator[](i).Position()+displacement);
@@ -116,11 +145,6 @@ void SimulationCell::SetCellManager(CellManager & cellman)
  (impl->cm)->UpdateCell(*this);
 }
 
-void SimulationCell::SetCell(const Cell & c)
-{
- for (int i=0;i<3;++i) SetVector(i, c.GetVector(i));
-}
-
 void SimulationCell::SetPart(const ParticleSet & p)
 {
  for (unsigned long int i=0;i<p.size();i++) Create(new Atom(p[i]));
@@ -130,21 +154,23 @@ void SimulationCell::SetPart(const ParticleSet & p)
 
 Vector SimulationCell::FracPosition(long i) const
 {
+ Cell & ic = (*impl);
  Vector a = operator[](i).Position(), n;
  ConvertToInternal(a);
- for (int j=0;j<3;++j) n[j] = a[j]/GetVector(j).Module();
+ for (int j=0;j<3;++j) n[j] = a[j]/ic[j].Module();
  return n;
 }
 
 void SimulationCell::SetPosition(long i, const Vector & p)
 {
+ Cell & ic = (*impl);
  Vector vtmp = p;
  ConvertToInternal(vtmp);
  for (int j=0;j<3;++j)
  {
   double q = vtmp[j];
-  const double ll = GetVector(j).Module();
-  if (Periodic(j))
+  const double ll = ic[j].Module();
+  if (ic.Periodicity(j))
   {
    if (q < 0) q += ll*(1+floor(-q/ll)); 
    else if (q > ll) q -= ll*floor(q/ll);
@@ -158,7 +184,7 @@ void SimulationCell::SetPosition(long i, const Vector & p)
 
 void SimulationCell::SetFracPosition(long i, const Vector & fp)
 {
- //SetPosition(i, ScaleByCell(fp));
+ SetPosition(i, ScaleByCell(fp));
 }
 
 void SimulationCell::SetVelocity(long i, const Vector & v) { operator[](i).SetVel(v); }
@@ -195,7 +221,7 @@ Vector SimulationCell::VectorDistanceToReplica(long i, long j, long nx, long ny,
  const Vector & vi = operator[](i).Position();
  const Vector & vj = operator[](j).Position(); 
  if (nx==0 && (ny==0 && nz==0)) return vj-vi;  
- else {return Vector(0,0,0);}//FIXME : Corregir Vector 0 nada que ver -> //(ScaleByCell(Vector(nx, ny, nz)) + vj - vi);
+ else { return (ScaleByCell(Vector(nx, ny, nz)) + vj - vi); } // FIXME: chequear
 }
 
 double SimulationCell::Distance(long i, long j)
@@ -219,47 +245,68 @@ double SimulationCell::Angle(long i, long j, long k)
  return acos(Dot(a, b) / (a.Module()*b.Module())); 
 }
 
+// Implementacion de la interfaz BasicCell
+const bool & SimulationCell::Periodicity(int q) const { return impl->Periodicity(q); }
+
+bool & SimulationCell::Periodicity(int q) { return impl->Periodicity(q); }
+
+Vector SimulationCell::ScaleByCell(const BasicVector & cv) const { return impl->ScaleByCell(cv); }
+
+void SimulationCell::ConvertToExternal(BasicVector & v) const { impl->ConvertToExternal(v); }
+
+void SimulationCell::ConvertToInternal(BasicVector & v) const { impl->ConvertToInternal(v); }
+
+Vector SimulationCell::Displacement(const Vector & a, const Vector & b) const { return impl->Displacement(a, b); }
+
+double SimulationCell::Volume() const { return impl->Volume(); }
+
 void SimulationCell::Rescale(double f)
 {
+ Cell & ic = (*impl);
  FracPos();
- for (int i=0;i<3;++i) //FIXME : CORREGIR -> Cell::Scale(i, f);
+ for (int i=0;i<3;++i) ic[i] *= f; // FIXME: chequear
  RealPos();
 }
 
 void SimulationCell::Rescale(double f, int i)
 {
+ Cell & ic = (*impl);
  FracPos();
- //FIXME : CORREGIR Cell::Scale(i, f);
+ ic[i] *= f; // FIXME: chequear
  RealPos();
 }
 
 void SimulationCell::RescalePercent(double p)
 {
+ Cell & ic = (*impl);
  FracPos();
- for (int i=0;i<3;++i) //FIXME : CORREGIR Cell::ScalePercent(i, p);
+ for (int i=0;i<3;++i) ic[i] *= (1+p/100.0); // FIXME: chequear
  RealPos();
 }
 
 void SimulationCell::RescalePercent(double p, int i)
 {
+ Cell & ic = (*impl);
  FracPos();
- //FIXME : CORREGIR Cell::ScalePercent(i,p);
+ ic[i] *= (1+p/100.0); // FIXME: chequear
  RealPos();
 }
 
 void SimulationCell::RescaleVector(Vector sx, Vector sy, Vector sz)
 {
+ Cell & ic = (*impl);
  FracPos();
- //FIXME : CORREGIR Cell::ScaleVector(0,sx);
- //FIXME : CORREGIR Cell::ScaleVector(1,sy);
- //FIXME : CORREGIR Cell::ScaleVector(2,sz);
+ ic[0] += sx; // FIXME: chequear, originalmente Cell::ScaleVector(0, sx)
+ ic[1] += sy;
+ ic[2] += sz;
  RealPos();
 }
 
 void SimulationCell::RescaleVector(Vector s, int i)
 {
+ Cell & ic = (*impl);
  FracPos();
- //FIXME : CORREGIR Cell::ScaleVector(i,s);
+ ic[i] += s; // FIXME: chequear, originalmente Cell:ScaleVector(i,s)
  RealPos();
 }
 

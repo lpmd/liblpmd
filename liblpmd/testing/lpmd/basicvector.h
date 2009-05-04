@@ -35,11 +35,19 @@ class BasicVector
    inline double SquareModule() const { return inner[0]*inner[0]+inner[1]*inner[1]+inner[2]*inner[2]; }
    inline double Azimuth() const { return atan2(inner[1], inner[0]); }
    inline double Zenith() const { return acos(inner[2]/Module()); }
+
    inline BasicVector & operator*=(const double a)
    {
     for (int j=0;j<3;++j) inner[j] *= a;
     return (*this);
    }
+   
+   inline BasicVector & operator+=(const BasicVector & a)
+   {
+    for (int j=0;j<3;++j) inner[j] += a[j];
+    return (*this);
+   }
+
  protected:
    double * inner;
 };

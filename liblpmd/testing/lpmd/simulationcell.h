@@ -29,7 +29,7 @@ namespace lpmd
 /**
  *  SimulationCell representa una celda de simulación, definida en una región del espacio y conteniendo un set de partículas.
  */
-class SimulationCell: public ParticleSet, public Cell
+class SimulationCell: public ParticleSet, public BasicCell
 {
  public:
    // Constructores y destructor
@@ -42,8 +42,9 @@ class SimulationCell: public ParticleSet, public Cell
    SimulationCell & operator=(const SimulationCell & sc);
 
    // Metodos
-
+   Cell & GetCell() const; // FIXME: que nombre ponerle?
    void SetCell(const Cell & c);
+
    void SetPart(const ParticleSet & p);
 
    // Metodos que combinan las facilidades de ParticleSet y Cell
@@ -56,7 +57,6 @@ class SimulationCell: public ParticleSet, public Cell
    void SetColor(long i, const Vector & c);
    void SetColor(long i, const double & c);
 
-   void UseDistanceCache(bool activ) { } // FIXME: eliminar 
    void ClearForces();
 
    double Distance(long i, long j);
@@ -72,6 +72,14 @@ class SimulationCell: public ParticleSet, public Cell
    Vector VectorDistance(long i, long j); 
    Vector VectorRealDistance(long i, long j);
    Vector VectorDistanceToReplica(long i, long j, long nx, long ny, long nz);
+
+   const bool & Periodicity(int q) const;
+   bool & Periodicity(int q);
+   Vector ScaleByCell(const BasicVector & cv) const;
+   void ConvertToExternal(BasicVector & v) const;
+   void ConvertToInternal(BasicVector & v) const;
+   Vector Displacement(const Vector & a, const Vector & b) const;
+   double Volume() const;
 
    void BuildNeighborList(long i, std::vector<Neighbor> & nlist, bool full, double rcut);
 
