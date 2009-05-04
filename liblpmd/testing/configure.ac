@@ -14,5 +14,5 @@ AC_STDC_HEADERS
 
 #AC_DEFINE([NUMBERED_RELEASE], [0], [Marks this revision as a numbered release])
 
-AC_OUTPUT(Makefile lpunit/Makefile tests/Makefile liblpmd-2.0.pc)
+AC_OUTPUT(Makefile lpunit/Makefile tests/Makefile demos/Makefile liblpmd-2.0.pc)
 
