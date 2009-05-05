@@ -1,5 +1,5 @@
 
-SUBDIRS = . lpunit tests demos
+SUBDIRS = . lpunit tests demos benchmarks
 
 AM_CPPFLAGS = -g -Wall -std=gnu++98 -DPLUGINPATH="\"$(libdir)/lpmd\""
 
