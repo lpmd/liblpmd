@@ -61,7 +61,13 @@ double PotentialArray::energy(SimulationCell & sc)
 
 void PotentialArray::UpdateForces(SimulationCell & sc)
 {
+// std::cerr << "DEBUG antes de UpdateForces, Initialize(sc)\n";
+// std::cerr << " -> " << sc[0].Position() << '\n';
+// std::cerr << " -> " << sc[1].Position() << '\n';
  if (! initialized) Initialize(sc);
+// std::cerr << "DEBUG despues de UpdateForces, Initialize(sc)\n";
+// std::cerr << " -> " << sc[0].Position() << '\n';
+// std::cerr << " -> " << sc[1].Position() << '\n';
  //
  // Actualiza las fuerzas para la celda, aplicando cada potencial secuencialmente (por ahora)
  //

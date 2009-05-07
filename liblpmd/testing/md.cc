@@ -48,7 +48,11 @@ void MD::SetIntegrator(Integrator & integ)
  md_impl->itg = &integ; 
  SimulationCell & cell = GetCell();
  PotentialArray & p = GetPotentialArray();
+// std::cerr << "DEBUG ---- Before Integrator::Initialize: atom 0: " << cell[0].Position() << '\n';
+// std::cerr << "DEBUG ---- Before Integrator::Initialize: atom 1: " << cell[1].Position() << '\n';
  integ.Initialize(cell, p);
+// std::cerr << "DEBUG ++++ After Integrator::Initialize: atom 0: " << cell[0].Position() << '\n';
+// std::cerr << "DEBUG ++++ After Integrator::Initialize: atom 1: " << cell[1].Position() << '\n';
 }
 
 PotentialArray & MD::GetPotentialArray() { return md_impl->p_array; }

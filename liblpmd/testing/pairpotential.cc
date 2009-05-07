@@ -17,6 +17,9 @@ double PairPotential::energy(SimulationCell & sc) { return energycache; }
 
 void PairPotential::UpdateForces(SimulationCell & sc)
 {
+// std::cerr << "DEBUG In UpdateForces: before BuildNeighborList\n";
+// std::cerr << "      i: " << sc[0].Position() << '\n';
+// std::cerr << "      j: " << sc[1].Position() << '\n';
  const double forcefactor = GlobalSession.GetDouble("forcefactor");
  Vector ff, acci, accj;
  const long int n = sc.size();
@@ -36,6 +39,14 @@ void PairPotential::UpdateForces(SimulationCell & sc)
    const Neighbor & nn = nlist[k];
    if (AppliesTo(sc[i].Species(), nn.j->Species()) && nn.r < GetCutoff()) 
    {
+    if (nn.r < 0.5)
+    {
+     std::cerr << "DEBUG Atoms too close! r=" << nn.r << '\n';
+     std::cerr << "i: " << sc[i].Position() << '\n';
+     std::cerr << "j: " << nn.j->Position() << '\n';
+     std::cerr << "DEBUG i=" << i << " j=" << nn.j->Index() << '\n';
+     exit(1);
+    }
     energycache += pairEnergy(nn.r);
     ff = pairForce(nn.rij);
     acci = sc[i].Acceleration(); 
@@ -44,7 +55,7 @@ void PairPotential::UpdateForces(SimulationCell & sc)
     Atom * jpointer = const_cast<Atom *>(nn.j);                  // esto no se debe hacer :)
     jpointer->SetAccel(accj - ff*(forcefactor/nn.j->Mass()));    // y menos esto :D
     tmpvir -= Dot(nn.rij, ff); // virial de pares
-    //if (ff.Mod() > 10.0) throw HorrendousForce(ff.Mod());
+    if (ff.Module() > 10.0) throw HorrendousForce(ff.Module()); // DEBUG
 
     //Asignacion de stress, un for adicional pequeno, 
     //sera mas lento? - El signo parec provenir de la fuerza, ojo con eso

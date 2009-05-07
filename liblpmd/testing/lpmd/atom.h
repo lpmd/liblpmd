@@ -114,12 +114,12 @@ class Atom
 
     Atom & operator=(const Atom & A);
    
-//    friend int operator==(const Atom & a, const Atom & b);
-//    friend int operator!=(const Atom & a, const Atom & b);
+    friend int operator==(const Atom & a, const Atom & b);
+    friend int operator!=(const Atom & a, const Atom & b);
 
     //FIXME : Comentadas por nuevo vector.h
-    friend std::ostream& operator<<(std::ostream & co, const Atom & a);
-    friend std::istream& operator>>(std::istream & ci, Atom & a);
+    //friend std::ostream& operator<<(std::ostream & co, const Atom & a);
+    //friend std::istream& operator>>(std::istream & ci, Atom & a);
 
     Atom *prev,*next; // for use in double linked lists
 
@@ -212,21 +212,12 @@ inline Atom& Atom::operator=(const Atom & A)
  return(*this);
 }
 
-/* FIXME: commented
 inline int operator==(const Atom & A, const Atom & B)
 {
- if ((A.Species() == B.Species()) && (A.Position() == B.Position())) return 1;
- else return 0;
+ return ((A.Species() == B.Species()) && (A.Position()-B.Position()).Module() < 1.0E-10);
 }
-*/
 
-/* FIXME: commented
-inline int operator!=(const Atom & A, const Atom & B)
-{
- if ((A.Species() != B.Species()) || (A.Position() != B.Position())) return 1;
- else return 0;
-}
-*/
+inline int operator!=(const Atom & A, const Atom & B) { return !(operator==(A, B)); }
 
 /* FIXME: commented
 inline std::ostream & operator<<(std::ostream & co, const lpmd::Atom & A)

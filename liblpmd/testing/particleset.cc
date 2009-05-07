@@ -17,6 +17,12 @@ ParticleSet::ParticleSet(const ParticleSet & ps)
  AssignIndex();
 }
 
+ParticleSet::ParticleSet(long int s)
+{
+ reserve(s);
+ managed.reserve(s);
+}
+
 ParticleSet::~ParticleSet()
 {
  for (unsigned long int i=0;i<managed.size();++i) delete managed[i];

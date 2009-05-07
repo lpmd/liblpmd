@@ -67,11 +67,13 @@ SimulationCell::SimulationCell(int nra, int nrb, int nrc, bool pba, bool pbb, bo
 
 SimulationCell::SimulationCell(const SimulationCell & sc): ParticleSet(sc)
 {
+// std::cerr << "DEBUG inside copy constructor of SimulationCell\n";
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
  Cell & ic = (*impl);
- impl->operator=(*(sc.impl));
+ (*impl) = *(sc.impl);
  for (int i=0;i<3;++i) ic.Periodicity(i) = sc.Periodicity(i);
  SetCell(ic);
+// std::cerr << "DEBUG end of copy constructor SC\n";
 }
 
 SimulationCell::~SimulationCell() { delete impl; }
@@ -82,6 +84,7 @@ SimulationCell & SimulationCell::operator=(const SimulationCell & sc)
  delete impl;
  impl = new SimCellImpl(sc.impl->na, sc.impl->nb, sc.impl->nc);
  Cell & ic = (*impl);
+ (*impl) = *(sc.impl);
  for (int i=0;i<3;++i) ic.Periodicity(i) = sc.Periodicity(i);
  SetCell(ic);
  return (*this);

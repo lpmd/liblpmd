@@ -24,6 +24,7 @@ namespace lpmd
  {
   public:
     ParticleSet();                       // Constructor por omision
+    ParticleSet(long int s);             // Constructor con numero de atomos
     ParticleSet(const ParticleSet & ps); // Constructor de copia
     
     virtual ~ParticleSet();
@@ -45,6 +46,9 @@ namespace lpmd
     // Emula el acceso a ParticleSet como si fuera un vector de referencias  
     inline Atom & operator[](size_type i) { return *(std::vector<Atom *>::operator[](i)); }
     inline const Atom & operator[](size_type i) const { return *(std::vector<Atom *>::operator[](i)); }
+
+    // FIXME: Por ahora, para compatibilidad con Array y todo lo otro
+    inline long int Size() const { return size(); }
 
     // Operador de asignacion
     ParticleSet & operator=(const ParticleSet & ps);

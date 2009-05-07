@@ -36,7 +36,7 @@ class ParticleSet
    }
 
    inline AtomInterface & operator[](long int i) { return atomarray[i]; }
-   inline long int Length() const { return nl; }
+   inline long int Size() const { return nl; }
 
  private:
    long int nl;
