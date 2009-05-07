@@ -13,7 +13,7 @@
 namespace lpmd
 {
 
- class SimulationCell
+ class SimulationCell:public std::vector<Atom*>
  {
   public:
    SimulationCell(int nx, int ny, int nz, bool px, bool py, bool pz) { }
@@ -23,7 +23,7 @@ namespace lpmd
    Atom const & operator[](long int i) const { return at; }
    Atom & operator[](long int i) { return at; }
 
-   Atom & Create(Atom * at) { return (*at); } 
+   Atom & Create(Atom * at) { push_back(at); return *at; } 
 
    void SetPosition(long i, const Vector & p) { }
    void SetFracPosition(long i, const Vector & fp) { }
