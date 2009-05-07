@@ -4,13 +4,8 @@
 
 CXXFLAGS=-g -O3 -Wall -ansi -I.. 
 
-all: testatom testparticleset 
-	./testatom
+all: testparticleset 
 	./testparticleset
-
-testatom: testatom.unit atom.h
-	../lpunit/lpmaketest.py testatom.unit testatom.cc 
-	g++ $(CXXFLAGS) -o testatom testatom.cc -L../lpunit -llpunit -lm
 
 testparticleset: testparticleset.unit particleset.h
 	../lpunit/lpmaketest.py testparticleset.unit testparticleset.cc
@@ -19,5 +14,5 @@ testparticleset: testparticleset.unit particleset.h
 .PHONY: clean
 
 clean:
-	rm -f testatom testatom.cc testparticleset testparticleset.cc *.o
+	rm -f testparticleset testparticleset.cc *.o
 

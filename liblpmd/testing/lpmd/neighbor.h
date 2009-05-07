@@ -18,8 +18,8 @@ namespace lpmd
  class Neighbor
  {
   public:
-    const Atom * i;    //  
-    const Atom * j;    //
+    Atom * i;    //  
+    Atom * j;    //
     Vector rij;        // Distancia vectorial del atomo i al atomo j
     double r;          // Modulo de rij (precalculado para optimizacion)
  };

@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <lpmd/atom.h>
+#include <list>
 
 namespace lpmd
 {

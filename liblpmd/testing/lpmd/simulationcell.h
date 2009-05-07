@@ -21,6 +21,7 @@ namespace lpmd
    inline unsigned long int size() const { return 0; }
 
    Atom const & operator[](long int i) const { return at; }
+   Atom & operator[](long int i) { return at; }
 
    Atom & Create(Atom * at) { return (*at); } 
 

@@ -16,13 +16,15 @@ void OneStepIntegrator::Advance(SimulationCell & sc, Potential & p)
  for (unsigned long int i=0;i<sc.size();++i) 
  {
   const Atom & at = sc[i];
-  if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
+  //FIXME : AtomType
+  //if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
  }
  for (unsigned long int i=0;i<sc.size();++i)
  {
   const Atom & at = sc[i];
-  if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
-  else Advance(sc, i);
+  //FIXME : AtomType
+  //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
+  //else Advance(sc, i);
  }
 }
 

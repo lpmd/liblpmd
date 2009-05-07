@@ -69,7 +69,7 @@ void ParticleSet::NumEspec()
  int tmp = 1;
  if (spec != NULL) delete [] spec;
  spec = new int[1];
- spec[0] = operator[](0).Species();
+ spec[0] = operator[](0).Z();
  int * sptmp = new int[1];
  sptmp[0] = spec[0];
  bool Q=false;
@@ -78,7 +78,7 @@ void ParticleSet::NumEspec()
   int tmp2=0;
   for(int j=0;j<tmp;j++)
   {
-   if (operator[](i).Species()!=spec[j]) {tmp2++;}
+   if (operator[](i).Z()!=spec[j]) {tmp2++;}
   }
   if(tmp2==0) {Q=false;}
   else if(tmp2<tmp) {Q=false;}
@@ -89,7 +89,7 @@ void ParticleSet::NumEspec()
    if (spec != NULL) delete [] spec;
    spec=new int[tmp];
    for(int k=0;k<tmp-1;k++) spec[k]=sptmp[k];
-   spec[tmp-1]=operator[](i).Species();
+   spec[tmp-1]=operator[](i).Z();
    if (sptmp != NULL) delete [] sptmp;
    sptmp=new int[tmp];
    for(int k=0;k<tmp;k++) sptmp[k]=spec[k];
@@ -101,11 +101,12 @@ void ParticleSet::NumEspec()
  #warning "ELIMINAR ParticleSet::NumEspec() LO ANTES POSIBLE"
 }
 
-void ParticleSet::AssignIndex()
-{
- #warning "ELIMINAR ParticleSet::AssignIndex() LO ANTES POSIBLE"
- for (unsigned long int i=0;i<size();++i) operator[](i).SetIndex(i);
-}
+//FIXME : Se ha eliminado metodo AssignIndex()
+//void ParticleSet::AssignIndex()
+//{
+// #warning "ELIMINAR ParticleSet::AssignIndex() LO ANTES POSIBLE"
+// for (unsigned long int i=0;i<size();++i) operator[](i).Z()=i;
+//}
 
 std::list<std::string> ParticleSet::SpeciesList() const
 {
@@ -168,7 +169,7 @@ std::vector<int> ParticleSet::NSpecies() const
   std::string symbol=*it;
   for (unsigned long int i=0;i<size();++i)
   {
-   if (operator[](i).Symb() == symbol) counter++;
+   if (operator[](i).Symbol() == symbol) counter++;
   }
   tmp.push_back(counter);
  }
@@ -190,14 +191,14 @@ void ParticleSet::InitVelocities()
  {
   vel = Vector(2.0*drand48()-1.0, 2.0*drand48()-1.0, 2.0*drand48()-1.0);
   totalp = totalp + vel*operator[](i).Mass();
-  operator[](i).SetVel(vel);
+  operator[](i).Velocity() = vel;
  }
  totalp = totalp/nparts;
  for (unsigned long int i=0;i<nparts;++i)
  {
   vel = operator[](i).Velocity();
   vel = vel - totalp/operator[](i).Mass();
-  operator[](i).SetVel(vel);
+  operator[](i).Velocity() = vel;
  }
 }
 
@@ -210,36 +211,39 @@ void ParticleSet::SetTemperature(double temp, double dt, double tau)
   vel = operator[](i).Velocity();
   xi = sqrt(1.0 + (double(dt)/tau)*(temp/ti - 1.0));
   vel = vel * xi;
-  operator[](i).SetVel(vel);
+  operator[](i).Velocity() = vel;
  }
 }
 
 double ParticleSet::KineticEnergy() const
 {
- double K = 0.0;
- Vector vel;
- for (unsigned long int i=0;i<size();++i)
- {
-  vel = operator[](i).Velocity();
-  K += 0.5*operator[](i).Mass()*vel.SquareModule();
- }
- return K*GlobalSession.GetDouble("kin2ev");
+ EndWithError("ParticleSet::Kinetic: Metodo vacio");
+// double K = 0.0;
+// Vector vel;
+// for (unsigned long int i=0;i<size();++i)
+// {
+//  vel = operator[](i).Velocity();
+//  K += 0.5*operator[](i).Mass()*vel.SquareModule();
+// }
+// return K*GlobalSession.GetDouble("kin2ev");
 }
 
 double ParticleSet::Temperature() const
 {
- return (2.0/3.0)*KineticEnergy()/(GlobalSession.GetDouble("kboltzmann")*double(size()));
+ EndWithError("ParticleSet::Temperature: Metodo vacio");
+ //return (2.0/3.0)*KineticEnergy()/(GlobalSession.GetDouble("kboltzmann")*double(size()));
 }
 
 double ParticleSet::Momentum() const
 {
- Vector vel, totalp;
- for (unsigned long int i=0;i<size();++i)
- {
-  vel = operator[](i).Velocity();
-  totalp = totalp + vel*operator[](i).Mass();
- }
- return totalp.Module();
+ EndWithError("ParticleSet::Momentum: Metodo vacio");
+// Vector vel, totalp;
+// for (unsigned long int i=0;i<size();++i)
+// {
+//  operator[](i).Velocity() = vel;
+//  totalp = totalp + vel*operator[](i).Mass();
+// }
+// return totalp.Module();
 }
 
 

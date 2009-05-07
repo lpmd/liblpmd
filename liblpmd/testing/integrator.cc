@@ -46,7 +46,8 @@ void Integrator::GoBack(SimulationCell & sc)
  Vector newpos, newvel;
  for (unsigned long int i=0;i<sc.size();++i)
  {
-  const Atom & now = sc[i];
+  //FIXME : Antes era = const Atom & now = sc[i];
+  Atom now = sc[i];
   newpos = now.Position() - now.Velocity()*dt;
   newvel = now.Velocity() - now.Acceleration()*dt;
   sc.SetPosition(i, newpos);
