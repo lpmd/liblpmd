@@ -1,0 +1,5 @@
+
+#include <lpmd/simulationcell.h>
+
+@testsuite Tests de SimulationCell
+

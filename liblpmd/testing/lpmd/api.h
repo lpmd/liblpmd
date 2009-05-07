@@ -71,7 +71,7 @@
 
 // Molecular dynamics 
 
-#include <lpmd/md.h>
+#include <lpmd/simulation.h>
 
 // Other plugin types (besides Potential and Integrator)
 

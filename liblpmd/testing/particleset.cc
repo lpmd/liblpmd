@@ -102,11 +102,12 @@ void ParticleSet::NumEspec()
 }
 
 //FIXME : Se ha eliminado metodo AssignIndex()
-//void ParticleSet::AssignIndex()
-//{
+void ParticleSet::AssignIndex()
+{
+ #warning "Metodo vacio"
 // #warning "ELIMINAR ParticleSet::AssignIndex() LO ANTES POSIBLE"
 // for (unsigned long int i=0;i<size();++i) operator[](i).Z()=i;
-//}
+}
 
 std::list<std::string> ParticleSet::SpeciesList() const
 {

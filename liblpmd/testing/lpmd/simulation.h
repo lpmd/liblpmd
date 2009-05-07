@@ -2,14 +2,8 @@
 //
 //
 
-/**
- *  \file md.h
- *  \brief Declaración de la clase MD.
- *  \author GNM
- */
-
-#ifndef __LPMD_MD_H__
-#define __LPMD_MD_H__
+#ifndef __LPSimulation_SIMULATION_H__
+#define __LPSimulation_SIMULATION_H__
 
 #include <string>
 
@@ -20,17 +14,12 @@ namespace lpmd
  class PotentialArray;                // forward declaration
  class Integrator;                    // forward declaration
 
-/**
- *  MD representa un objeto que implementa de forma básica los ciclos de dinámica molecular.
- *
- *  MD es capaz de conectar un potencial y un integrador y hacerlos actuar sobre una celda de simulación. 
- */
-class MD
+class Simulation
 {
  public:
-   MD();
-   MD(SimulationCell & simcell);
-   virtual ~MD();
+   Simulation();
+   Simulation(SimulationCell & simcell);
+   virtual ~Simulation();
 
    virtual void Initialize();
   
@@ -56,7 +45,7 @@ class MD
 
  private:
    // Private implementation pointer
-   class MDImpl * md_impl;
+   class SimulationImpl * md_impl;
 };
 
 } // lpmd

@@ -45,6 +45,11 @@ int TestSuite::PerformAllTests()
  unsigned long int n = impl->tests.size();
  std::cout << '\n' << impl->description << " (" << n << " tests) : " << '\n';
  int cfailed = 0;
+ if (n == 0)
+ {
+  printf("*** \e[31mNo tests defined\e[0m, this counts as a failure ***\n");
+  return 1;
+ }
  for (unsigned long int q=0;q<n;++q)
  {
   std::string title = impl->tests[q]->Description();

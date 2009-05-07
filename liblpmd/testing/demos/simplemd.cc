@@ -5,7 +5,7 @@
 #include <lpmd/pluginmanager.h>
 #include <lpmd/simulationcell.h>
 #include <lpmd/timer.h>
-#include <lpmd/md.h>
+#include <lpmd/simulation.h>
 #include <lpmd/cellgenerator.h>
 #include <lpmd/cellmanager.h>
 #include <lpmd/integrator.h>
@@ -19,14 +19,14 @@ using namespace lpmd;
 
 int main()
 {
- MD md;                                            // define md como un objeto de dinamica molecular
+ Simulation md;                                            // define md como un objeto de dinamica molecular
  PluginManager pm;                                 // define pm como un manejador de plugins
 
  SimulationCell cell(1, 1, 1, true, true, true);   // cell es la celda de simulacion
  cell.GetCell()[0] = 17.1191*e1;                   // define los vectores de la celda
  cell.GetCell()[1] = 17.1191*e2;
  cell.GetCell()[2] = 17.1191*e3;
- md.SetCell(cell);                                 // asigna la celda de simulacion al objeto MD 
+ md.SetCell(cell);                                 // asigna la celda de simulacion al objeto Simulation 
 
  // Carga de plugins con sus parametros
  pm.LoadPlugin("minimumimage", "cutoff 8.5");
@@ -42,7 +42,7 @@ int main()
 
  Potential & pot = CastModule<Potential>(pm["lennardjones"]);
  PotentialArray & potarray = md.GetPotentialArray();
- potarray.Set("Ar", "Ar", pot);                            // asigna el potencial lennardjones al arreglo de potenciales de MD
+ potarray.Set("Ar", "Ar", pot);                            // asigna el potencial lennardjones al arreglo de potenciales de Simulation
 
  Integrator & integ = CastModule<Integrator>(pm[INTEGRATOR]);
  md.SetIntegrator(integ);
