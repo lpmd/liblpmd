@@ -3,3 +3,24 @@
 
 @testsuite Tests de SimulationCell
 
+@test Retorna size cero.
+{
+ SimulationCell cell(1,1,1,true,true,true);
+ @approx cell.size(), 0.0e0, 1E-10
+}
+@end
+
+@test Creando Atomos en simulationcell
+{
+ SimulationCell cell(1,1,1,true,true,true);
+ Vector pos(1,1,1);
+ cell.Create(new Atom ("H",pos));
+ Atom b("H",pos);
+ @equal cell[0].Symbol(), b.Symbol()
+ @approx (cell[0].Position()-b.Position()).Module(), 0.0e0, 1E-10
+ @approx (cell[0].Velocity()-b.Velocity()).Module(), 0.0e0, 1E-10
+ @approx (cell[0].Acceleration()-b.Acceleration()).Module(), 0.0e0, 1E-10
+}
+@end
+
+@test 
