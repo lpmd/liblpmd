@@ -10,7 +10,6 @@
 #include <lpmd/cellmanager.h>
 #include <lpmd/integrator.h>
 #include <lpmd/potentialarray.h>
-#include <lpmd/instantproperty.h>
 #include <lpmd/systemmodifier.h>
 
 #include <iostream>
@@ -36,7 +35,6 @@ int main()
  pm.LoadPlugin("lennardjones", "sigma 3.41 epsilon 0.0103408 cutoff 8.5");
  pm.LoadPlugin(INTEGRATOR, "dt 1.0");
  pm.LoadPlugin("temperature", "t 168.0");
- pm.LoadPlugin("energy", "");
 
  CellManager & cm = CastModule<CellManager>(pm["minimumimage"]);
  cell.SetCellManager(cm);                                        // asigna el manejador de celda
@@ -51,8 +49,6 @@ int main()
  Integrator & integ = CastModule<Integrator>(pm[INTEGRATOR]);
  md.SetIntegrator(integ);
 
- InstantProperty & energ = CastModule<InstantProperty>(pm["energy"]);
- 
  SystemModifier & therm = CastModule<SystemModifier>(pm["temperature"]);
  therm.Apply(cell);                        // aplica el termalizador "temperature" a la celda de simulacion
 
@@ -70,10 +66,10 @@ int main()
   md.DoStep();
   if (i % 10 == 0)
   {
-   energ.Evaluate(cell, pot);
-   double tot_en = pm["energy"].GetProperty("total-energy");
-   double temp = pm["energy"].GetProperty("temperature");
-   std::cout << i << "  " << tot_en << "  " << temp << '\n';
+   //energ.Evaluate(cell, pot);
+   double tot_en = potarray.energy(cell); 
+   double temp = cell.Temperature(); 
+   std::cout << i << "  " << potarray.energy(cell) << "  " << cell.Temperature() << '\n';
    av += tot_en;
    av2 += (tot_en*tot_en);
    nav++;
