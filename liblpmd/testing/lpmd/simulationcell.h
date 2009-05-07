@@ -9,19 +9,24 @@
 #include <lpmd/atom.h>
 #include <lpmd/cell.h>
 #include <lpmd/cellmanager.h>
+#include <lpmd/error.h>
 
 namespace lpmd
 {
 
- class SimulationCell:public std::vector<Atom*>
+ class CellManagerMissing: public Error
  {
   public:
-   SimulationCell(int nx, int ny, int nz, bool px, bool py, bool pz) { }
+    CellManagerMissing(): Error("No CellManager has been defined") { }
+ };
 
-   inline unsigned long int size() const { return 0; }
+ class SimulationCell: public std::vector<Atom*>
+ {
+  public:
+   SimulationCell(int nx, int ny, int nz, bool px, bool py, bool pz): innercm(0) { }
 
-   Atom const & operator[](long int i) const { return at; }
-   Atom & operator[](long int i) { return at; }
+   inline Atom const & operator[](long int i) const { return *(std::vector<Atom*>::operator[](i)); }
+   inline Atom & operator[](long int i) { return *(std::vector<Atom*>::operator[](i)); }
 
    Atom & Create(Atom * at) { push_back(at); return *at; } 
 
@@ -33,7 +38,12 @@ namespace lpmd
    void ClearForces() { }
 
    void SetCellManager(CellManager & cm) { innercm = &cm; }
-   CellManager & GetCellManager() const { return (*innercm); }
+
+   CellManager & GetCellManager() const 
+   { 
+    if (innercm == 0) throw CellManagerMissing();
+    return (*innercm); 
+   }
 
    void BuildNeighborList(long i, std::vector<Neighbor> & nlist, bool full, double rcut)
    {
@@ -43,6 +53,8 @@ namespace lpmd
    Vector VectorDistance(long i, long j) { return Vector(); }
 
    void AddToVirial(double vir) { }
+   double Virial() const { return 0.0; }  // necesario para testear AddToVirial
+
    double & StressTensor(int alpha, int beta) { return s; }
 
    Cell & GetCell() { return c; }
@@ -52,7 +64,6 @@ namespace lpmd
    double Temperature() const { return 0.0; }
 
   private:
-    Atom at;                // atomo temporal para poder retornar algo en operator[]
     CellManager * innercm;  // para guardar la referencia al CellManager
     double s;               // la componente del tensor de estres falsa
     Cell c;                 // la Cell interna

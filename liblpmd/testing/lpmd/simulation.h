@@ -5,6 +5,7 @@
 #ifndef __LPSimulation_SIMULATION_H__
 #define __LPSimulation_SIMULATION_H__
 
+#include <lpmd/error.h>
 #include <string>
 
 namespace lpmd
@@ -36,16 +37,17 @@ class Simulation
    void DoStep();
    void DoSteps(int nsteps);
 
-   void Dump(std::string filename);
-   void LoadDump(std::string filename);
-
- protected:
-   /// Valor interno del paso de simulación actual.
-   long step;
-
  private:
    // Private implementation pointer
    class SimulationImpl * md_impl;
+   long step;
+};
+
+class NoIntegrator: public Error
+{
+ public:
+   NoIntegrator(): Error("No integrator defined") { }
+
 };
 
 } // lpmd

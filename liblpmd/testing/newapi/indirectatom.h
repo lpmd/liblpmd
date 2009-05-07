@@ -7,7 +7,7 @@
 #ifndef __LPMD_INDIRECT_ATOM_H__
 #define __LPMD_INDIRECT_ATOM_H__
 
-#include "atominterface.h"
+#include <lpmd/atominterface.h>
 
 namespace lpmd
 {

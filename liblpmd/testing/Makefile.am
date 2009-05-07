@@ -23,7 +23,7 @@ nobase_include_HEADERS =  lpmd/atom.h lpmd/atominterface.h lpmd/basicvector.h lp
 noinst_HEADERS = version.h
 
 liblpmd_la_SOURCES = cell.cc cellgenerator.cc cellmanager.cc elements.cc error.cc integrator.cc simulation.cc module.cc paramlist.cc \
-                     particleset.cc plugin.cc pluginmanager.cc potential.cc potentialarray.c pairpotential.cc session.cc \
+                     plugin.cc pluginmanager.cc potential.cc potentialarray.c pairpotential.cc session.cc \
                      timer.cc onestepintegrator.cc color.cc
 
 #liblpmd_la_SOURCES =  cellformat.cc cellreader.cc cellwriter.cc cmdline.cc coulomb.cc inputfile.cc matrix.cc metalpotential.cc \

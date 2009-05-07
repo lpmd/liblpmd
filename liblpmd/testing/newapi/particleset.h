@@ -7,7 +7,7 @@
 #ifndef __LPMD_PARTICLESET_H__
 #define __LPMD_PARTICLESET_H__
 
-#include "atominterface.h"
+#include <lpmd/atominterface.h>
 #include "indirectvector.h"
 #include "indirectatom.h"
 

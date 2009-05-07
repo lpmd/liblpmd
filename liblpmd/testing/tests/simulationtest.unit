@@ -1,6 +1,74 @@
 
 #include <lpmd/simulation.h>
+#include <lpmd/simulationcell.h>
+#include <lpmd/potential.h>
+#include <lpmd/integrator.h>
+
+using namespace lpmd;
+
+class MockIntegrator: public Integrator
+{
+ public:
+   MockIntegrator(): counter(0) { }
+   void Advance(SimulationCell & sc, Potential & pot) { counter++; }
+
+   long int counter;
+};
 
 @testsuite Tests de Simulation
+
+@test GetCell y SetCell
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ Simulation s;
+ SimulationCell * oldcell = &(s.GetCell());
+ s.SetCell(cell);
+ SimulationCell & cell2 = s.GetCell();
+ @equal &cell, &cell2
+ @notequal &cell2, oldcell
+}
+@end
+
+@test GetIntegrator sin integrador activo arroja error
+{
+ Simulation s;
+ try
+ {
+  Integrator & integ = s.GetIntegrator();
+  @assert false
+ }
+ catch (NoIntegrator & e) 
+ { 
+  @assert true 
+ }
+}
+@end
+
+@test Test de SetIntegrator
+{
+ Simulation s;
+ MockIntegrator integ;
+ s.SetIntegrator(integ);
+ @equal &integ, &(s.GetIntegrator())
+}
+@end
+
+@test Test de CurrentStep() a cero
+{
+ Simulation s;
+ @equal s.CurrentStep(), 0
+}
+@end
+
+@test Test de DoSteps()
+{
+ Simulation s;
+ MockIntegrator integ;
+ s.SetIntegrator(integ);
+ s.DoSteps(5);
+ @equal s.CurrentStep(), 5
+ @equal integ.counter, 5
+}
+@end
 
 

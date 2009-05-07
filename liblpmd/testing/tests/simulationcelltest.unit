@@ -1,12 +1,50 @@
 
 #include <lpmd/simulationcell.h>
+#include <lpmd/cellmanager.h>
+#include <lpmd/error.h>
+
+class MockCellManager: public CellManager
+{
+ public:
+   MockCellManager()
+   { 
+    last_cell = 0;
+    last_i = -1;
+    last_nlist = 0;
+    last_full = false;
+    last_rcut = 0.0;
+   } 
+   void Reset() { }
+   void UpdateCell(SimulationCell & cell) { }
+   void BuildNeighborList(SimulationCell & cell, long int i, std::vector<Neighbor> & nlist, bool full, double rcut)
+   {
+    last_cell = &cell;
+    last_i = i;
+    last_nlist = &nlist;
+    last_full = full;
+    last_rcut = rcut;
+   }
+
+   bool LastCallWas(SimulationCell & cell, long int i, std::vector<Neighbor> & nlist, bool full, double rcut)
+   {
+    return ((((&cell == last_cell) && (i == last_i)) && ((&nlist == last_nlist) && (full == last_full))) && (fabs(rcut-last_rcut) < 1.0E-10));
+   }
+
+ private:
+    SimulationCell * last_cell;
+    long int last_i;
+    std::vector<Neighbor> * last_nlist;
+    bool last_full;
+    double last_rcut;
+  
+};
 
 @testsuite Tests de SimulationCell
 
 @test Retorna size cero.
 {
  SimulationCell cell(1,1,1,true,true,true);
- @approx cell.size(), 0.0e0, 1E-10
+ @equal cell.size(), 0
 }
 @end
 
@@ -14,8 +52,8 @@
 {
  SimulationCell cell(1,1,1,true,true,true);
  Vector pos(1,1,1);
- cell.Create(new Atom ("H",pos));
- Atom b("H",pos);
+ cell.Create(new Atom ("Cu",pos));
+ Atom b("Cu",pos);
  @equal cell[0].Symbol(), b.Symbol()
  @approx (cell[0].Position()-b.Position()).Module(), 0.0e0, 1E-10
  @approx (cell[0].Velocity()-b.Velocity()).Module(), 0.0e0, 1E-10
@@ -23,4 +61,97 @@
 }
 @end
 
-@test 
+@test Creando Atomos en simulationcell, comparacion con punteros
+{
+ SimulationCell cell(1,1,1,true,true,true);
+ Vector pos(1,1,1);
+ Atom * tmp = new Atom("Cu", pos);
+ cell.Create(tmp);
+ @equal &cell[0], tmp
+}
+@end
+
+@test Asignacion y lectura de StressTensor
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ cell.StressTensor(0, 0) = 1.0;
+ cell.StressTensor(1, 1) = 2.0;
+ cell.StressTensor(2, 2) = 3.0;
+ @approx cell.StressTensor(0, 0), 1.0, 1.0E-10
+ @approx cell.StressTensor(1, 1), 2.0, 1.0E-10
+ @approx cell.StressTensor(2, 2), 3.0, 1.0E-10
+}
+@end
+
+@test Seteo y calculo de temperatura
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ cell.InitVelocities();
+ cell.SetTemperature(300.0);
+ @approx cell.Temperature(), 300.0, 1.0E-10
+ cell.SetTemperature(150.0);
+ @approx cell.Temperature(), 150.0, 1.0E-10 
+}
+@end
+
+@test Virial es cero al crearse la SimulationCell
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ @approx cell.Virial(), 0.0, 1.0E-10
+}
+@end
+
+@test Tests de AddToVirial()
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ cell.AddToVirial(5.0);
+ @approx cell.Virial(), 5.0, 1.0E-10
+ cell.AddToVirial(2.0);
+ @approx cell.Virial(), 7.0, 1.0E-10
+}
+@end
+
+@test ClearForces resetea el virial 
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ cell.AddToVirial(5.0);
+ cell.ClearForces();
+ @approx cell.Virial(), 0.0, 1.0E-10
+}
+@end
+
+@test GetCellManager arroja error si no hay CellManager activo
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ try
+ {
+  CellManager & cm =  cell.GetCellManager();
+  @assert false
+ }
+ catch (Error & e)
+ {
+  @assert true
+ }
+}
+@end
+
+@test Test de SetCellManager
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ MockCellManager cm;
+ cell.SetCellManager(cm); 
+ @equal &cm, &(cell.GetCellManager())
+}
+@end
+
+@test Test de BuildNeighborList
+{
+ SimulationCell cell(1, 1, 1, true, true, true);
+ MockCellManager cm;
+ cell.SetCellManager(cm);
+ std::vector<Neighbor> nlist;
+ cell.BuildNeighborList(0, nlist, true, 3.5);
+ @assert cm.LastCallWas(cell, 0, nlist, true, 3.5)
+}
+@end
+
