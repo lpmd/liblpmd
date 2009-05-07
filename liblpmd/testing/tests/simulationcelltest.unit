@@ -155,3 +155,53 @@ class MockCellManager: public CellManager
 }
 @end
 
+@test Falta testear ClearForces
+{
+ // agregar atomos a la SC, y chequear que 
+ // despues de ClearForces() el modulo de la aceleracion
+ // de cada atomo es cero 
+ @assert false
+}
+@end
+
+@test Falta testear SetPosition
+{
+ // chequear que la posicion siempre queda dentro de la caja 
+ // y que si ya estaba dentro de la caja, es la misma posicion 
+ // que se le asigno inicialmente
+ @assert false
+}
+@end
+
+@test Falta testear SetVelocity
+{
+ // chequear que la velocidad del atomo despues de hacer SC::SetVelocity
+ // es la misma que se le asigno
+ @assert false
+}
+@end
+
+@test Falta testear SetFracPosition
+{
+ @assert false
+}
+@end
+
+@test Falta testear SetAcceleration
+{
+ // chequear que la aceleracion del atomo despues de hacer SC::SetAcceleration
+ // es la misma que se le asigno
+ @assert false
+}
+@end
+
+@test Falta testear VectorDistance
+{
+ // chequear los casos para distancias pequenyas
+ // (menos que la mitad de la caja) y distancias grandes,
+ // donde entra la periodicidad
+ @assert false
+}
+@end
+
+
