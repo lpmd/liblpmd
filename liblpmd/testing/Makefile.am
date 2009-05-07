@@ -21,11 +21,12 @@ nobase_include_HEADERS =  lpmd/atom.h lpmd/basicvector.h lpmd/basiccell.h lpmd/c
 
 noinst_HEADERS = version.h
 
-liblpmd_la_SOURCES =  atom.cc cell.cc cellformat.cc cellgenerator.cc cellmanager.cc cellreader.cc cellwriter.cc \
-                      cmdline.cc color.cc containable.cc coulomb.cc error.cc inputfile.cc instantproperty.cc integrator.cc matrix.cc md.cc \
-                      metalpotential.cc module.cc onestepintegrator.cc pairpotential.cc paramlist.cc particleset.cc plugin.cc pluginmanager.cc \
-                      potential.cc potentialarray.cc session.cc simulationcell.cc systemmodifier.cc \
-                      systemmixer.cc temporalproperty.cc timer.cc twostepintegrator.cc visualizer.cc
+liblpmd_la_SOURCES = atom.cc cell.cc cellgenerator.cc cellmanager.cc error.cc integrator.cc instantproperty.cc md.cc module.cc paramlist.cc \
+                     particleset.cc plugin.cc pluginmanager.cc potential.cc potentialarray.c pairpotential.cc session.cc simulationcell.cc \
+                     systemmodifier.cc timer.cc onestepintegrator.cc containable.cc util.cc color.cc
+
+#liblpmd_la_SOURCES =  cellformat.cc cellreader.cc cellwriter.cc cmdline.cc coulomb.cc inputfile.cc matrix.cc metalpotential.cc \
+#                       systemmixer.cc temporalproperty.cc twostepintegrator.cc visualizer.cc
 
 #
 #

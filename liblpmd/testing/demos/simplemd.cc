@@ -2,10 +2,22 @@
  * Ejemplo simple de dinamica molecular usando el API de liblpmd
  */
 
-#include <lpmd/api.h>
+#include <lpmd/pluginmanager.h>
+#include <lpmd/simulationcell.h>
+#include <lpmd/timer.h>
+#include <lpmd/md.h>
+#include <lpmd/cellgenerator.h>
+#include <lpmd/cellmanager.h>
+#include <lpmd/integrator.h>
+#include <lpmd/potentialarray.h>
+#include <lpmd/instantproperty.h>
+#include <lpmd/systemmodifier.h>
+
 #include <iostream>
 
 using namespace lpmd;
+
+#define INTEGRATOR "leapfrog"
 
 int main()
 {
@@ -22,7 +34,7 @@ int main()
  pm.LoadPlugin("minimumimage", "cutoff 8.5");
  pm.LoadPlugin("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
  pm.LoadPlugin("lennardjones", "sigma 3.41 epsilon 0.0103408 cutoff 8.5");
- pm.LoadPlugin("leapfrog", "dt 1.0");
+ pm.LoadPlugin(INTEGRATOR, "dt 1.0");
  pm.LoadPlugin("temperature", "t 168.0");
  pm.LoadPlugin("energy", "");
 
@@ -36,26 +48,18 @@ int main()
  PotentialArray & potarray = md.GetPotentialArray();
  potarray.Set("Ar", "Ar", pot);                            // asigna el potencial lennardjones al arreglo de potenciales de MD
 
- Integrator & integ = CastModule<Integrator>(pm["leapfrog"]);
- std::cout << "DEBUG before SetIntegrator\n";
- std::cerr << "DEBUG atom 0: " << cell[0].Position() << '\n';
- std::cerr << "DEBUG atom 1: " << cell[1].Position() << '\n';
+ Integrator & integ = CastModule<Integrator>(pm[INTEGRATOR]);
  md.SetIntegrator(integ);
- std::cout << "DEBUG after SetIntegrator\n";
 
  InstantProperty & energ = CastModule<InstantProperty>(pm["energy"]);
  
  SystemModifier & therm = CastModule<SystemModifier>(pm["temperature"]);
  therm.Apply(cell);                        // aplica el termalizador "temperature" a la celda de simulacion
 
- std::cout << "*** " << potarray.energy(cell) << '\n';
  potarray.UpdateForces(cell);
- std::cout << "!!! " << potarray.energy(cell) << '\n';
 
  md.Initialize(); 
- std::cout << "--- " << potarray.energy(cell) << '\n';
  md.DoStep();
- std::cout << "+++ " << potarray.energy(cell) << '\n';
 
  double av=0.0, av2=0.0;
  long nsteps = 5000, nav = 0;
@@ -64,11 +68,12 @@ int main()
  for (long i=0;i<nsteps;++i)
  {
   md.DoStep();
-  if (i % 50 == 0) 
-  { 
+  if (i % 10 == 0)
+  {
    energ.Evaluate(cell, pot);
    double tot_en = pm["energy"].GetProperty("total-energy");
-   std::cerr << tot_en << '\n';
+   double temp = pm["energy"].GetProperty("temperature");
+   std::cout << i << "  " << tot_en << "  " << temp << '\n';
    av += tot_en;
    av2 += (tot_en*tot_en);
    nav++;
