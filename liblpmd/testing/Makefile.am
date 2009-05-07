@@ -23,7 +23,7 @@ noinst_HEADERS = version.h
 
 liblpmd_la_SOURCES = atom.cc cell.cc cellgenerator.cc cellmanager.cc error.cc integrator.cc md.cc module.cc paramlist.cc \
                      particleset.cc plugin.cc pluginmanager.cc potential.cc potentialarray.c pairpotential.cc session.cc simulationcell.cc \
-                     systemmodifier.cc timer.cc onestepintegrator.cc containable.cc color.cc
+                     timer.cc onestepintegrator.cc color.cc
 
 #liblpmd_la_SOURCES =  cellformat.cc cellreader.cc cellwriter.cc cmdline.cc coulomb.cc inputfile.cc matrix.cc metalpotential.cc \
 #                       systemmixer.cc temporalproperty.cc twostepintegrator.cc visualizer.cc
