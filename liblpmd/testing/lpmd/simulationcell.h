@@ -33,27 +33,31 @@ namespace lpmd
 
    void SetPosition(long i, const Vector & p) 
    {
-    Atom tmp=*((std::vector<Atom*>::operator[](i)));
-    tmp.Position() = p;
-    *((std::vector<Atom*>::operator[](i))) = tmp ;
+    (*this)[i].Position() = p; 
+    // Atom tmp=*((std::vector<Atom*>::operator[](i)));
+    // tmp.Position() = p;
+    // *((std::vector<Atom*>::operator[](i))) = tmp ;
    }
    void SetFracPosition(long i, const Vector & fp) 
    { 
-    Atom tmp = *((std::vector<Atom*>::operator[](i)));
-    tmp.Position() = fp;
-    *((std::vector<Atom*>::operator[](i))) = tmp;
+    (*this)[i].Position() = fp; 
+    //Atom tmp = *((std::vector<Atom*>::operator[](i)));
+    //tmp.Position() = fp;
+    //*((std::vector<Atom*>::operator[](i))) = tmp;
    }
    void SetVelocity(long i, const Vector & v)
    {
-    Atom tmp = *((std::vector<Atom*>::operator[](i)));
-    tmp.Velocity() = v;
-    *((std::vector<Atom*>::operator[](i))) = tmp;
+    (*this)[i].Velocity() = v; 
+    //Atom tmp = *((std::vector<Atom*>::operator[](i)));
+    //tmp.Velocity() = v;
+    //*((std::vector<Atom*>::operator[](i))) = tmp;
    }
    void SetAcceleration(long i, const Vector & a)
    {
-    Atom tmp = *((std::vector<Atom*>::operator[](i)));
-    tmp.Acceleration() = a;
-    *((std::vector<Atom*>::operator[](i))) = tmp;
+    (*this)[i].Acceleration() = a; 
+    //Atom tmp = *((std::vector<Atom*>::operator[](i)));
+    //tmp.Acceleration() = a;
+    //*((std::vector<Atom*>::operator[](i))) = tmp;
    }
 
    void ClearForces() 

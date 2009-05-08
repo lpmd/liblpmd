@@ -205,7 +205,7 @@ class MockCellManager: public CellManager
  Vector v(1,1,1);
  cell.Create(new Atom("H",v,v,v));
  cell.SetVelocity(0,Vector(5,5,5));
- @approx (cell[0].Position()-Vector(5,5,5)).Module(), 0.0, 1E-10
+ @approx (cell[0].Velocity()-Vector(5,5,5)).Module(), 0.0, 1E-10
 }
 @end
 
@@ -227,7 +227,7 @@ class MockCellManager: public CellManager
  Vector a(1,2,3);
  cell.Create(new Atom("H",a,a,a));
  cell.SetAcceleration(0,Vector(1,1,1));
- @approx (cell[0].Position()-Vector(1,1,1)).Module(), 0.0, 1E-10
+ @approx (cell[0].Acceleration()-Vector(1,1,1)).Module(), 0.0, 1E-10
 }
 @end
 
