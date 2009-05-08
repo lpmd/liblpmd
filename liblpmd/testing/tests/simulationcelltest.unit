@@ -160,7 +160,27 @@ class MockCellManager: public CellManager
  // agregar atomos a la SC, y chequear que 
  // despues de ClearForces() el modulo de la aceleracion
  // de cada atomo es cero 
- @assert false
+ SimulationCell cell(1, 1, 1, true, true, true);
+ Vector pos1(0,0,0);
+ Vector pos2(5,5,5);
+ Vector vel1(0,5,0);
+ Vector vel2(5,0,5);
+ Vector ace1(1,1,1);
+ Vector ace2(2,2,2);
+ cell.Create(new Atom("Ge",pos1,vel1,ace1));
+ cell.Create(new Atom( "O",pos2,vel2,ace2));
+ cell.Create(new Atom("Kr",ace1,vel1,pos1));
+ cell.Create(new Atom("Xe",ace2,vel2,pos2));
+ cell.Create(new Atom( "H",pos1,ace1,vel1));
+ cell.Create(new Atom("He",pos2,ace2,vel2));
+ cell.ClearForces();
+ @approx cell.Virial(), 0.0, 1E-10
+ @approx cell[0].Acceleration().Module(), 0.0, 1E-10
+ @approx cell[1].Acceleration().Module(), 0.0, 1E-10
+ @approx cell[2].Acceleration().Module(), 0.0, 1E-10
+ @approx cell[3].Acceleration().Module(), 0.0, 1E-10
+ @approx cell[4].Acceleration().Module(), 0.0, 1E-10
+ @approx cell[5].Acceleration().Module(), 0.0, 1E-10
 }
 @end
 
@@ -169,7 +189,11 @@ class MockCellManager: public CellManager
  // chequear que la posicion siempre queda dentro de la caja 
  // y que si ya estaba dentro de la caja, es la misma posicion 
  // que se le asigno inicialmente
- @assert false
+ SimulationCell cell(1, 1, 1, true, true, true);
+ Vector pos(3,2,1);
+ cell.Create(new Atom("H", pos, pos, pos));
+ cell.SetPosition(0,Vector(1,1,1));
+ @approx (cell[0].Position()-Vector(1,1,1)).Module(), 0.0, 1E-10
 }
 @end
 
@@ -177,13 +201,21 @@ class MockCellManager: public CellManager
 {
  // chequear que la velocidad del atomo despues de hacer SC::SetVelocity
  // es la misma que se le asigno
- @assert false
+ SimulationCell cell(1, 1, 1, true, true, true);
+ Vector v(1,1,1);
+ cell.Create(new Atom("H",v,v,v));
+ cell.SetVelocity(0,Vector(5,5,5));
+ @approx (cell[0].Position()-Vector(5,5,5)).Module(), 0.0, 1E-10
 }
 @end
 
 @test Falta testear SetFracPosition
 {
- @assert false
+ SimulationCell cell(1, 1, 1, true, true, true);
+ Vector pos(0,0,0);
+ cell.Create(new Atom("H",pos,pos,pos));
+ cell.SetPosition(0,Vector(1,1,1));
+ @approx (cell[0].Position()-Vector(1,1,1)).Module(), 0.0, 1E-10
 }
 @end
 
@@ -191,7 +223,11 @@ class MockCellManager: public CellManager
 {
  // chequear que la aceleracion del atomo despues de hacer SC::SetAcceleration
  // es la misma que se le asigno
- @assert false
+ SimulationCell cell(1, 1, 1, true, true, true);
+ Vector a(1,2,3);
+ cell.Create(new Atom("H",a,a,a));
+ cell.SetAcceleration(0,Vector(1,1,1));
+ @approx (cell[0].Position()-Vector(1,1,1)).Module(), 0.0, 1E-10
 }
 @end
 

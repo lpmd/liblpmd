@@ -31,12 +31,42 @@ namespace lpmd
 
    Atom & Create(Atom * at) { push_back(at); return *at; } 
 
-   void SetPosition(long i, const Vector & p) { }
-   void SetFracPosition(long i, const Vector & fp) { }
-   void SetVelocity(long i, const Vector & v) { }
-   void SetAcceleration(long i, const Vector & a) { }
+   void SetPosition(long i, const Vector & p) 
+   {
+    Atom tmp=*((std::vector<Atom*>::operator[](i)));
+    tmp.Position() = p;
+    *((std::vector<Atom*>::operator[](i))) = tmp ;
+   }
+   void SetFracPosition(long i, const Vector & fp) 
+   { 
+    Atom tmp = *((std::vector<Atom*>::operator[](i)));
+    tmp.Position() = fp;
+    *((std::vector<Atom*>::operator[](i))) = tmp;
+   }
+   void SetVelocity(long i, const Vector & v)
+   {
+    Atom tmp = *((std::vector<Atom*>::operator[](i)));
+    tmp.Velocity() = v;
+    *((std::vector<Atom*>::operator[](i))) = tmp;
+   }
+   void SetAcceleration(long i, const Vector & a)
+   {
+    Atom tmp = *((std::vector<Atom*>::operator[](i)));
+    tmp.Acceleration() = a;
+    *((std::vector<Atom*>::operator[](i))) = tmp;
+   }
 
-   void ClearForces() {virial=0;}
+   void ClearForces() 
+   {
+    virial=0;
+    unsigned long n = size();
+    for (unsigned long int i=0;i<n;++i)
+    {
+     Atom tmp = *((std::vector<Atom*>::operator[](i)));
+     tmp.Acceleration() = Vector(0,0,0);
+     *((std::vector<Atom *>::operator[](i))) = tmp;
+    }
+   }
 
    void SetCellManager(CellManager & cm) { innercm = &cm; }
 
