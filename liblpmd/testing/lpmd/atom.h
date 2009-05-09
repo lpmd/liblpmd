@@ -24,6 +24,22 @@ class Atom: public AtomInterface
    iv = new Vector[3]; 
   }
 
+  Atom(const Atom & at): AtomInterface(at.Z())
+  {
+   iv = new Vector[3];
+   iv[0] = at.Position();
+   iv[1] = at.Velocity();
+   iv[2] = at.Acceleration();
+  }
+
+  Atom(const AtomInterface & at): AtomInterface(at.Z())
+  {
+   iv = new Vector[3];
+   iv[0] = at.Position();
+   iv[1] = at.Velocity();
+   iv[2] = at.Acceleration();
+  }
+
   Atom(const std::string a): AtomInterface(ElemNum(a))
   {
    iv = new Vector[3]; 

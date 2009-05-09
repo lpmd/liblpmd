@@ -48,6 +48,12 @@ class BasicVector
     return (*this);
    }
 
+   inline BasicVector & operator-=(const BasicVector & a)
+   {
+    for (int j=0;j<3;++j) inner[j] -= a[j];
+    return (*this);
+   }
+
  protected:
    double * inner;
 };

@@ -25,7 +25,13 @@ class Vector: public BasicVector
      for (int q=0;q<3;++q) inner[q] = 0.0;
     }
 
-    Vector(const Vector & v) 
+    Vector(const Vector & v)
+    {
+     inner = new double[3]; 
+     for (int q=0;q<3;++q) inner[q] = v[q];
+    }
+
+    Vector(const BasicVector & v) 
     {
      inner = new double[3]; 
      for (int q=0;q<3;++q) inner[q] = v[q];

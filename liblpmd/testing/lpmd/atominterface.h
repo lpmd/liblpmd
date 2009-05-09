@@ -21,8 +21,11 @@ class AtomInterface
 
   inline int Z() const { return z; }
   inline std::string Symbol() const { return ElemSym[Z()]; }
+  inline const BasicVector & Position() const { return iv[0]; }
   inline BasicVector & Position() { return iv[0]; }
+  inline const BasicVector & Velocity() const { return iv[1]; }
   inline BasicVector & Velocity() { return iv[1]; }
+  inline const BasicVector & Acceleration() const { return iv[2]; }
   inline BasicVector & Acceleration() { return iv[2]; }
   inline double Mass() const { return ElemMass[Z()]; }
 
