@@ -25,7 +25,9 @@ namespace lpmd
     virtual void ConvertToExternal(BasicVector & v) const = 0;
     virtual void ConvertToInternal(BasicVector & v) const = 0;
 
-    virtual Vector Displacement(const Vector & a, const Vector & b) const = 0;
+    virtual bool IsInside(const BasicVector & v) const = 0;
+    virtual Vector FittedInside(const BasicVector & v) const = 0;
+    virtual Vector Displacement(const BasicVector & a, const BasicVector & b) const = 0;
     virtual double Volume() const = 0;
 
  };

@@ -185,6 +185,28 @@ using namespace lpmd;
 }
 @end
 
+@test Acomodar posicion dentro de la celda
+{
+ Cell c("20 20 20 90 90 90");
+ Vector acom = c.FittedInside(Vector(10.0, 10.0, 10.0));
+ @approx (acom-Vector(10.0, 10.0, 10.0)).Module(), 0.0, 1.0E-10
+ acom = c.FittedInside(Vector(22.0, 23.0, 24.0));
+ @approx (acom-Vector(2.0, 3.0, 4.0)).Module(), 0.0, 1.0E-10
+ acom = c.FittedInside(Vector(-3.0, -7.0, -4.0));
+ @approx (acom-Vector(17.0, 13.0, 16.0)).Module(), 0.0, 1.0E-10
+}
+@end
+
+@test Acomodar posicion dentro de la celda, multiples cajas
+{
+ Cell c("20 20 20 90 90 90");
+ Vector acom = c.FittedInside(Vector(63.0, 65.0, 61.0));
+ @approx (acom-Vector(3.0, 5.0, 1.0)).Module(), 0.0, 1.0E-10
+ acom = c.FittedInside(Vector(-83.0, -87.0, -84.0));
+ @approx (acom-Vector(17.0, 13.0, 16.0)).Module(), 0.0, 1.0E-10
+}
+@end
+
 @test Calculo de volumen
 {
  Cell c("10 20 30 90 90 90");
@@ -243,6 +265,16 @@ using namespace lpmd;
    @approx (fabs(delta[q])+fabs((b-a)[q])), 10.0, 1.0E-10
   }
  }
+}
+@end
+
+@test Test de IsInside
+{
+ Cell c("10.0 10.0 10.0 90.0 90.0 90.0");
+ @assert c.IsInside(Vector(5.0, 5.0, 5.0))
+ @assert c.IsInside(Vector(2.0, 4.0, 7.5))
+ @assert (!c.IsInside(Vector(12.0, 4.0, 7.5)))
+ @assert (!c.IsInside(Vector(-3.7, 7.0, -15.3)))
 }
 @end
 

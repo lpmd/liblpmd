@@ -169,7 +169,33 @@ class Cell: public BasicCell
    }
   }
 
-  Vector Displacement(const Vector & a, const Vector & b) const
+  Vector FittedInside(const BasicVector & a) const
+  {
+   Vector vtmp(a);
+   ConvertToInternal(vtmp);
+   for (int q=0;q<3;++q)
+   {
+    if (p[q] == true)
+    {
+     double ll = v[q].Module();
+     if (vtmp[q] < 0.0) vtmp[q] -= ll*floor(vtmp[q]/ll);
+     else if (vtmp[q] > ll) vtmp[q] -= ll*floor(vtmp[q]/ll);
+    }
+   } 
+   ConvertToExternal(vtmp);
+   return vtmp;
+  }
+
+  bool IsInside(const BasicVector & a) const
+  {
+   Vector vtmp(a);
+   ConvertToInternal(vtmp);
+   for (int q=0;q<3;++q) 
+     if ((vtmp[q] < 0.0) || (vtmp[q] > v[q].Module())) return false;
+   return true;
+  }
+
+  Vector Displacement(const BasicVector & a, const BasicVector & b) const
   {
    Vector d = b - a;
    ConvertToInternal(d);
