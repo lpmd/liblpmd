@@ -48,6 +48,15 @@ class MockCellManager: public CellManager
 }
 @end
 
+@test Constructor asigna la periodicidad
+{
+ SimulationCell cell(1, 1, 1, true, false, false);
+ @equal cell.GetCell().Periodicity(0), true
+ @equal cell.GetCell().Periodicity(1), false
+ @equal cell.GetCell().Periodicity(2), false
+}
+@end
+
 @test Creando Atomos en simulationcell
 {
  SimulationCell cell(1,1,1,true,true,true);
@@ -155,11 +164,8 @@ class MockCellManager: public CellManager
 }
 @end
 
-@test Falta testear ClearForces
+@test Test de ClearForces
 {
- // agregar atomos a la SC, y chequear que 
- // despues de ClearForces() el modulo de la aceleracion
- // de cada atomo es cero 
  SimulationCell cell(1, 1, 1, true, true, true);
  Vector pos1(0,0,0);
  Vector pos2(5,5,5);
@@ -184,23 +190,29 @@ class MockCellManager: public CellManager
 }
 @end
 
-@test Falta testear SetPosition
+@test Test de SetPosition dentro de la caja
 {
- // chequear que la posicion siempre queda dentro de la caja 
- // y que si ya estaba dentro de la caja, es la misma posicion 
- // que se le asigno inicialmente
  SimulationCell cell(1, 1, 1, true, true, true);
- Vector pos(3,2,1);
- cell.Create(new Atom("H", pos, pos, pos));
- cell.SetPosition(0,Vector(1,1,1));
- @approx (cell[0].Position()-Vector(1,1,1)).Module(), 0.0, 1E-10
+ Vector initpos(0.7, 0.7, 0.7);
+ Vector pos(0.5, 0.5, 0.5);
+ cell.Create(new Atom("H", initpos, initpos, initpos));
+ cell.SetPosition(0, pos);
+ @approx (cell[0].Position()-pos).Module(), 0.0, 1E-10
 }
 @end
 
-@test Falta testear SetVelocity
+@test Test de SetPosition fuera de la caja
 {
- // chequear que la velocidad del atomo despues de hacer SC::SetVelocity
- // es la misma que se le asigno
+ SimulationCell cell(1, 1, 1, true, true, true);
+ Vector initpos(0.7, 0.7, 0.7);
+ cell.Create(new Atom("H", initpos, initpos, initpos));
+ cell.SetPosition(0, Vector(1.5, 1.5, 1.5));
+ @approx (cell[0].Position()-Vector(0.5, 0.5, 0.5)).Module(), 0.0, 1E-10
+}
+@end
+
+@test Test de SetVelocity
+{
  SimulationCell cell(1, 1, 1, true, true, true);
  Vector v(1,1,1);
  cell.Create(new Atom("H",v,v,v));
@@ -209,20 +221,21 @@ class MockCellManager: public CellManager
 }
 @end
 
-@test Falta testear SetFracPosition
+@test Test de SetFracPosition
 {
  SimulationCell cell(1, 1, 1, true, true, true);
+ cell.GetCell()[0] = 10.0*e1;
+ cell.GetCell()[1] = 10.0*e2;
+ cell.GetCell()[2] = 10.0*e3;
  Vector pos(0,0,0);
  cell.Create(new Atom("H",pos,pos,pos));
- cell.SetPosition(0,Vector(1,1,1));
- @approx (cell[0].Position()-Vector(1,1,1)).Module(), 0.0, 1E-10
+ cell.SetFracPosition(0, Vector(0.2, 0.3, 0.45));
+ @approx (cell[0].Position()-Vector(2.0, 3.0, 4.5)).Module(), 0.0, 1E-10
 }
 @end
 
-@test Falta testear SetAcceleration
+@test Test de SetAcceleration
 {
- // chequear que la aceleracion del atomo despues de hacer SC::SetAcceleration
- // es la misma que se le asigno
  SimulationCell cell(1, 1, 1, true, true, true);
  Vector a(1,2,3);
  cell.Create(new Atom("H",a,a,a));
@@ -231,13 +244,17 @@ class MockCellManager: public CellManager
 }
 @end
 
-@test Falta testear VectorDistance
+@test Test de VectorDistance
 {
- // chequear los casos para distancias pequenyas
- // (menos que la mitad de la caja) y distancias grandes,
- // donde entra la periodicidad
- @assert false
+ SimulationCell cell(1, 1, 1, true, true, true);
+ Vector a(0.5, 0.5, 0.5);
+ Vector b(0.6, 0.6, 0.6);
+ cell.Create(new Atom("H", a));
+ cell.Create(new Atom("Cl", b));
+ @approx (cell.VectorDistance(0, 1)-Vector(0.1, 0.1, 0.1)).Module(), 0.0, 1.0E-10
+ cell[0].Position() = Vector(0.1, 0.1, 0.1);
+ cell[1].Position() = Vector(0.9, 0.9, 0.9);
+ @approx (cell.VectorDistance(0, 1)-Vector(-0.2, -0.2, -0.2)).Module(), 0.0, 1.0E-10
 }
 @end
-
 

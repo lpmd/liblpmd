@@ -24,52 +24,34 @@ namespace lpmd
  class SimulationCell: public std::vector<Atom*>
  {
   public:
-   SimulationCell(int nx, int ny, int nz, bool px, bool py, bool pz): innercm(0) {virial=0;}
+   SimulationCell(int nx, int ny, int nz, bool px, bool py, bool pz): innercm(0) 
+   {
+    virial=0;
+    c.Periodicity(0) = px;
+    c.Periodicity(1) = py;
+    c.Periodicity(2) = pz;
+   }
 
    inline Atom const & operator[](long int i) const { return *(std::vector<Atom*>::operator[](i)); }
    inline Atom & operator[](long int i) { return *(std::vector<Atom*>::operator[](i)); }
 
    Atom & Create(Atom * at) { push_back(at); return *at; } 
 
-   void SetPosition(long i, const Vector & p) 
-   {
-    (*this)[i].Position() = p; 
-    // Atom tmp=*((std::vector<Atom*>::operator[](i)));
-    // tmp.Position() = p;
-    // *((std::vector<Atom*>::operator[](i))) = tmp ;
-   }
+   void SetPosition(long i, const Vector & p) { (*this)[i].Position() = c.FittedInside(p); }
+
    void SetFracPosition(long i, const Vector & fp) 
-   { 
-    (*this)[i].Position() = fp; 
-    //Atom tmp = *((std::vector<Atom*>::operator[](i)));
-    //tmp.Position() = fp;
-    //*((std::vector<Atom*>::operator[](i))) = tmp;
-   }
-   void SetVelocity(long i, const Vector & v)
    {
-    (*this)[i].Velocity() = v; 
-    //Atom tmp = *((std::vector<Atom*>::operator[](i)));
-    //tmp.Velocity() = v;
-    //*((std::vector<Atom*>::operator[](i))) = tmp;
+    (*this)[i].Position() = c.ScaleByCell(fp);
    }
-   void SetAcceleration(long i, const Vector & a)
-   {
-    (*this)[i].Acceleration() = a; 
-    //Atom tmp = *((std::vector<Atom*>::operator[](i)));
-    //tmp.Acceleration() = a;
-    //*((std::vector<Atom*>::operator[](i))) = tmp;
-   }
+
+   void SetVelocity(long i, const Vector & v) { (*this)[i].Velocity() = v; }
+
+   void SetAcceleration(long i, const Vector & a) { (*this)[i].Acceleration() = a; }
 
    void ClearForces() 
    {
     virial=0;
-    unsigned long n = size();
-    for (unsigned long int i=0;i<n;++i)
-    {
-     Atom tmp = *((std::vector<Atom*>::operator[](i)));
-     tmp.Acceleration() = Vector(0,0,0);
-     *((std::vector<Atom *>::operator[](i))) = tmp;
-    }
+    for (unsigned long int i=0;i<size();++i) (*this)[i].Acceleration() = Vector(0, 0, 0);
    }
 
    void SetCellManager(CellManager & cm) { innercm = &cm; }
@@ -85,9 +67,10 @@ namespace lpmd
     innercm->BuildNeighborList(*this, i, nlist, full, rcut);
    }
 
-   Vector VectorDistance(long i, long j) { return Vector(); }
+   Vector VectorDistance(long i, long j) { return c.Displacement((*this)[i].Position(), (*this)[j].Position()); }
 
    void AddToVirial(double vir) {virial += vir;}
+
    double Virial() const { return virial; }  // necesario para testear AddToVirial
 
    double & StressTensor(int alpha, int beta) { return s[alpha][beta]; }
@@ -100,24 +83,15 @@ namespace lpmd
     long nparts = size();
     for (int i=0;i<nparts;++i)
     {
-     Atom tmp = *((std::vector<Atom*>::operator[](i)));
-     vel = Vector(2.0*drand48()-1.0, 2.0*drand48()-1.0, 2.0*drand48()-1.0);
-     double mass = tmp.Mass();
-     totalp = totalp + vel*mass;
-     Atom a = *(std::vector<Atom*>::operator[](i));
-     a.Velocity() = vel;
-     *((std::vector<Atom*>::operator[](i))) = a;
+     vel = RandomVector(1.0);
+     totalp += vel*(*this)[i].Mass();
+     (*this)[i].Velocity() = vel;
     }
     totalp = totalp/nparts;
     for (int i=0;i<nparts;++i)
     {
-     Atom tmp = *((std::vector<Atom*>::operator[](i)));
-     vel = tmp.Velocity();
-     double mass = tmp.Mass();
-     vel = vel - totalp/mass;
-     Atom a = tmp;
-     a.Velocity() = vel;
-     *((std::vector<Atom*>::operator[](i))) = a;
+     double mass = (*this)[i].Mass();
+     (*this)[i].Velocity() -= (totalp/mass);
     }
    }
 
@@ -127,26 +101,15 @@ namespace lpmd
     double xi, ti = Temperature();
     for (unsigned long int i=0;i<size();++i)
     {
-     Atom tmp = *((std::vector<Atom*>::operator[](i)));
-     vel = tmp.Velocity();
      xi = sqrt(1.0 + (double(dt)/tau)*(temp/ti - 1.0));
-     vel = vel*xi;
-     Atom a = tmp;
-     a.Velocity() = vel;
-     *((std::vector<Atom*>::operator[](i))) = a;
+     (*this)[i].Velocity() *= xi;
     }
    }
 
    double Temperature() const 
    {
     double K = 0.0;
-    Vector vel;
-    for (unsigned long int i=0;i<size();++i)
-    {
-     Atom tmp = *((std::vector<Atom*>::operator[](i)));
-     vel = tmp.Velocity();
-     K += 0.5*tmp.Mass()*vel.SquareModule();
-    }
+    for (unsigned long int i=0;i<size();++i) K += 0.5*(*this)[i].Mass()*(*this)[i].Velocity().SquareModule();
     return (2.0/3.0)*K/(GlobalSession.GetDouble("kboltzmann")*double(size())); 
    }
 
