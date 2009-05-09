@@ -19,7 +19,8 @@ class MockIntegrator: public Integrator
 
 @test GetCell y SetCell
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ //SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  Simulation s;
  SimulationCell * oldcell = &(s.GetCell());
  s.SetCell(cell);

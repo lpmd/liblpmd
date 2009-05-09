@@ -29,6 +29,16 @@ class Cell: public BasicCell
    UpdateTransfMatrix();
   }
 
+  Cell(const Cell & c)
+  {
+   for (int q=0;q<3;++q) 
+   { 
+    v[q] = c[q];
+    p[q] = c.p[q];
+   }
+   UpdateTransfMatrix();
+  }
+
   Cell(const Vector & a, const Vector & b, const Vector & c)
   {
    v[0]=a;v[1]=b;v[2]=c;

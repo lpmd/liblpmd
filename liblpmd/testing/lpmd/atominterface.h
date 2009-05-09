@@ -29,6 +29,19 @@ class AtomInterface
   inline BasicVector & Acceleration() { return iv[2]; }
   inline double Mass() const { return ElemMass[Z()]; }
 
+  inline AtomInterface & operator=(const AtomInterface & at) 
+  {
+   if (&at != this)
+   {
+    z = at.Z();
+    Position() = at.Position(); 
+    Velocity() = at.Velocity(); 
+    Acceleration() = at.Acceleration(); 
+   }
+   return (*this);
+  }
+
+
  protected:
   int z;
   BasicVector * iv;

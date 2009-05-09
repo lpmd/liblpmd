@@ -17,9 +17,6 @@ double PairPotential::energy(SimulationCell & sc) { return energycache; }
 
 void PairPotential::UpdateForces(SimulationCell & sc)
 {
-// std::cerr << "DEBUG In UpdateForces: before BuildNeighborList\n";
-// std::cerr << "      i: " << sc[0].Position() << '\n';
-// std::cerr << "      j: " << sc[1].Position() << '\n';
  const double forcefactor = GlobalSession.GetDouble("forcefactor");
  Vector ff, acci, accj;
  const long int n = sc.size();
@@ -30,33 +27,22 @@ void PairPotential::UpdateForces(SimulationCell & sc)
  {
   for (int j=0;j<3;j++) stress[i][j]=0.0e0;
  }
- for (long i=0;i<n;++i)
+ for (long i=0;i<n-1;++i)    // was i<n
  {
+  /*
   std::vector<Neighbor> nlist;
   sc.BuildNeighborList(i, nlist, false, GetCutoff());
   for (unsigned long int k=0;k<nlist.size();++k)
   {
-   Neighbor & nn = nlist[k];
+   const Neighbor & nn = nlist[k];
    if (AppliesTo(sc[i].Z(), nn.j->Z()) && nn.r < GetCutoff()) 
    {
-    if (nn.r < 0.5)
-    {
-     std::cerr << "DEBUG Atoms too close! r=" << nn.r << '\n';
-     //FIXME : No muestra la info de los átomos involucrados.
-//     std::cerr << "i: " << sc[i].Position() << '\n';
-//     std::cerr << "j: " << nn.j->Position() << '\n';
-//     std::cerr << "DEBUG i=" << i << " j=" << nn.j->Index() << '\n';
-     exit(1);
-    }
     energycache += pairEnergy(nn.r);
     ff = pairForce(nn.rij);
-    sc[i].Acceleration() = acci; 
-    (nn.j)->Acceleration() = accj; 
-    sc.SetAcceleration(i, acci + ff*(forcefactor/sc[i].Mass()));
-    Atom * jpointer = const_cast<Atom *>(nn.j);                  // esto no se debe hacer :)
-    jpointer->Acceleration() = (accj - ff*(forcefactor/nn.j->Mass()));    // y menos esto :D
+    sc[i].Acceleration() += ff*(forcefactor/sc[i].Mass());
+    nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());
     tmpvir -= Dot(nn.rij, ff); // virial de pares
-    if (ff.Module() > 10.0) throw HorrendousForce(ff.Module()); // DEBUG
+    //if (ff.Module() > 10.0) throw HorrendousForce(ff.Module());
 
     //Asignacion de stress, un for adicional pequeno, 
     //sera mas lento? - El signo parec provenir de la fuerza, ojo con eso
@@ -68,6 +54,24 @@ void PairPotential::UpdateForces(SimulationCell & sc)
     }
    }
   }
+  */
+  // 
+  //
+  for (long j=i+1;j<n;++j)
+  {
+   const BasicVector & v_i = sc[i].Position();
+   const BasicVector & v_j = sc[j].Position();
+   Vector dist = sc.GetCell().Displacement(v_i, v_j);
+   if (dist.Module() < 8.5)
+   {
+    energycache += pairEnergy(dist.Module());
+    ff = pairForce(dist);
+    sc[i].Acceleration() += ff*(forcefactor/sc[i].Mass());
+    sc[j].Acceleration() -= ff*(forcefactor/sc[j].Mass());
+   }
+  }
+ //
+ //
  }
  sc.AddToVirial(tmpvir);
  for (int i=0;i<3;i++)

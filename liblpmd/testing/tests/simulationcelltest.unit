@@ -43,23 +43,23 @@ class MockCellManager: public CellManager
 
 @test Retorna size cero.
 {
- SimulationCell cell(1,1,1,true,true,true);
+ SimulationCell cell;
  @equal cell.size(), 0
 }
 @end
 
-@test Constructor asigna la periodicidad
+@test Constructor por defecto asigna la periodicidad a true
 {
- SimulationCell cell(1, 1, 1, true, false, false);
+ SimulationCell cell;
  @equal cell.GetCell().Periodicity(0), true
- @equal cell.GetCell().Periodicity(1), false
- @equal cell.GetCell().Periodicity(2), false
+ @equal cell.GetCell().Periodicity(1), true
+ @equal cell.GetCell().Periodicity(2), true
 }
 @end
 
 @test Creando Atomos en simulationcell
 {
- SimulationCell cell(1,1,1,true,true,true);
+ SimulationCell cell;
  Vector pos(1,1,1);
  cell.Create(new Atom ("Cu",pos));
  Atom b("Cu",pos);
@@ -70,19 +70,9 @@ class MockCellManager: public CellManager
 }
 @end
 
-@test Creando Atomos en simulationcell, comparacion con punteros
-{
- SimulationCell cell(1,1,1,true,true,true);
- Vector pos(1,1,1);
- Atom * tmp = new Atom("Cu", pos);
- cell.Create(tmp);
- @equal &cell[0], tmp
-}
-@end
-
 @test Asignacion y lectura de StressTensor
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  cell.StressTensor(0, 0) = 1.0;
  cell.StressTensor(1, 1) = 2.0;
  cell.StressTensor(2, 2) = 3.0;
@@ -94,7 +84,8 @@ class MockCellManager: public CellManager
 
 @test Seteo y calculo de temperatura
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
+ cell.Create(new Atom ("Cu"));
  cell.InitVelocities();
  cell.SetTemperature(300.0);
  @approx cell.Temperature(), 300.0, 1.0E-10
@@ -105,14 +96,14 @@ class MockCellManager: public CellManager
 
 @test Virial es cero al crearse la SimulationCell
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  @approx cell.Virial(), 0.0, 1.0E-10
 }
 @end
 
 @test Tests de AddToVirial()
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  cell.AddToVirial(5.0);
  @approx cell.Virial(), 5.0, 1.0E-10
  cell.AddToVirial(2.0);
@@ -122,7 +113,7 @@ class MockCellManager: public CellManager
 
 @test ClearForces resetea el virial 
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  cell.AddToVirial(5.0);
  cell.ClearForces();
  @approx cell.Virial(), 0.0, 1.0E-10
@@ -131,7 +122,7 @@ class MockCellManager: public CellManager
 
 @test GetCellManager arroja error si no hay CellManager activo
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  try
  {
   CellManager & cm =  cell.GetCellManager();
@@ -146,7 +137,7 @@ class MockCellManager: public CellManager
 
 @test Test de SetCellManager
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  MockCellManager cm;
  cell.SetCellManager(cm); 
  @equal &cm, &(cell.GetCellManager())
@@ -155,7 +146,7 @@ class MockCellManager: public CellManager
 
 @test Test de BuildNeighborList
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  MockCellManager cm;
  cell.SetCellManager(cm);
  std::vector<Neighbor> nlist;
@@ -166,7 +157,7 @@ class MockCellManager: public CellManager
 
 @test Test de ClearForces
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  Vector pos1(0,0,0);
  Vector pos2(5,5,5);
  Vector vel1(0,5,0);
@@ -192,7 +183,7 @@ class MockCellManager: public CellManager
 
 @test Test de SetPosition dentro de la caja
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  Vector initpos(0.7, 0.7, 0.7);
  Vector pos(0.5, 0.5, 0.5);
  cell.Create(new Atom("H", initpos, initpos, initpos));
@@ -203,17 +194,31 @@ class MockCellManager: public CellManager
 
 @test Test de SetPosition fuera de la caja
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  Vector initpos(0.7, 0.7, 0.7);
  cell.Create(new Atom("H", initpos, initpos, initpos));
  cell.SetPosition(0, Vector(1.5, 1.5, 1.5));
  @approx (cell[0].Position()-Vector(0.5, 0.5, 0.5)).Module(), 0.0, 1E-10
+ cell.SetPosition(0, Vector(-0.1, -0.2, -0.15));
+ @approx (cell[0].Position()-Vector(0.9, 0.8, 0.85)).Module(), 0.0, 1E-10
+}
+@end
+
+@test Test de SetPosition fuera de multiples caja
+{
+ SimulationCell cell;
+ Vector initpos(0.7, 0.7, 0.7);
+ cell.Create(new Atom("H", initpos, initpos, initpos));
+ cell.SetPosition(0, Vector(5.5, 5.5, 5.5));
+ @approx (cell[0].Position()-Vector(0.5, 0.5, 0.5)).Module(), 0.0, 1E-10
+ cell.SetPosition(0, Vector(-4.1, -3.2, -7.15));
+ @approx (cell[0].Position()-Vector(0.9, 0.8, 0.85)).Module(), 0.0, 1E-10
 }
 @end
 
 @test Test de SetVelocity
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  Vector v(1,1,1);
  cell.Create(new Atom("H",v,v,v));
  cell.SetVelocity(0,Vector(5,5,5));
@@ -223,7 +228,7 @@ class MockCellManager: public CellManager
 
 @test Test de SetFracPosition
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  cell.GetCell()[0] = 10.0*e1;
  cell.GetCell()[1] = 10.0*e2;
  cell.GetCell()[2] = 10.0*e3;
@@ -236,7 +241,7 @@ class MockCellManager: public CellManager
 
 @test Test de SetAcceleration
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  Vector a(1,2,3);
  cell.Create(new Atom("H",a,a,a));
  cell.SetAcceleration(0,Vector(1,1,1));
@@ -246,7 +251,7 @@ class MockCellManager: public CellManager
 
 @test Test de VectorDistance
 {
- SimulationCell cell(1, 1, 1, true, true, true);
+ SimulationCell cell;
  Vector a(0.5, 0.5, 0.5);
  Vector b(0.6, 0.6, 0.6);
  cell.Create(new Atom("H", a));

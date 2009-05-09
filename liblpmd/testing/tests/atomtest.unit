@@ -57,6 +57,38 @@ using namespace lpmd;
 }
 @end
 
+@test Constructor de copia
+{
+ Vector pos(2.0, 3.0, 4.0), vel(0.5, 0.2, 3.4), acc(50.0, 70.0, 35.0);
+ Atom * at = new Atom("H", pos, vel, acc);
+ Atom at2(*at);
+ delete at;
+ 
+ @equal at2.Z(), 1
+ @equal at2.Symbol(), "H"
+ @approx (at2.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at2.Velocity()-vel).Module(), 0.0, 1.0E-10
+ @approx (at2.Acceleration()-acc).Module(), 0.0, 1.0E-10
+}
+@end
+
+@test Operador de asignacion
+{
+ Vector pos(2.0, 3.0, 4.0), vel(0.5, 0.2, 3.4), acc(50.0, 70.0, 35.0);
+ Atom * at = new Atom("H", pos, vel, acc);
+ Atom at2("Zr");
+ @equal at2.Symbol(), "Zr" 
+ at2 = *at;
+ delete at;
+ 
+ @equal at2.Z(), 1
+ @equal at2.Symbol(), "H"
+ @approx (at2.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at2.Velocity()-vel).Module(), 0.0, 1.0E-10
+ @approx (at2.Acceleration()-acc).Module(), 0.0, 1.0E-10
+}
+@end
+
 @test Metodo Mass()
 {
  Atom at("Ar");

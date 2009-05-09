@@ -15,14 +15,14 @@
 
 using namespace lpmd;
 
-#define INTEGRATOR "leapfrog"
+#define INTEGRATOR "euler"
 
 int main()
 {
  Simulation md;                                            // define md como un objeto de dinamica molecular
  PluginManager pm;                                 // define pm como un manejador de plugins
 
- SimulationCell cell(1, 1, 1, true, true, true);   // cell es la celda de simulacion
+ SimulationCell cell;   // cell es la celda de simulacion
  cell.GetCell()[0] = 17.1191*e1;                   // define los vectores de la celda
  cell.GetCell()[1] = 17.1191*e2;
  cell.GetCell()[2] = 17.1191*e3;
@@ -62,7 +62,7 @@ int main()
  for (long i=0;i<nsteps;++i)
  {
   md.DoStep();
-  if (i % 10 == 0)
+  if (i % 100 == 0)
   {
    double tot_en = potarray.energy(cell); 
    double temp = cell.Temperature(); 

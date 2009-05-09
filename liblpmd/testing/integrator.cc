@@ -21,20 +21,12 @@ Integrator::~Integrator()
 
 void Integrator::UseOldCell(SimulationCell & sc) 
 {
- // std::cerr << "DEBUG Before UseOldCell\n";
- //std::cerr << " -> " << sc[0].Position() << '\n';
- //std::cerr << " -> " << sc[1].Position() << '\n';
  if (oldcell == NULL)
  {
-  //std::cerr << "DEBUG Calling copy constructor on SC... in Integrator::UseOldCell\n";
   oldcell = new SimulationCell(sc);
-  //std::cerr << "DEBUG Copy constructor called\n";
   oldcell->SetCellManager(sc.GetCellManager()); // No deberia ser problema que ambas sc compartan el mismo CellManager
   GoBack(*oldcell);
  }
- //std::cerr << "DEBUG After UseOldCell\n";
- //std::cerr << " -> " << sc[0].Position() << '\n';
- //std::cerr << " -> " << sc[1].Position() << '\n';
 }
 
 SimulationCell & Integrator::OldCell() const { return *(oldcell); }
@@ -47,7 +39,7 @@ void Integrator::GoBack(SimulationCell & sc)
  for (unsigned long int i=0;i<sc.size();++i)
  {
   //FIXME : Antes era = const Atom & now = sc[i];
-  Atom now = sc[i];
+  const Atom & now = sc[i];
   newpos = now.Position() - now.Velocity()*dt;
   newvel = now.Velocity() - now.Acceleration()*dt;
   sc.SetPosition(i, newpos);
