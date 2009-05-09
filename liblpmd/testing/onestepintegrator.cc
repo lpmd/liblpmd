@@ -25,6 +25,7 @@ void OneStepIntegrator::Advance(SimulationCell & sc, Potential & p)
   //FIXME : AtomType
   //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
   //else Advance(sc, i);
+  Advance(sc, i);
  }
 }
 
