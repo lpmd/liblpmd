@@ -15,7 +15,7 @@
 
 using namespace lpmd;
 
-#define INTEGRATOR "velocityverlet"
+#define INTEGRATOR "leapfrog"
 
 int main()
 {
@@ -23,9 +23,8 @@ int main()
  PluginManager pm;                                 // define pm como un manejador de plugins
 
  SimulationCell cell;   // cell es la celda de simulacion
- cell.GetCell()[0] = 17.1191*e1;                   // define los vectores de la celda
- cell.GetCell()[1] = 17.1191*e2;
- cell.GetCell()[2] = 17.1191*e3;
+ OrthogonalCell ortcell(17.1191, 17.1191, 17.1191);
+ cell.SetCell(ortcell);
  md.SetCell(cell);                                 // asigna la celda de simulacion al objeto Simulation 
 
  // Carga de plugins con sus parametros
@@ -46,8 +45,8 @@ int main()
 
  Integrator & integ = CastModule<Integrator>(pm[INTEGRATOR]);
  
- cell.InitVelocities();
- cell.SetTemperature(168.0);
+ md.InitVelocities();
+ md.SetTemperature(168.0);
 
  md.SetIntegrator(integ);
  potarray.UpdateForces(cell);

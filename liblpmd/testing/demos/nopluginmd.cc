@@ -3,6 +3,7 @@
  */
 
 #include <lpmd/simulationcell.h>
+#include <lpmd/simulation.h>
 
 #include <lpmd/timer.h>
 #include <lpmd/atom.h>
@@ -92,14 +93,16 @@ void GenerateFCC(SimulationCell & sc)
 int main()
 {
  SimulationCell cell(108, Atom("Ar"));   // cell es la celda de simulacion
+ Simulation md(cell);
+
  cell.GetCell()[0] = 17.1191*e1;                   // define los vectores de la celda
  cell.GetCell()[1] = 17.1191*e2;
  cell.GetCell()[2] = 17.1191*e3;
 
  GenerateFCC(cell);
 
- cell.InitVelocities();
- cell.SetTemperature(168.0);
+ md.InitVelocities();
+ md.SetTemperature(168.0);
 
  TestDoStep(cell, DT);
 

@@ -120,18 +120,6 @@ class MockCellManager: public CellManager
 }
 @end
 
-@test Seteo y calculo de temperatura
-{
- SimulationCell cell;
- cell.Create(new Atom ("Cu"));
- cell.InitVelocities();
- cell.SetTemperature(300.0);
- @approx Temperature(cell), 300.0, 1.0E-10
- cell.SetTemperature(150.0);
- @approx Temperature(cell), 150.0, 1.0E-10 
-}
-@end
-
 @test Virial es cero al crearse la SimulationCell
 {
  SimulationCell cell;

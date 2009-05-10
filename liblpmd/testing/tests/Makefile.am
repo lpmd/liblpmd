@@ -2,12 +2,13 @@
 #
 #
 
-TESTS = vectortest utiltest steppertest celltest arraytest atomtest simulationtest simulationcelltest 
+TESTS = vectortest utiltest steppertest orthogonalcelltest nonorthogonalcelltest arraytest atomtest simulationtest simulationcelltest 
 
 vectortest_SOURCES = vectortest.unit
 utiltest_SOURCES = utiltest.unit
 steppertest_SOURCES = steppertest.unit
-celltest_SOURCES = celltest.unit
+orthogonalcelltest_SOURCES = orthogonalcelltest.unit
+nonorthogonalcelltest_SOURCES = nonorthogonalcelltest.unit
 arraytest_SOURCES = arraytest.unit
 atomtest_SOURCES = atomtest.unit
 simulationtest_SOURCES = simulationtest.unit

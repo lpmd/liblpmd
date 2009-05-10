@@ -17,16 +17,30 @@ class MockIntegrator: public Integrator
 
 @testsuite Tests de Simulation
 
+@test GetCell sin simulationcell activo arroja error
+{
+ Simulation s;
+ try
+ {
+  SimulationCell & cell = s.GetCell();
+  @assert false
+ }
+ catch (NoSimulationCell & e) 
+ { 
+  @assert true 
+ }
+}
+@end
+
 @test GetCell y SetCell
 {
- //SimulationCell cell(1, 1, 1, true, true, true);
  SimulationCell cell;
- Simulation s;
- SimulationCell * oldcell = &(s.GetCell());
- s.SetCell(cell);
- SimulationCell & cell2 = s.GetCell();
- @equal &cell, &cell2
- @notequal &cell2, oldcell
+ SimulationCell cell2;
+ Simulation s(cell);
+ s.SetCell(cell2);
+ SimulationCell & pcell2 = s.GetCell();
+ @equal &pcell2, &cell2
+ @notequal &cell2, &cell
 }
 @end
 
@@ -47,10 +61,24 @@ class MockIntegrator: public Integrator
 
 @test Test de SetIntegrator
 {
- Simulation s;
+ SimulationCell cell;
+ Simulation s(cell);
  MockIntegrator integ;
  s.SetIntegrator(integ);
  @equal &integ, &(s.GetIntegrator())
+}
+@end
+
+@test Seteo y calculo de temperatura
+{
+ SimulationCell  cell;
+ Simulation s(cell);
+ cell.Create(new Atom ("Cu"));
+ s.InitVelocities();
+ s.SetTemperature(300.0);
+ @approx Temperature(cell), 300.0, 1.0E-10
+ s.SetTemperature(150.0);
+ @approx Temperature(cell), 150.0, 1.0E-10 
 }
 @end
 
@@ -63,7 +91,8 @@ class MockIntegrator: public Integrator
 
 @test Test de DoSteps()
 {
- Simulation s;
+ SimulationCell cell;
+ Simulation s(cell);
  MockIntegrator integ;
  s.SetIntegrator(integ);
  s.DoSteps(5);

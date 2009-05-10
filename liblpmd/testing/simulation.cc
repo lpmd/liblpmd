@@ -16,9 +16,9 @@ using namespace lpmd;
 class lpmd::SimulationImpl
 {
  public:
-   SimulationImpl(): itg(0) { }
+   SimulationImpl(): sc(0), oldsc(0), itg(0) { }
 
-   SimulationCell *sc, *oldsc;
+   SimulationCell * sc, * oldsc;
    Integrator *itg;
    PotentialArray p_array;
 };
@@ -40,7 +40,11 @@ Simulation::Simulation(SimulationCell & simcell)
 
 Simulation::~Simulation() { delete md_impl; }
 
-SimulationCell & Simulation::GetCell() const { return *(md_impl->sc); }
+SimulationCell & Simulation::GetCell() const 
+{ 
+ if (md_impl->sc == 0) throw NoSimulationCell();
+ return *(md_impl->sc); 
+}
 
 void Simulation::SetCell(SimulationCell & simcell) { md_impl->sc = &simcell; }
 
