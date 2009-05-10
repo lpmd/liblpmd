@@ -8,6 +8,7 @@
 
 using namespace lpmd;
 
+// FIXME: desactivados los AtomType
 void TwoStepIntegrator::Advance(SimulationCell & sc, Potential & p)
 {
  p.UpdateForces(sc);
@@ -15,25 +16,27 @@ void TwoStepIntegrator::Advance(SimulationCell & sc, Potential & p)
  for (unsigned long int i=0;i<sc.size();++i) 
  {
   const Atom & at = sc[i];
-  if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
+  //if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
  }
  for (unsigned long int i=0;i<sc.size();++i) 
  { 
   const Atom & at = sc[i];
-  if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
-  else AdvancePosition(sc, i);
+  //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
+  //else AdvancePosition(sc, i);
+  AdvancePosition(sc, i);
  }
  p.UpdateForces(sc);
  for (unsigned long int i=0;i<sc.size();++i) 
  {
   const Atom & at = sc[i];
-  if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
+  //if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
  }
  for (unsigned long int i=0;i<sc.size();++i) 
  { 
   const Atom & at = sc[i];
-  if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
-  else AdvanceVelocity(sc, i);
+  //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
+  //else AdvanceVelocity(sc, i);
+  AdvanceVelocity(sc, i);
  }
 }
 

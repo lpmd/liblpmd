@@ -6,6 +6,7 @@
 
 #include <lpmd/timer.h>
 #include <lpmd/atom.h>
+#include <lpmd/properties.h>
 
 #define DT (1.0)
 
@@ -111,9 +112,9 @@ int main()
   double pot_en = TestDoStep(cell, DT);
   if (i % 100 == 0)
   {
-   double kin_en = cell.KineticEnergy();
+   double kin_en = KineticEnergy(cell);
    double tot_en = kin_en + pot_en;
-   double temp = cell.Temperature(); 
+   double temp = Temperature(cell); 
    std::cout << i << "  " << pot_en << "  " << kin_en << "  " << tot_en << "  " << temp << '\n';
    av += tot_en;
    av2 += (tot_en*tot_en);

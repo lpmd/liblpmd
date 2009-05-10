@@ -13,9 +13,10 @@
 #include <lpmd/session.h>
 #include <lpmd/util.h>
 
+#include <lpmd/properties.h>
+
 // FIXME: no corresponde aqui
 const double kboltzmann = 8.6173422E-05;
-const double kin2ev = 103.64269;
 
 namespace lpmd
 {
@@ -63,26 +64,12 @@ class SimulationCell: public std::vector<Atom>
    void SetTemperature(double temp, double dt=1.0, double tau=1.0)
    {
     Vector vel;
-    double xi, ti = Temperature();
+    double xi, ti = Temperature(*this);
     for (unsigned long int i=0;i<size();++i)
     {
      xi = sqrt(1.0 + (double(dt)/tau)*(temp/ti - 1.0));
      (*this)[i].Velocity() *= xi;
     }
-   }
-
-   double KineticEnergy() const 
-   {
-    double K = 0.0;
-    for (unsigned long int i=0;i<size();++i) K += 0.5*(*this)[i].Mass()*(*this)[i].Velocity().SquareModule();
-    return K*kin2ev;
-   }
-
-   double Temperature() const
-   {
-    if (size() == 0) EndWithError("Cannot compute temperature without atoms!");
-    double K = KineticEnergy();
-    return (2.0/3.0)*K/(kboltzmann*double(size()));
    }
 
    // Metodos problematicos
@@ -107,20 +94,11 @@ class SimulationCell: public std::vector<Atom>
     innercm->BuildNeighborList(*this, i, nlist, full, rcut);
    }
 
-   void AddToVirial(double vir) 
-   {
-    virial += vir;
-   }
+   void AddToVirial(double vir) { virial += vir; }
 
-   double Virial() const 
-   { 
-    return virial; 
-   }  // necesario para testear AddToVirial
+   double Virial() const { return virial; }
 
-   double & StressTensor(int alpha, int beta) 
-   { 
-    return s[alpha][beta]; 
-   }
+   double & StressTensor(int alpha, int beta) { return s[alpha][beta]; }
 
    void ClearForces() 
    {
@@ -129,9 +107,6 @@ class SimulationCell: public std::vector<Atom>
     if (innercm != 0) innercm->UpdateCell(*this);
    }
 
-   void SetVelocity(long i, const BasicVector & v) { (*this)[i].Velocity() = v; }
-   void SetAcceleration(long i, const BasicVector & a) { (*this)[i].Acceleration() = a; }
-   
    Vector VectorDistance(long i, long j) { return innercell.Displacement((*this)[i].Position(), (*this)[j].Position()); }
 
   Cell innercell;

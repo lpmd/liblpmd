@@ -70,6 +70,26 @@ class MockCellManager: public CellManager
 }
 @end
 
+@test Asignacion de velocidades
+{
+ SimulationCell cell;
+ Vector v(1,1,1);
+ cell.Create(new Atom("H",v,v,v));
+ cell[0].Velocity() = Vector(5,5,5);
+ @approx (cell[0].Velocity()-Vector(5,5,5)).Module(), 0.0, 1E-10
+}
+@end
+
+@test Asignacion de aceleraciones
+{
+ SimulationCell cell;
+ Vector a(1,2,3);
+ cell.Create(new Atom("H",a,a,a));
+ cell[0].Acceleration() = Vector(1,1,1);
+ @approx (cell[0].Acceleration()-Vector(1,1,1)).Module(), 0.0, 1E-10
+}
+@end
+
 @test Asignacion y lectura de StressTensor
 {
  SimulationCell cell;
@@ -87,7 +107,7 @@ class MockCellManager: public CellManager
  SimulationCell cell(108, Atom("Ar"));
  double v0 = 0.0017669141;  // angstrom/fs
  for (int i=0;i<108;++i) cell[i].Velocity() = v0*e1;
- @approx cell.KineticEnergy(), 0.69800472, 1.0E-5
+ @approx KineticEnergy(cell), 0.69800472, 1.0E-5
 }
 @end
 
@@ -96,7 +116,7 @@ class MockCellManager: public CellManager
  SimulationCell cell(108, Atom("Ar"));
  double v0 = 0.0017669141;  // angstrom/fs
  for (int i=0;i<108;++i) cell[i].Velocity() = v0*e1;
- @approx cell.Temperature(), 50.0, 1.0E-05
+ @approx Temperature(cell), 50.0, 1.0E-05
 }
 @end
 
@@ -106,9 +126,9 @@ class MockCellManager: public CellManager
  cell.Create(new Atom ("Cu"));
  cell.InitVelocities();
  cell.SetTemperature(300.0);
- @approx cell.Temperature(), 300.0, 1.0E-10
+ @approx Temperature(cell), 300.0, 1.0E-10
  cell.SetTemperature(150.0);
- @approx cell.Temperature(), 150.0, 1.0E-10 
+ @approx Temperature(cell), 150.0, 1.0E-10 
 }
 @end
 
@@ -234,16 +254,6 @@ class MockCellManager: public CellManager
 }
 @end
 
-@test Test de SetVelocity
-{
- SimulationCell cell;
- Vector v(1,1,1);
- cell.Create(new Atom("H",v,v,v));
- cell.SetVelocity(0,Vector(5,5,5));
- @approx (cell[0].Velocity()-Vector(5,5,5)).Module(), 0.0, 1E-10
-}
-@end
-
 @test Test de SetFracPosition
 {
  SimulationCell cell;
@@ -254,16 +264,6 @@ class MockCellManager: public CellManager
  cell.Create(new Atom("H",pos,pos,pos));
  cell.SetFracPosition(0, Vector(0.2, 0.3, 0.45));
  @approx (cell[0].Position()-Vector(2.0, 3.0, 4.5)).Module(), 0.0, 1E-10
-}
-@end
-
-@test Test de SetAcceleration
-{
- SimulationCell cell;
- Vector a(1,2,3);
- cell.Create(new Atom("H",a,a,a));
- cell.SetAcceleration(0,Vector(1,1,1));
- @approx (cell[0].Acceleration()-Vector(1,1,1)).Module(), 0.0, 1E-10
 }
 @end
 

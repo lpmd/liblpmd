@@ -15,7 +15,7 @@
 
 using namespace lpmd;
 
-#define INTEGRATOR "leapfrog"
+#define INTEGRATOR "velocityverlet"
 
 int main()
 {
@@ -64,10 +64,10 @@ int main()
   md.DoStep();
   if (i % 100 == 0)
   {
-   double kin_en = cell.KineticEnergy();
+   double kin_en = KineticEnergy(cell);
    double pot_en = potarray.energy(cell); 
    double tot_en = kin_en + pot_en;
-   double temp = cell.Temperature(); 
+   double temp = Temperature(cell); 
    std::cout << i << "  " << pot_en << "  " << kin_en << "  " << tot_en << "  " << temp << '\n';
    av += tot_en;
    av2 += (tot_en*tot_en);

@@ -43,7 +43,7 @@ void Integrator::GoBack(SimulationCell & sc)
   newpos = now.Position() - now.Velocity()*dt;
   newvel = now.Velocity() - now.Acceleration()*dt;
   sc.SetPosition(i, newpos);
-  sc.SetVelocity(i, newvel);
+  sc[i].Velocity() = newvel;
  }
 }
 
