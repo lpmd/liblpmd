@@ -15,7 +15,7 @@
 
 using namespace lpmd;
 
-#define INTEGRATOR "euler"
+#define INTEGRATOR "leapfrog"
 
 int main()
 {
@@ -45,11 +45,11 @@ int main()
  potarray.Set("Ar", "Ar", pot);                            // asigna el potencial lennardjones al arreglo de potenciales de Simulation
 
  Integrator & integ = CastModule<Integrator>(pm[INTEGRATOR]);
- md.SetIntegrator(integ);
-
+ 
  cell.InitVelocities();
  cell.SetTemperature(168.0);
 
+ md.SetIntegrator(integ);
  potarray.UpdateForces(cell);
 
  md.Initialize(); 
