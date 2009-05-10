@@ -108,10 +108,13 @@ int main()
  timer.Start();
  for (long i=0;i<nsteps;++i)
  {
-  double tot_en = TestDoStep(cell, DT);
+  double pot_en = TestDoStep(cell, DT);
   if (i % 100 == 0)
   {
-   std::cout << i << "  " << tot_en << "  " << cell.Temperature() << '\n';
+   double kin_en = cell.KineticEnergy();
+   double tot_en = kin_en + pot_en;
+   double temp = cell.Temperature(); 
+   std::cout << i << "  " << pot_en << "  " << kin_en << "  " << tot_en << "  " << temp << '\n';
    av += tot_en;
    av2 += (tot_en*tot_en);
    nav++;

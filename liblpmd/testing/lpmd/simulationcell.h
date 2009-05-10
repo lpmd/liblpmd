@@ -15,6 +15,7 @@
 
 // FIXME: no corresponde aqui
 const double kboltzmann = 8.6173422E-05;
+const double kin2ev = 103.64269;
 
 namespace lpmd
 {
@@ -70,12 +71,18 @@ class SimulationCell: public std::vector<Atom>
     }
    }
 
+   double KineticEnergy() const 
+   {
+    double K = 0.0;
+    for (unsigned long int i=0;i<size();++i) K += 0.5*(*this)[i].Mass()*(*this)[i].Velocity().SquareModule();
+    return K*kin2ev;
+   }
+
    double Temperature() const
    {
     if (size() == 0) EndWithError("Cannot compute temperature without atoms!");
-    double K = 0.0;
-    for (unsigned long int i=0;i<size();++i) K += 0.5*(*this)[i].Mass()*(*this)[i].Velocity().SquareModule();
-    return (2.0/3.0)*(K/kboltzmann*double(size()));
+    double K = KineticEnergy();
+    return (2.0/3.0)*K/(kboltzmann*double(size()));
    }
 
    // Metodos problematicos

@@ -64,9 +64,11 @@ int main()
   md.DoStep();
   if (i % 100 == 0)
   {
-   double tot_en = potarray.energy(cell); 
+   double kin_en = cell.KineticEnergy();
+   double pot_en = potarray.energy(cell); 
+   double tot_en = kin_en + pot_en;
    double temp = cell.Temperature(); 
-   std::cout << i << "  " << potarray.energy(cell) << "  " << cell.Temperature() << '\n';
+   std::cout << i << "  " << pot_en << "  " << kin_en << "  " << tot_en << "  " << temp << '\n';
    av += tot_en;
    av2 += (tot_en*tot_en);
    nav++;
