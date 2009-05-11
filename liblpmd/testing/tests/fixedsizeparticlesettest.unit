@@ -2,30 +2,23 @@
 //
 //
 
-#include "particleset.h"
+#include <lpmd/fixedsizeparticleset.h>
 #include <lpmd/vector.h>
 
 using namespace lpmd;
 
-@testsuite Tests de ParticleSet
-
-@test Constructor por defecto
-{
- ParticleSet ps;
- @equal ps.Size(), 0
-}
-@end
+@testsuite Tests de FixedSizeParticleSet
 
 @test Constructor con numero de atomos
 {
- ParticleSet ps(100);
+ FixedSizeParticleSet ps(100);
  @equal ps.Size(), 100
 }
 @end
 
 @test Asignacion y lectura de atomos
 {
- ParticleSet ps(50);
+ FixedSizeParticleSet ps(50);
  const Vector pos(1.0, 2.0, 3.0);
  for (long int i=0;i<ps.Size();++i) ps[i].Position() = pos;
  for (long int i=0;i<ps.Size();++i) 

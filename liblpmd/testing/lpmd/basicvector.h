@@ -67,6 +67,13 @@ inline double Dot(const BasicVector & a, const BasicVector & b)
  return (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]);
 }
 
+inline bool operator==(const BasicVector & a, const BasicVector & b)
+{
+ for (int q=0;q<3;++q) 
+     if (fabs(a[q]-b[q]) >= 1.0E-10) return false;
+ return true;
+}
+
 inline std::ostream & operator<<(std::ostream & os, const BasicVector & v)
 {
  os << v[0] << " " << v[1] << " " << v[2];

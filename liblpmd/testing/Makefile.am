@@ -12,20 +12,21 @@ liblpmd_la_LDFLAGS = -version-info 2:0:0
 nobase_includeHEADERS_INSTALL = $(INSTALL) -D -p -c -m 644
 
 nobase_include_HEADERS =  lpmd/atom.h lpmd/array.h lpmd/arraytest.h lpmd/atominterface.h lpmd/basicvector.h lpmd/basiccell.h lpmd/basicparticleset.h \
-                          lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h \
-                          lpmd/cellmanager.h lpmd/cellreader.h lpmd/cellwriter.h lpmd/cmdline.h lpmd/color.h lpmd/containable.h lpmd/coulomb.h \
-                          lpmd/elements.h lpmd/error.h lpmd/properties.h lpmd/orthogonalcell.h lpmd/nonorthogonalcell.h \
-                          lpmd/inputfile.h lpmd/instantproperty.h lpmd/integrator.h lpmd/map.h lpmd/matrix.h lpmd/simulation.h lpmd/stepper.h \
-                          lpmd/metalpotential.h lpmd/module.h lpmd/onestepintegrator.h lpmd/pairpotential.h lpmd/paramlist.h lpmd/particleset.h \
-                          lpmd/plugin.h lpmd/pluginmanager.h lpmd/potential.h lpmd/potentialarray.h lpmd/session.h lpmd/simulationcell.h \
-                          lpmd/systemmixer.h lpmd/systemmodifier.h lpmd/temporalproperty.h lpmd/timer.h lpmd/twostepintegrator.h lpmd/util.h \
-                          lpmd/vector.h lpmd/value.h lpmd/visualizer.h lpmd/neighbor.h lpmd/api.h
+                          lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h lpmd/cellmanager.h lpmd/cellreader.h lpmd/cellwriter.h lpmd/cmdline.h \
+                          lpmd/color.h lpmd/containable.h lpmd/coulomb.h lpmd/elements.h lpmd/error.h lpmd/properties.h lpmd/orthogonalcell.h \
+                          lpmd/nonorthogonalcell.h lpmd/indirectvector.h lpmd/indirectatom.h lpmd/inputfile.h lpmd/instantproperty.h lpmd/integrator.h \
+                          lpmd/map.h lpmd/matrix.h lpmd/simulation.h lpmd/fixedsizeparticleset.h \
+                          lpmd/stepper.h lpmd/metalpotential.h lpmd/module.h lpmd/onestepintegrator.h lpmd/pairpotential.h lpmd/paramlist.h \
+                          lpmd/particleset.h lpmd/plugin.h lpmd/pluginmanager.h lpmd/potential.h lpmd/potentialarray.h lpmd/session.h \
+                          lpmd/simulationcell.h \
+                          lpmd/systemmixer.h lpmd/systemmodifier.h lpmd/temporalproperty.h lpmd/task.h lpmd/taskrunner.h lpmd/timer.h \
+                          lpmd/twostepintegrator.h lpmd/util.h lpmd/vector.h lpmd/value.h lpmd/visualizer.h lpmd/neighbor.h lpmd/api.h
 
 noinst_HEADERS = version.h
 
 liblpmd_la_SOURCES = cell.cc cellgenerator.cc cellmanager.cc elements.cc error.cc integrator.cc simulation.cc module.cc paramlist.cc \
                      plugin.cc pluginmanager.cc potential.cc potentialarray.c particleset.cc pairpotential.cc session.cc \
-                     timer.cc onestepintegrator.cc twostepintegrator.cc color.cc
+                     timer.cc onestepintegrator.cc twostepintegrator.cc
 
 #liblpmd_la_SOURCES =  cellformat.cc cellreader.cc cellwriter.cc cmdline.cc coulomb.cc inputfile.cc matrix.cc metalpotential.cc \
 #                       systemmixer.cc temporalproperty.cc visualizer.cc

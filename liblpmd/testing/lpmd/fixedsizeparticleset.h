@@ -4,22 +4,20 @@
  *
  */
 
-#ifndef __LPMD_PARTICLESET_H__
-#define __LPMD_PARTICLESET_H__
+#ifndef __LPMD_FIXEDSIZEPARTICLESET_H__
+#define __LPMD_FIXEDSIZEPARTICLESET_H__
 
-#include <lpmd/atominterface.h>
-#include "indirectvector.h"
-#include "indirectatom.h"
+#include <lpmd/indirectvector.h>
+#include <lpmd/indirectatom.h>
+#include <lpmd/basicparticleset.h>
 
 namespace lpmd
 {
 
-class ParticleSet
+class FixedSizeParticleSet: public AtomArray
 {
  public: 
-   ParticleSet(): nl(0), atomarray(0), vectorarray(0), storage(0) { }
- 
-   ParticleSet(long int n): nl(n)
+   FixedSizeParticleSet(long int n): nl(n)
    {
     atomarray = new IndirectAtom[n];
     vectorarray = new IndirectVector[3*n];
@@ -28,7 +26,7 @@ class ParticleSet
     for (long int i=0;i<n;++i) atomarray[i].SetAddress(vectorarray+3*i);
    }
 
-   virtual ~ParticleSet() 
+   virtual ~FixedSizeParticleSet() 
    { 
     delete [] storage;
     delete [] vectorarray;
@@ -36,7 +34,18 @@ class ParticleSet
    }
 
    inline AtomInterface & operator[](long int i) { return atomarray[i]; }
+   inline const AtomInterface & operator[](long int i) const { return atomarray[i]; }
+
    inline long int Size() const { return nl; }
+
+   inline long int Find(const AtomInterface & t)
+   {
+    for (long int i=0;i<Size();++i) 
+    {
+     if ((*this)[i] == t) return i;
+    }
+    return -1;
+   }
 
  private:
    long int nl;
@@ -45,7 +54,7 @@ class ParticleSet
    double * storage;
 };
 
-}
+}  // lpmd
 
 #endif
 
