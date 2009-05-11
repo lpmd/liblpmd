@@ -8,6 +8,9 @@
 #include <lpmd/error.h>
 #include <lpmd/vector.h>
 #include <lpmd/simulationcell.h>
+#include <lpmd/array.h>
+#include <lpmd/basicparticleset.h>
+#include <lpmd/arraytest.h>
 #include <string>
 
 namespace lpmd
@@ -72,10 +75,16 @@ class Simulation
    void DoStep();
    void DoSteps(int nsteps);
 
+   // FIXME: Metodos de prueba
+   inline Array<Atom> & DirectArray() { return direct; }
+   inline BasicParticleSet & IndirectArray() { return (*indirect); }
+
  private:
    // Private implementation pointer
    class SimulationImpl * md_impl;
    long step;
+   Array<Atom> direct;
+   BasicParticleSet * indirect;
 };
 
 class NoIntegrator: public Error

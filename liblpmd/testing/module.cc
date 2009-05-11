@@ -4,6 +4,7 @@
 
 #include <lpmd/module.h>
 #include <lpmd/pluginmanager.h>
+#include <lpmd/simulation.h>
 #include <lpmd/util.h>
 
 #include <iostream>
@@ -187,6 +188,11 @@ void Module::Show(std::ostream & os) const
    else os << '\n';
   }
  }
+}
+
+void Module::PerformTest(Simulation & s)
+{
+
 }
 
 void Module::ShowHelp() const

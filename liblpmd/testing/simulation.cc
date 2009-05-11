@@ -26,6 +26,7 @@ class lpmd::SimulationImpl
 Simulation::Simulation() 
 { 
  md_impl = new SimulationImpl();
+ indirect = new SlowArray;
  assert(md_impl->itg == 0);
  step = 0; 
 }
@@ -33,12 +34,17 @@ Simulation::Simulation()
 Simulation::Simulation(SimulationCell & simcell) 
 { 
  md_impl = new SimulationImpl();
+ indirect = new SlowArray;
  assert(md_impl->itg == 0);
  SetCell(simcell); 
  step = 0;
 }
 
-Simulation::~Simulation() { delete md_impl; }
+Simulation::~Simulation() 
+{
+ delete indirect; 
+ delete md_impl; 
+}
 
 SimulationCell & Simulation::GetCell() const 
 { 

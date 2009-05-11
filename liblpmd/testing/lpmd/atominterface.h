@@ -41,11 +41,15 @@ class AtomInterface
    return (*this);
   }
 
-
  protected:
   int z;
   BasicVector * iv;
 };
+
+inline bool operator==(const AtomInterface & a, const AtomInterface & b)
+{
+ return ((a.Z() == b.Z()) && ((a.Position()-b.Position()).Module() < 1.0E-10));
+}
 
 }
 
