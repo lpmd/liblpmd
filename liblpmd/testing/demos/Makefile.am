@@ -2,9 +2,8 @@
 #
 #
 
-TESTS = testplugin neighborlist simplemd nopluginmd
+TESTS = nopluginmd neighborlist simplemd
 
-testplugin_SOURCES = testplugin.cc 
 neighborlist_SOURCES = neighborlist.cc 
 simplemd_SOURCES = simplemd.cc 
 nopluginmd_SOURCES = nopluginmd.cc 

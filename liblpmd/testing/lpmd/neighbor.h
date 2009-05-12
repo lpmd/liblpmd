@@ -6,6 +6,7 @@
 #define __LPMD_NEIGHBOR_H__
 
 #include <lpmd/vector.h>
+#include <lpmd/atominterface.h>
 
 using namespace lpmd;
 
@@ -18,8 +19,8 @@ namespace lpmd
  class Neighbor
  {
   public:
-    Atom * i;    //  
-    Atom * j;    //
+    AtomInterface * i;    //  
+    AtomInterface * j;    //
     Vector rij;        // Distancia vectorial del atomo i al atomo j
     double r;          // Modulo de rij (precalculado para optimizacion)
 

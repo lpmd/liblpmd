@@ -26,6 +26,16 @@ class FixedSizeParticleSet: public AtomArray
     for (long int i=0;i<n;++i) atomarray[i].SetAddress(vectorarray+3*i);
    }
 
+   FixedSizeParticleSet(long int n, const AtomInterface & at): nl(n)
+   {
+    atomarray = new IndirectAtom[n];
+    vectorarray = new IndirectVector[3*n];
+    storage = new double[9*n];
+    for (long int i=0;i<3*n;++i) vectorarray[i].SetAddress(storage+3*i);
+    for (long int i=0;i<n;++i) atomarray[i].SetAddress(vectorarray+3*i);
+    for (long int i=0;i<n;++i) (*this)[i] = at;
+   }
+
    virtual ~FixedSizeParticleSet() 
    { 
     delete [] storage;

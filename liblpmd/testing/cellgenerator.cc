@@ -10,5 +10,5 @@ CellGenerator::CellGenerator() { }
 
 CellGenerator::~CellGenerator() { }
 
-void CellGenerator::Generate(SimulationCell & sc) const { }
+void CellGenerator::Generate(BasicParticleSet & atoms, BasicCell & cell) const { }
 

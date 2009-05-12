@@ -26,7 +26,7 @@ class OrthogonalCell: public BasicCell
    v[0]=e1;
    v[1]=e2;
    v[2]=e3;
-   for (int q=0;q<3;++q) p[q] = true;
+   for (int q=0;q<3;++q) { modv[q] = 1.0; p[q] = true; }
   }
 
   OrthogonalCell(const OrthogonalCell & c)
@@ -34,6 +34,7 @@ class OrthogonalCell: public BasicCell
    for (int q=0;q<3;++q) 
    { 
     v[q] = c[q];
+    modv[q] = v[q][q];
     p[q] = c.p[q];
    }
   }
@@ -43,7 +44,7 @@ class OrthogonalCell: public BasicCell
    v[0] = a*e1;
    v[1] = b*e2;
    v[2] = c*e3;
-   for (int i=0;i<3;++i) p[i] = true;
+   for (int i=0;i<3;++i) { p[i] = true; modv[i] = v[i][i]; }
   }
 
   bool IsOrthogonal() const { return true; }
@@ -52,7 +53,7 @@ class OrthogonalCell: public BasicCell
   {
    if (this != &c)
    {
-    for (int q=0;q<3;++q) v[q] = c[q];
+    for (int q=0;q<3;++q) { v[q] = c[q]; modv[q] = v[q][q]; }
     for (int i=0;i<3;++i) p[i] = c.p[i];
    }
    return (*this);
@@ -68,8 +69,8 @@ class OrthogonalCell: public BasicCell
 
   inline const OrthogonalCell & operator*=(double a)
   {
-   for (int i=0;i<3;++i) v[i] *= a;
-   mustupdate = true;   
+   for (int i=0;i<3;++i) { v[i] *= a; }
+   UpdateInternals();
    return (*this);
   }
 
@@ -107,21 +108,42 @@ class OrthogonalCell: public BasicCell
    return true;
   }
 
+  void UpdateInternals() const
+  {
+   for (int q=0;q<3;++q) { modv[q] = v[q][q]; }
+   mustupdate = false;
+  }
+
   Vector Displacement(const BasicVector & a, const BasicVector & b) const
   {
-   Vector d = b - a;
+   if (mustupdate) UpdateInternals();
+   double m, mhalf, d[3], * dd;
+   for (int q=0;q<3;++q) d[q] = b[q]-a[q];
    for (int i=0;i<3;++i)
    {
-    double q = d[i];
-    if (p[i] == true)
-    {
-     double ll = v[i].Module();
-     if (q >= 0.5*ll) q -= ll;
-     else if (q < -0.5*ll) q += ll;
-     d[i] = q;
-    }
+    if (!p[i]) continue;
+    dd = &d[i];
+    m = modv[i];
+    mhalf = 0.5*m;
+    if (*dd >= mhalf) (*dd) -= m;
+    else if (*dd < -mhalf) (*dd) += m;
    }
-   return d;
+   return Vector(d);
+  }
+
+  void FixDisplacement(BasicVector & delta)
+  {
+   if (mustupdate) UpdateInternals();
+   double m, mhalf, *dd;
+   for (int i=0;i<3;++i)
+   {
+    if (!p[i]) continue;
+    m = modv[i];
+    dd = &(delta[i]);
+    mhalf = 0.5*m;
+    if (*dd >= mhalf) (*dd) -= m;
+    else if (*dd < -mhalf) (*dd) += m;
+   }
   }
 
   double Volume() const 
@@ -133,8 +155,8 @@ class OrthogonalCell: public BasicCell
  private:
    Vector v[3];
    bool p[3];
+   mutable double modv[3];
    mutable bool mustupdate;
-
 };
 
 }

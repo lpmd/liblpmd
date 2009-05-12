@@ -2,10 +2,12 @@
  * Ejemplo simple de dinamica molecular usando el API de liblpmd
  */
 
-#include <lpmd/pluginmanager.h>
-#include <lpmd/simulationcell.h>
+#include <lpmd/simulation.h>
 #include <lpmd/cellgenerator.h>
 #include <lpmd/cellmanager.h>
+#include <lpmd/particleset.h>
+#include <lpmd/orthogonalcell.h>
+#include <lpmd/pluginmanager.h>
 
 #include <iostream>
 
@@ -16,36 +18,34 @@ using namespace lpmd;
 int main()
 {
  PluginManager pm;
+ Simulation<ParticleSet, OrthogonalCell> md(108, Atom("Ar"));
 
- SimulationCell cell;
- cell.GetCell()[0] = 17.1191*e1;
- cell.GetCell()[1] = 17.1191*e2;
- cell.GetCell()[2] = 17.1191*e3;
+ BasicCell & cell = md.Cell();
+ cell[0] = 17.1191*e1;
+ cell[1] = 17.1191*e2;
+ cell[2] = 17.1191*e3;
 
- // Carga de plugins con sus parametros
- pm.LoadPlugin("minimumimage", "cutoff 8.5");
- pm.LoadPlugin("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
+ md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
 
- CellManager & cm = CastModule<CellManager>(pm["minimumimage"]);
- cell.SetCellManager(cm);
+ ParticleSet & atoms = md.Atoms();
+ assert(atoms.Size() == 108);
+ CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
+ cg.Generate(atoms, cell);
 
- CellGenerator & cg = CastModule<CellGenerator>(pm["crystalfcc"]);
- cg.Generate(cell);
-
- for (long int i=0;i<cell.size();++i)
+ for (long int i=0;i<atoms.Size();++i)
  {
-  std::vector<Neighbor> nlist;
-  cell.BuildNeighborList(i, nlist, true, RCUT);
-  if (nlist.size() != 12) 
+  Array<Neighbor> & nlist = md.NeighborList(i, true, RCUT);
+  if (nlist.Size() != 12) 
   {
-   std::cerr << "DEBUG Atom " << i << ", wrong number of neighbors: " << nlist.size() << ", should be 12\n";
+   std::cerr << "DEBUG Atom " << i << ", wrong number of neighbors: " << nlist.Size() << ", should be 12\n";
   }
   else 
   {
-   for (int k=0;k<nlist.size();++k) assert(fabs(nlist[k].r-4.03501) < 0.0001);
+   for (int k=0;k<nlist.Size();++k) assert(fabs(nlist[k].r-4.03501) < 0.0001);
   }
-  assert(nlist.size() == 12);
+  assert(nlist.Size() == 12);
  }
+ std::cerr << "NeighborList passed OK!\n";
 
  return 0;
 }

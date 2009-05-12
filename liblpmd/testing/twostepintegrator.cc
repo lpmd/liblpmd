@@ -13,12 +13,12 @@ void TwoStepIntegrator::Advance(SimulationCell & sc, Potential & p)
 {
  p.UpdateForces(sc);
  const Vector aczero(0.0, 0.0, 0.0);
- for (unsigned long int i=0;i<sc.size();++i) 
+ for (long int i=0;i<sc.Size();++i) 
  {
   const Atom & at = sc[i];
   //if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
  }
- for (unsigned long int i=0;i<sc.size();++i) 
+ for (long int i=0;i<sc.Size();++i) 
  { 
   const Atom & at = sc[i];
   //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
@@ -26,12 +26,12 @@ void TwoStepIntegrator::Advance(SimulationCell & sc, Potential & p)
   AdvancePosition(sc, i);
  }
  p.UpdateForces(sc);
- for (unsigned long int i=0;i<sc.size();++i) 
+ for (long int i=0;i<sc.Size();++i) 
  {
   const Atom & at = sc[i];
   //if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
  }
- for (unsigned long int i=0;i<sc.size();++i) 
+ for (long int i=0;i<sc.Size();++i) 
  { 
   const Atom & at = sc[i];
   //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;

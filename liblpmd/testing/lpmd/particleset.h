@@ -6,24 +6,34 @@
 #define __LPMD_PARTICLESET_H__
 
 #include <lpmd/atom.h>
-
-#include <vector>
+#include <lpmd/array.h>
+#include <lpmd/basicparticleset.h>
 
 namespace lpmd
 {
 
- class ParticleSet: public std::vector<Atom>
+ class ParticleSet: public Array<Atom>, public BasicParticleSet
  {
   public:
-   ParticleSet(): std::vector<Atom>() { }
+   ParticleSet(): Array<Atom>() { }
 
-   ParticleSet(long int s, const Atom & at): std::vector<Atom>(s, at) { }
+   ParticleSet(long int s): Array<Atom>(s) { }
 
-   Atom & Create(Atom * at) { push_back(*at); return (*at); }
+   ParticleSet(long int s, const AtomInterface & at): Array<Atom>(s, at) { }
 
+   AtomInterface & operator[](long int i) { return Array<Atom>::operator[](i); }
 
+   const AtomInterface & operator[](long int i) const { return Array<Atom>::operator[](i); }
 
+   long int Size() const { return Array<Atom>::Size(); }
 
+   long int Find(const AtomInterface & at) { return Array<Atom>::Find(at); }
+
+   void Append(const AtomInterface & at) { Array<Atom>::Append(at); }
+
+   void Clear() { Array<Atom>::Clear(); }
+
+   void Delete(long int i) { Array<Atom>::Delete(i); } 
  };
 
 } // lpmd

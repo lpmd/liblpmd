@@ -29,6 +29,16 @@ class NonOrthogonalCell: public BasicCell
    UpdateTransfMatrix();
   }
 
+  NonOrthogonalCell(const BasicCell & c)
+  {
+   for (int q=0;q<3;++q) 
+   { 
+    v[q] = c[q];
+    p[q] = c.Periodicity(q);
+   }
+   UpdateTransfMatrix();
+  }
+
   NonOrthogonalCell(const NonOrthogonalCell & c)
   {
    for (int q=0;q<3;++q) 

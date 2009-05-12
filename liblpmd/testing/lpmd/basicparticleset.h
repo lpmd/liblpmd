@@ -24,6 +24,7 @@ class AtomArray
   virtual long int Size() const = 0;
 
   virtual long int Find(const AtomInterface & t) = 0;
+
 };
 
 class MutableAtomArray: public AtomArray

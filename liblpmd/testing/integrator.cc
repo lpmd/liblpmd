@@ -3,50 +3,49 @@
 //
 
 #include <lpmd/integrator.h>
-#include <lpmd/simulationcell.h>
 #include <lpmd/potential.h>
+#include <lpmd/particleset.h>
+#include <lpmd/nonorthogonalcell.h>
 #include <lpmd/util.h>
 
 using namespace lpmd;
 
-Integrator::Integrator() 
-{ 
- oldcell = NULL;
-}
+Integrator::Integrator(): oldatoms(0), oldcell(0) { }
 
 Integrator::~Integrator() 
 { 
- if (oldcell != NULL) delete oldcell;
+ delete oldatoms;
+ delete oldcell;
 }
 
-void Integrator::UseOldCell(SimulationCell & sc) 
+void Integrator::UseOldCell(BasicParticleSet & atoms, BasicCell & cell) 
 {
  if (oldcell == NULL)
  {
-  oldcell = new SimulationCell(sc);
-  oldcell->SetCellManager(sc.GetCellManager()); // No deberia ser problema que ambas sc compartan el mismo CellManager
-  GoBack(*oldcell);
+  oldatoms = new ParticleSet(atoms.Size());
+  oldcell = new NonOrthogonalCell(cell);
+  GoBack(*oldatoms, *oldcell);
  }
 }
 
-SimulationCell & Integrator::OldCell() const { return *(oldcell); }
+BasicParticleSet & Integrator::OldAtoms() const { return *(oldatoms); }
 
-void Integrator::Initialize(SimulationCell & sc, Potential & p) { }
+BasicCell & Integrator::OldCell() const { return *(oldcell); }
 
-void Integrator::GoBack(SimulationCell & sc)
+void Integrator::Initialize(BasicParticleSet & atoms, BasicCell & cell, Potential & p) { }
+
+void Integrator::GoBack(BasicParticleSet & atoms, BasicCell & cell)
 {
  Vector newpos, newvel;
- for (unsigned long int i=0;i<sc.size();++i)
+ for (long int i=0;i<atoms.Size();++i)
  {
-  //FIXME : Antes era = const Atom & now = sc[i];
-  const Atom & now = sc[i];
+  const Atom & now = atoms[i];
   newpos = now.Position() - now.Velocity()*dt;
   newvel = now.Velocity() - now.Acceleration()*dt;
-  sc.SetPosition(i, newpos);
-  sc[i].Velocity() = newvel;
+  atoms[i].Position() = cell.FittedInside(newpos);
+  atoms[i].Velocity() = newvel;
  }
 }
 
 double Integrator::Timestep() const { return dt; }
-
 

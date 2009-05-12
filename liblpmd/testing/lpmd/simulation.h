@@ -2,103 +2,124 @@
 //
 //
 
-#ifndef __LPSimulation_SIMULATION_H__
-#define __LPSimulation_SIMULATION_H__
+#ifndef __LPMD_SIMULATION_H__
+#define __LPMD_SIMULATION_H__
 
-#include <lpmd/error.h>
-#include <lpmd/vector.h>
-#include <lpmd/simulationcell.h>
+#include <lpmd/nonorthogonalcell.h>
+#include <lpmd/atom.h>
 #include <lpmd/array.h>
-#include <lpmd/basicparticleset.h>
-#include <lpmd/arraytest.h>
-#include <string>
+#include <lpmd/particleset.h>
+#include <lpmd/properties.h>
+#include <lpmd/neighbor.h>
+#include <lpmd/cellmanager.h>
+#include <lpmd/integrator.h>
+
+// FIXME: no corresponde aqui
+const double kboltzmann = 8.6173422E-05;
 
 namespace lpmd
 {
+ class Potential;    // forward
 
- class PotentialArray;                // forward declaration
- class Integrator;                    // forward declaration
-
-class Simulation
+template <typename AtomContainer, typename CellType> class Simulation
 {
  public:
-   Simulation();
-   Simulation(SimulationCell & simcell);
-   virtual ~Simulation();
+  Simulation(): atoms(0), cell(0), velocitiesSet(false), initialized(false)
+  {
+   // This hints Simulation that the number of atoms is variable
+   std::cerr << "DEBUG Calling Simulation constructor, no arguments\n";
+   atoms = new AtomContainer();  // maybe ParticleSet, or another type of ParticleSet
+   cell = new CellType();
+  }
 
-   virtual void Initialize();
-  
-   void SetCell(SimulationCell & simcell);
-   SimulationCell & GetCell() const;
+  Simulation(long int natoms): atoms(0), cell(0), velocitiesSet(false), initialized(false)
+  {
+   // This fixes the number of atoms for Simulation
+   std::cerr << "DEBUG Calling Simulation constructor, (long int natoms)\n";
+   atoms = new AtomContainer(natoms);  // maybe ParticleSet, or another type of ParticleSet
+   cell = new CellType();
+  }
 
-   PotentialArray & GetPotentialArray();
+  Simulation(long int natoms, const AtomInterface & t): atoms(0), cell(0), velocitiesSet(false), initialized(false)
+  {
+   // This fixes the number of atoms for Simulation
+   std::cerr << "DEBUG Calling Simulation constructor, (long int natoms, const AtomInterface &)\n";
+   atoms = new AtomContainer(natoms, t);  // maybe ParticleSet, or another type of ParticleSet
+   cell = new CellType();
+  }
 
-   void SetIntegrator(Integrator & integ);
-   Integrator & GetIntegrator() const;
+  ~Simulation()
+  {
+   delete atoms;
+   delete cell;
+  }
 
-   void InitVelocities()
-   {
-    SimulationCell & cell = GetCell();
-    Vector vel, totalp;
-    long nparts = cell.size();
-    double targettemp = 1.0;
-    double Kpart = (3.0/2.0)*kboltzmann*targettemp;
-    for (int i=0;i<nparts;++i)
-    {
-     double v2 = 2.0*Kpart/cell[i].Mass();
-     vel = RandomVector(sqrt(v2));
-     totalp += vel*cell[i].Mass();
-     cell[i].Velocity() = vel;
-    }
-    totalp = totalp/nparts;
-    for (int i=0;i<nparts;++i)
-    {
-     double mass = cell[i].Mass();
-     cell[i].Velocity() -= (totalp/mass);
-    }
-   }
+ void SetTemperature(double temp) 
+ {  
+  if (! velocitiesSet) InitVelocities();
+  double ti = Temperature(*atoms);
+  for (unsigned long int i=0;i<atoms->Size();++i) (*atoms)[i].Velocity() *= sqrt(temp/ti);
+ }
 
-   void SetTemperature(double temp, double dt=1.0, double tau=1.0)
-   {
-    Vector vel;
-    SimulationCell & cell = GetCell();
-    double xi, ti = Temperature(cell);
-    for (unsigned long int i=0;i<cell.size();++i)
-    {
-     xi = sqrt(1.0 + (double(dt)/tau)*(temp/ti - 1.0));
-     cell[i].Velocity() *= xi;
-    }
-   }
+ CellType & Cell() { return (*cell); }
 
-   long CurrentStep() const; 
+ AtomContainer & Atoms() { return (*atoms); }
 
-   void DoStep();
-   void DoSteps(int nsteps);
+ Array<Neighbor> & NeighborList(long int i, bool full, double rcut)
+ {
+  cellman->BuildNeighborList(*atoms, *cell, i, neighlist, full, rcut);
+  return neighlist;
+ }
 
-   // FIXME: Metodos de prueba
-   inline Array<Atom> & DirectArray() { return direct; }
-   inline BasicParticleSet & IndirectArray() { return (*indirect); }
+ Array<Potential &> & Potentials() { return potarray; }
+
+ void DoStep() 
+ {  
+  if (! initialized) Initialize();
+  integ->Advance(*atoms, *cell, potarray[0]);
+  // Do step
+ }
+
+ void SetIntegrator(lpmd::Integrator & itg) { integ = &itg; }
+
+ void SetCellManager(lpmd::CellManager & cm) { cellman = &cm; }
+
+ lpmd::Integrator & Integrator() { return (*integ); }
+ 
+ lpmd::CellManager & CellManager() { return (*cellman); }
 
  private:
-   // Private implementation pointer
-   class SimulationImpl * md_impl;
-   long step;
-   Array<Atom> direct;
-   BasicParticleSet * indirect;
-};
+  void InitVelocities() 
+  { 
+   Vector vel, totalp;
+   long nparts = atoms->Size();
+   double targettemp = 1.0;
+   double Kpart = (3.0/2.0)*kboltzmann*targettemp;
+   for (int i=0;i<nparts;++i)
+   {
+    double v2 = 2.0*Kpart/(*atoms)[i].Mass();
+    vel = RandomVector(sqrt(v2));
+    totalp += vel*(*atoms)[i].Mass();
+    (*atoms)[i].Velocity() = vel;
+   }
+   totalp = totalp/nparts;
+   for (int i=0;i<nparts;++i)
+   {
+    double mass = (*atoms)[i].Mass();
+    (*atoms)[i].Velocity() -= (totalp/mass);
+   }
+  }
 
-class NoIntegrator: public Error
-{
- public:
-   NoIntegrator(): Error("No integrator defined") { }
+  void Initialize() { integ->Initialize(*atoms, *cell, potarray[0]); }
 
-};
-
-class NoSimulationCell: public Error
-{
- public:
-   NoSimulationCell(): Error("No simulationcell defined") { }
-
+  CellType * cell;
+  AtomContainer * atoms;
+  Array<Potential &> potarray;
+  lpmd::Integrator * integ;
+  lpmd::CellManager * cellman;
+  bool velocitiesSet;
+  bool initialized;
+  Array<Neighbor> neighlist;
 };
 
 } // lpmd

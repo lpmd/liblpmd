@@ -18,15 +18,15 @@ namespace lpmd
  template <typename T> double KineticEnergy(const T & atomcont)
  {
   double K = 0.0;
-  for (unsigned long int i=0;i<atomcont.size();++i)
+  for (unsigned long int i=0;i<atomcont.Size();++i)
       K += 0.5*atomcont[i].Mass()*atomcont[i].Velocity().SquareModule();
   return K*KIN2EV;
  }
 
  template <typename T> double Temperature(const T & atomcont)
  {
-  if (atomcont.size() == 0) EndWithError("Cannot compute temperature without atoms!");
-  return (2.0/3.0)*KineticEnergy(atomcont)/(KBOLTZMANN*double(atomcont.size()));
+  if (atomcont.Size() == 0) EndWithError("Cannot compute temperature without atoms!");
+  return (2.0/3.0)*KineticEnergy(atomcont)/(KBOLTZMANN*double(atomcont.Size()));
  }
 
 }  // lpmd

@@ -4,28 +4,30 @@
 
 #include <lpmd/onestepintegrator.h>
 #include <lpmd/potential.h>
-#include <lpmd/simulationcell.h>
+#include <lpmd/atom.h>
 
 using namespace lpmd;
 
-void OneStepIntegrator::Advance(SimulationCell & sc, Potential & p)
+void OneStepIntegrator::Advance(BasicParticleSet & atoms, BasicCell & cell, Potential & p)
 {
- p.UpdateForces(sc);
+ p.UpdateForces(atoms, cell);
  // Setea a cero las aceleraciones de los atomos con fixedvel
  const Vector aczero(0.0, 0.0, 0.0);
- for (unsigned long int i=0;i<sc.size();++i) 
+ //FIXME : AtomType
+ /*
+ for (long int i=0;i<sc.Size();++i) 
  {
   const Atom & at = sc[i];
-  //FIXME : AtomType
-  //if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
+  if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
  }
- for (unsigned long int i=0;i<sc.size();++i)
+ */
+ for (long int i=0;i<atoms.Size();++i)
  {
-  const Atom & at = sc[i];
+  const Atom & at = atoms[i];
   //FIXME : AtomType
   //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
   //else Advance(sc, i);
-  Advance(sc, i);
+  Advance(atoms, cell, i);
  }
 }
 

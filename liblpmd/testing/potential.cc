@@ -13,7 +13,7 @@ Potential::Potential() { rcutoff = HUGE_VAL; }
 
 Potential::~Potential() { }
 
-void Potential::Initialize(SimulationCell & sc) { energycache = 0; }
+void Potential::Initialize(BasicParticleSet & atoms, BasicCell & cell) { energycache = 0; }
 
 void Potential::SetValidSpecies(int s1, int s2) { spc_sum = s1+s2; }
 

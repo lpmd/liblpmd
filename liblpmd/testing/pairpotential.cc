@@ -5,7 +5,6 @@
 #include <lpmd/session.h>
 #include <lpmd/pairpotential.h>
 #include <lpmd/neighbor.h>
-#include <lpmd/simulationcell.h>
 
 using namespace lpmd;
 
@@ -13,13 +12,13 @@ PairPotential::PairPotential() { }
 
 PairPotential::~PairPotential() { }
 
-double PairPotential::energy(SimulationCell & sc) { return energycache; } 
+double PairPotential::energy(BasicParticleSet & atoms, BasicCell & cell) { return energycache; } 
 
-void PairPotential::UpdateForces(SimulationCell & sc)
+void PairPotential::UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
 {
  const double forcefactor = GlobalSession.GetDouble("forcefactor");
  Vector ff, acci, accj;
- const long int n = sc.size();
+ const long int n = atoms.Size();
  energycache = 0.0;
  double tmpvir = 0.0;
  double stress[3][3];
@@ -59,27 +58,30 @@ void PairPotential::UpdateForces(SimulationCell & sc)
   //
   for (long j=i+1;j<n;++j)
   {
-   const BasicVector & v_i = sc[i].Position();
-   const BasicVector & v_j = sc[j].Position();
-   Vector dist = sc.GetCell().Displacement(v_i, v_j);
+   const BasicVector & v_i = atoms[i].Position();
+   const BasicVector & v_j = atoms[j].Position();
+   Vector dist = cell.Displacement(v_i, v_j);
    if (dist.Module() < 8.5)
    {
     energycache += pairEnergy(dist.Module());
     ff = pairForce(dist);
-    sc[i].Acceleration() += ff*(forcefactor/sc[i].Mass());
-    sc[j].Acceleration() -= ff*(forcefactor/sc[j].Mass());
+    atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
+    atoms[j].Acceleration() -= ff*(forcefactor/atoms[j].Mass());
    }
   }
  //
  //
  }
- sc.AddToVirial(tmpvir);
+ #warning "comentado AddToVirial y StressTensor"
+ // sc.AddToVirial(tmpvir);
+ /*
  for (int i=0;i<3;i++)
  {
   sc.StressTensor(0,i) = stress[0][i];
   sc.StressTensor(1,i) = stress[1][i];
   sc.StressTensor(2,i) = stress[2][i];
  }
+ */
 }
 
 

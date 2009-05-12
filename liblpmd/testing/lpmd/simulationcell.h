@@ -76,7 +76,7 @@ class SimulationCell: public ParticleSet
    void ClearForces() 
    {
     virial = 0;
-    for (unsigned long int i=0;i<size();++i) (*this)[i].Acceleration() = Vector(0, 0, 0);
+    for (unsigned long int i=0;i<Size();++i) (*this)[i].Acceleration() = Vector(0, 0, 0);
     if (innercm != 0) innercm->UpdateCell(*this);
    }
 
