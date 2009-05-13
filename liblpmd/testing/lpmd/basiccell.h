@@ -25,11 +25,11 @@ namespace lpmd
     virtual Vector & operator[](int q) = 0;
     virtual const Vector & operator[](int q) const = 0;
 
-    virtual Vector ScaleByCell(const BasicVector & cv) const = 0;
+    virtual Vector ScaleByCell(const Vector & cv) const = 0;
 
-    virtual bool IsInside(const BasicVector & v) const = 0;
-    virtual Vector FittedInside(const BasicVector & v) const = 0;
-    virtual Vector Displacement(const BasicVector & a, const BasicVector & b) const = 0;
+    virtual bool IsInside(const Vector & v) const = 0;
+    virtual Vector FittedInside(const Vector & v) const = 0;
+    virtual Vector Displacement(const Vector & a, const Vector & b) const = 0;
     virtual double Volume() const = 0;
 
  };

@@ -58,8 +58,8 @@ void PairPotential::UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
   //
   for (long j=i+1;j<n;++j)
   {
-   const BasicVector & v_i = atoms[i].Position();
-   const BasicVector & v_j = atoms[j].Position();
+   const Vector & v_i = atoms[i].Position();
+   const Vector & v_j = atoms[j].Position();
    Vector dist = cell.Displacement(v_i, v_j);
    if (dist.Module() < 8.5)
    {

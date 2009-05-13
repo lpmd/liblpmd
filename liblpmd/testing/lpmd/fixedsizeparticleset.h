@@ -7,7 +7,6 @@
 #ifndef __LPMD_FIXEDSIZEPARTICLESET_H__
 #define __LPMD_FIXEDSIZEPARTICLESET_H__
 
-#include <lpmd/indirectvector.h>
 #include <lpmd/indirectatom.h>
 #include <lpmd/basicparticleset.h>
 
@@ -19,31 +18,38 @@ class FixedSizeParticleSet: public AtomArray
  public: 
    FixedSizeParticleSet(long int n): nl(n)
    {
-    atomarray = new IndirectAtom[n];
-    vectorarray = new IndirectVector[3*n];
-    storage = new double[9*n];
-    for (long int i=0;i<3*n;++i) vectorarray[i].SetAddress(storage+3*i);
-    for (long int i=0;i<n;++i) atomarray[i].SetAddress(vectorarray+3*i);
+    AllocateMemory(n);
    }
 
    FixedSizeParticleSet(long int n, const AtomInterface & at): nl(n)
    {
-    atomarray = new IndirectAtom[n];
-    vectorarray = new IndirectVector[3*n];
-    storage = new double[9*n];
-    for (long int i=0;i<3*n;++i) vectorarray[i].SetAddress(storage+3*i);
-    for (long int i=0;i<n;++i) atomarray[i].SetAddress(vectorarray+3*i);
+    AllocateMemory(n);
     for (long int i=0;i<n;++i) (*this)[i] = at;
+   }
+
+   void AllocateMemory(long int n)
+   {
+    storepos = new double[3*n];
+    storevel = new double[3*n];
+    storeacc = new double[3*n];
+    posarray = new(storepos) Vector[n];
+    velarray = new(storevel) Vector[n];
+    accarray = new(storeacc) Vector[n];
+    atomarray = new IndirectAtom[n];
+    for (long int i=0;i<n;++i) 
+        atomarray[i].SetAddresses(&posarray[i], &velarray[i], &accarray[i]);
    }
 
    virtual ~FixedSizeParticleSet() 
    { 
-    delete [] storage;
-    delete [] vectorarray;
-    delete [] atomarray; 
+    delete [] atomarray;
+    delete [] storepos;
+    delete [] storevel;
+    delete [] storeacc;
    }
 
    inline AtomInterface & operator[](long int i) { return atomarray[i]; }
+
    inline const AtomInterface & operator[](long int i) const { return atomarray[i]; }
 
    inline long int Size() const { return nl; }
@@ -60,8 +66,8 @@ class FixedSizeParticleSet: public AtomArray
  private:
    long int nl;
    IndirectAtom * atomarray;
-   IndirectVector * vectorarray;
-   double * storage;
+   double * storepos, * storevel, * storeacc;
+   Vector * posarray, * velarray, * accarray;
 };
 
 }  // lpmd

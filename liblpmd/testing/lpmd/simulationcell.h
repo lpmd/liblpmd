@@ -45,9 +45,9 @@ class SimulationCell: public ParticleSet
    void SetCell(BasicCell & c) { innercell = &c; managedcell = false; }
    BasicCell & GetCell() { return *innercell; }
 
-   void SetPosition(long i, const BasicVector & p) { (*this)[i].Position() = innercell->FittedInside(p); }
+   void SetPosition(long i, const Vector & p) { (*this)[i].Position() = innercell->FittedInside(p); }
 
-   void SetFracPosition(long i, const BasicVector & fp) { (*this)[i].Position() = innercell->ScaleByCell(fp); }
+   void SetFracPosition(long i, const Vector & fp) { (*this)[i].Position() = innercell->ScaleByCell(fp); }
 
    void SetCellManager(CellManager & cm) 
    { 

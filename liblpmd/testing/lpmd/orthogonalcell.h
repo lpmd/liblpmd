@@ -78,14 +78,14 @@ class OrthogonalCell: public BasicCell
 
   const bool & Periodicity(int i) const { return p[i]; }
 
-  Vector ScaleByCell(const BasicVector & cv) const
+  Vector ScaleByCell(const Vector & cv) const
   {
    Vector nv;
    for (int j=0;j<3;++j) nv += v[j]*cv[j];
    return nv;
   }
 
-  Vector FittedInside(const BasicVector & a) const
+  Vector FittedInside(const Vector & a) const
   {
    Vector vtmp(a);
    for (int q=0;q<3;++q)
@@ -100,7 +100,7 @@ class OrthogonalCell: public BasicCell
    return vtmp;
   }
 
-  bool IsInside(const BasicVector & a) const
+  bool IsInside(const Vector & a) const
   {
    Vector vtmp(a);
    for (int q=0;q<3;++q) 
@@ -114,7 +114,7 @@ class OrthogonalCell: public BasicCell
    mustupdate = false;
   }
 
-  Vector Displacement(const BasicVector & a, const BasicVector & b) const
+  Vector Displacement(const Vector & a, const Vector & b) const
   {
    if (mustupdate) UpdateInternals();
    double m, mhalf, d[3], * dd;
@@ -131,7 +131,7 @@ class OrthogonalCell: public BasicCell
    return Vector(d);
   }
 
-  void FixDisplacement(BasicVector & delta)
+  void FixDisplacement(Vector & delta)
   {
    if (mustupdate) UpdateInternals();
    double m, mhalf, *dd;

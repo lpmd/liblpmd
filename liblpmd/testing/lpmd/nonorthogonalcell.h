@@ -153,14 +153,14 @@ class NonOrthogonalCell: public BasicCell
   bool & Periodicity(int i) { return p[i]; }
   const bool & Periodicity(int i) const { return p[i]; }
 
-  Vector ScaleByCell(const BasicVector & cv) const
+  Vector ScaleByCell(const Vector & cv) const
   {
    Vector nv;
    for (int j=0;j<3;++j) nv = nv + v[j]*cv[j];
    return nv;
   }
 
-  void ConvertToExternal(BasicVector & a) const
+  void ConvertToExternal(Vector & a) const
   {
    if (nonortg > 1.0E-10)
    {
@@ -175,7 +175,7 @@ class NonOrthogonalCell: public BasicCell
    }
   }
 
-  void ConvertToInternal(BasicVector & a) const
+  void ConvertToInternal(Vector & a) const
   {     
    if (nonortg > 1.0e-10)
    {
@@ -190,7 +190,7 @@ class NonOrthogonalCell: public BasicCell
    }
   }
 
-  Vector FittedInside(const BasicVector & a) const
+  Vector FittedInside(const Vector & a) const
   {
    Vector vtmp(a);
    ConvertToInternal(vtmp);
@@ -207,7 +207,7 @@ class NonOrthogonalCell: public BasicCell
    return vtmp;
   }
 
-  bool IsInside(const BasicVector & a) const
+  bool IsInside(const Vector & a) const
   {
    Vector vtmp(a);
    ConvertToInternal(vtmp);
@@ -216,7 +216,7 @@ class NonOrthogonalCell: public BasicCell
    return true;
   }
 
-  Vector Displacement(const BasicVector & a, const BasicVector & b) const
+  Vector Displacement(const Vector & a, const Vector & b) const
   {
    Vector d = b - a;
    ConvertToInternal(d);

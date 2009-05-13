@@ -42,8 +42,8 @@ template <typename AtomContainer, typename CellType> double TestUpdateForces(Ato
  for (long i=0;i<atoms.Size()-1;++i)
   for (long j=i+1;j<atoms.Size();++j)
   {
-   const BasicVector & v_i = atoms[i].Position();
-   const BasicVector & v_j = atoms[j].Position();
+   const Vector & v_i = atoms[i].Position();
+   const Vector & v_j = atoms[j].Position();
 //   Vector dist = cell.Displacement(v_i, v_j);
    dist = v_j-v_i;
    cell.FixDisplacement(dist);

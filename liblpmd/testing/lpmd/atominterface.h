@@ -7,7 +7,7 @@
 #ifndef __LPMD_ATOMINTERFACE_H__
 #define __LPMD_ATOMINTERFACE_H__
 
-#include <lpmd/basicvector.h>
+#include <lpmd/vector.h>
 #include "elements.h"
 
 namespace lpmd
@@ -16,17 +16,17 @@ namespace lpmd
 class AtomInterface
 {
  public:
-  AtomInterface(int z0): z(z0) { }
+  AtomInterface(int z0, Vector * ip, Vector * iv, Vector * ia): z(z0), ipos(ip), ivel(iv), iacc(ia) { }
   virtual ~AtomInterface() { }
 
   inline int Z() const { return z; }
   inline std::string Symbol() const { return ElemSym[Z()]; }
-  inline const BasicVector & Position() const { return iv[0]; }
-  inline BasicVector & Position() { return iv[0]; }
-  inline const BasicVector & Velocity() const { return iv[1]; }
-  inline BasicVector & Velocity() { return iv[1]; }
-  inline const BasicVector & Acceleration() const { return iv[2]; }
-  inline BasicVector & Acceleration() { return iv[2]; }
+  inline const Vector & Position() const { return *ipos; }
+  inline Vector & Position() { return *ipos; }
+  inline const Vector & Velocity() const { return *ivel; }
+  inline Vector & Velocity() { return *ivel; }
+  inline const Vector & Acceleration() const { return *iacc; }
+  inline Vector & Acceleration() { return *iacc; }
   inline double Mass() const { return ElemMass[Z()]; }
 
   inline AtomInterface & operator=(const AtomInterface & at) 
@@ -43,7 +43,7 @@ class AtomInterface
 
  protected:
   int z;
-  BasicVector * iv;
+  Vector * ipos, * ivel, * iacc;
 };
 
 inline bool operator==(const AtomInterface & a, const AtomInterface & b)

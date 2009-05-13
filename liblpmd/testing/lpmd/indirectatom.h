@@ -15,11 +15,16 @@ namespace lpmd
 class IndirectAtom: public AtomInterface
 {
  public:
-   IndirectAtom(): AtomInterface(0) {  }
-   IndirectAtom(int z): AtomInterface(z) {  }
+   IndirectAtom(): AtomInterface(0, 0, 0, 0) {  }
+   IndirectAtom(int z): AtomInterface(z, 0, 0, 0) {  }
    ~IndirectAtom() {  }
   
-   inline void SetAddress(BasicVector * p) { iv = p; }
+   inline void SetAddresses(Vector * pos, Vector * vel, Vector * acc) 
+   { 
+    ipos = pos;
+    ivel = vel;
+    iacc = acc;
+   }
 };
 
 }

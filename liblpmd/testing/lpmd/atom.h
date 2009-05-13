@@ -19,65 +19,53 @@ namespace lpmd
 class Atom: public AtomInterface
 {
  public: 
-  Atom(): AtomInterface(0), index(0) 
-  { 
-   iv = new Vector[3]; 
-  }
+  Atom(): AtomInterface(0, &iv[0], &iv[1], &iv[2]), index(0) { }
 
-  Atom(const Atom & at): AtomInterface(at.Z())
+  Atom(const Atom & at): AtomInterface(at.Z(), &iv[0], &iv[1], &iv[2]), index(0)
   {
-   iv = new Vector[3];
    iv[0] = at.Position();
    iv[1] = at.Velocity();
    iv[2] = at.Acceleration();
   }
 
-  Atom(const AtomInterface & at): AtomInterface(at.Z())
+  Atom(const AtomInterface & at): AtomInterface(at.Z(), &iv[0], &iv[1], &iv[2]), index(0)
   {
-   iv = new Vector[3];
    iv[0] = at.Position();
    iv[1] = at.Velocity();
    iv[2] = at.Acceleration();
   }
 
-  Atom(const std::string a): AtomInterface(ElemNum(a))
+  Atom(const std::string a): AtomInterface(ElemNum(a), &iv[0], &iv[1], &iv[2]), index(0)
   {
-   iv = new Vector[3]; 
   }
 
-  Atom(const int zeta): AtomInterface(zeta)
+  Atom(const int zeta): AtomInterface(zeta, &iv[0], &iv[1], &iv[2]), index(0)
   {
-   iv = new Vector[3];
   }
 
-  Atom(const std::string a, Vector & pos): AtomInterface(ElemNum(a))
+  Atom(const std::string a, Vector & pos): AtomInterface(ElemNum(a), &iv[0], &iv[1], &iv[2]), index(0)
   {
-   iv = new Vector[3];
    iv[0] = pos;
   }
 
-  Atom(const std::string a, Vector & pos, Vector & vel): AtomInterface(ElemNum(a))
+  Atom(const std::string a, Vector & pos, Vector & vel): AtomInterface(ElemNum(a), &iv[0], &iv[1], &iv[2]), index(0)
   {
-   iv = new Vector[3];
    iv[0] = pos;
    iv[1] = vel;
   }
  
-  Atom(const std::string elem, Vector & pos, Vector & vel, Vector & ace): AtomInterface(ElemNum(elem))
+  Atom(const std::string elem, Vector & pos, Vector & vel, Vector & ace): AtomInterface(ElemNum(elem), &iv[0], &iv[1], &iv[2]), index(0)
   {
-   iv = new Vector[3];
    iv[0] = pos;
    iv[1] = vel;
    iv[2] = ace;
   }
 
-  ~Atom() 
-  {
-   delete [] iv;
-  } 
+  ~Atom() { } 
 
  private:
   long index; //index atom
+  Vector iv[3];
 };
 
 }

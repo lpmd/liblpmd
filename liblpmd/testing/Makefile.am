@@ -11,10 +11,10 @@ liblpmd_la_LDFLAGS = -version-info 2:0:0
 
 nobase_includeHEADERS_INSTALL = $(INSTALL) -D -p -c -m 644
 
-nobase_include_HEADERS =  lpmd/atom.h lpmd/array.h lpmd/arraytest.h lpmd/atominterface.h lpmd/basicvector.h lpmd/basiccell.h lpmd/basicparticleset.h \
+nobase_include_HEADERS =  lpmd/atom.h lpmd/array.h lpmd/arraytest.h lpmd/atominterface.h lpmd/basiccell.h lpmd/basicparticleset.h \
                           lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h lpmd/cellmanager.h lpmd/cellreader.h lpmd/cellwriter.h lpmd/cmdline.h \
                           lpmd/color.h lpmd/containable.h lpmd/coulomb.h lpmd/elements.h lpmd/error.h lpmd/properties.h lpmd/orthogonalcell.h \
-                          lpmd/nonorthogonalcell.h lpmd/indirectvector.h lpmd/indirectatom.h lpmd/inputfile.h lpmd/instantproperty.h \
+                          lpmd/nonorthogonalcell.h lpmd/indirectatom.h lpmd/inputfile.h lpmd/instantproperty.h \
                           lpmd/map.h lpmd/matrix.h lpmd/fixedsizeparticleset.h \
                           lpmd/stepper.h lpmd/metalpotential.h lpmd/module.h lpmd/paramlist.h \
                           lpmd/particleset.h lpmd/plugin.h lpmd/pluginmanager.h lpmd/potential.h lpmd/pairpotential.h lpmd/session.h \
