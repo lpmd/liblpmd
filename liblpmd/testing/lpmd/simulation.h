@@ -5,45 +5,65 @@
 #ifndef __LPMD_SIMULATION_H__
 #define __LPMD_SIMULATION_H__
 
-#include <lpmd/nonorthogonalcell.h>
+#include <lpmd/cell.h>
 #include <lpmd/atom.h>
 #include <lpmd/array.h>
 #include <lpmd/particleset.h>
+#include <lpmd/potential.h>
 #include <lpmd/properties.h>
 #include <lpmd/neighbor.h>
 #include <lpmd/cellmanager.h>
 #include <lpmd/integrator.h>
+#include <lpmd/error.h>
 
 // FIXME: no corresponde aqui
 const double kboltzmann = 8.6173422E-05;
 
 namespace lpmd
 {
- class Potential;    // forward
+ class NoIntegrator: public Error
+ {
+  public:
+    NoIntegrator(): Error("No integrator defined") { }
+ };
 
-template <typename AtomContainer, typename CellType> class Simulation
+
+class PotentialArray: public Array<Potential &>, public Potential
 {
  public:
-  Simulation(): atoms(0), cell(0), velocitiesSet(false), initialized(false)
+   double energy(BasicParticleSet & atoms, BasicCell & cell)
+   {
+    double en = 0.0;
+    for (int p=0;p<Size();++p) en += (*this)[p].energy(atoms, cell);
+    return en;
+   }
+
+   void UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
+   {
+    for (int p=0;p<Size();++p) (*this)[p].UpdateForces(atoms, cell);
+   }
+};
+
+template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell> class Simulation
+{
+ public:
+  Simulation(): atoms(0), cell(0), integ(0), velocitiesSet(false), initialized(false), step(0)
   {
    // This hints Simulation that the number of atoms is variable
-   std::cerr << "DEBUG Calling Simulation constructor, no arguments\n";
    atoms = new AtomContainer();  // maybe ParticleSet, or another type of ParticleSet
    cell = new CellType();
   }
 
-  Simulation(long int natoms): atoms(0), cell(0), velocitiesSet(false), initialized(false)
+  Simulation(long int natoms): atoms(0), cell(0), integ(0), velocitiesSet(false), initialized(false), step(0)
   {
    // This fixes the number of atoms for Simulation
-   std::cerr << "DEBUG Calling Simulation constructor, (long int natoms)\n";
    atoms = new AtomContainer(natoms);  // maybe ParticleSet, or another type of ParticleSet
    cell = new CellType();
   }
 
-  Simulation(long int natoms, const AtomInterface & t): atoms(0), cell(0), velocitiesSet(false), initialized(false)
+  Simulation(long int natoms, const AtomInterface & t): atoms(0), cell(0), integ(0), velocitiesSet(false), initialized(false), step(0)
   {
    // This fixes the number of atoms for Simulation
-   std::cerr << "DEBUG Calling Simulation constructor, (long int natoms, const AtomInterface &)\n";
    atoms = new AtomContainer(natoms, t);  // maybe ParticleSet, or another type of ParticleSet
    cell = new CellType();
   }
@@ -76,15 +96,26 @@ template <typename AtomContainer, typename CellType> class Simulation
  void DoStep() 
  {  
   if (! initialized) Initialize();
-  integ->Advance(*atoms, *cell, potarray[0]);
-  // Do step
+  integ->Advance(*atoms, *cell, potarray);
+  step++;
  }
+ 
+ inline void DoSteps(long int n) 
+ { 
+  for (int q=0;q<n;++q) DoStep();
+ }
+
+ long int CurrentStep() const { return step; }
 
  void SetIntegrator(lpmd::Integrator & itg) { integ = &itg; }
 
  void SetCellManager(lpmd::CellManager & cm) { cellman = &cm; }
 
- lpmd::Integrator & Integrator() { return (*integ); }
+ lpmd::Integrator & Integrator() 
+ { 
+  if (integ == 0) throw NoIntegrator();
+  return (*integ); 
+ }
  
  lpmd::CellManager & CellManager() { return (*cellman); }
 
@@ -110,16 +141,22 @@ template <typename AtomContainer, typename CellType> class Simulation
    }
   }
 
-  void Initialize() { integ->Initialize(*atoms, *cell, potarray[0]); }
+  void Initialize() 
+  { 
+   integ->Initialize(*atoms, *cell, potarray); 
+   step = 0;
+   initialized = true;
+  }
 
   CellType * cell;
   AtomContainer * atoms;
-  Array<Potential &> potarray;
+  PotentialArray potarray;
   lpmd::Integrator * integ;
   lpmd::CellManager * cellman;
   bool velocitiesSet;
   bool initialized;
   Array<Neighbor> neighlist;
+  long int step;
 };
 
 } // lpmd

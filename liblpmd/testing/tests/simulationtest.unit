@@ -1,8 +1,8 @@
 
 #include <lpmd/simulation.h>
-#include <lpmd/simulationcell.h>
 #include <lpmd/potential.h>
 #include <lpmd/integrator.h>
+#include <lpmd/properties.h>
 
 using namespace lpmd;
 
@@ -10,46 +10,27 @@ class MockIntegrator: public Integrator
 {
  public:
    MockIntegrator(): counter(0) { }
-   void Advance(SimulationCell & sc, Potential & pot) { counter++; }
+   void Advance(BasicParticleSet & atoms, BasicCell & cell, Potential & pot) { counter++; }
 
    long int counter;
 };
 
 @testsuite Tests de Simulation
 
-@test GetCell sin simulationcell activo arroja error
+@test Inicializacion con numero de atomos
 {
- Simulation s;
- try
- {
-  SimulationCell & cell = s.GetCell();
-  @assert false
- }
- catch (NoSimulationCell & e) 
- { 
-  @assert true 
- }
-}
-@end
-
-@test GetCell y SetCell
-{
- SimulationCell cell;
- SimulationCell cell2;
- Simulation s(cell);
- s.SetCell(cell2);
- SimulationCell & pcell2 = s.GetCell();
- @equal &pcell2, &cell2
- @notequal &cell2, &cell
+ Simulation<> s(108, Atom("Cu"));
+ BasicParticleSet & atoms = s.Atoms();
+ @equal atoms.Size(), 108
 }
 @end
 
 @test GetIntegrator sin integrador activo arroja error
 {
- Simulation s;
+ Simulation<> s;
  try
  {
-  Integrator & integ = s.GetIntegrator();
+  Integrator & integ = s.Integrator();
   @assert false
  }
  catch (NoIntegrator & e) 
@@ -61,38 +42,34 @@ class MockIntegrator: public Integrator
 
 @test Test de SetIntegrator
 {
- SimulationCell cell;
- Simulation s(cell);
+ Simulation<> s;
  MockIntegrator integ;
  s.SetIntegrator(integ);
- @equal &integ, &(s.GetIntegrator())
+ @equal &integ, &(s.Integrator())
 }
 @end
 
 @test Seteo y calculo de temperatura
 {
- SimulationCell  cell;
- Simulation s(cell);
- cell.Create(new Atom ("Cu"));
- s.InitVelocities();
+ Simulation<> s(108, Atom("Cu"));
  s.SetTemperature(300.0);
- @approx Temperature(cell), 300.0, 1.0E-10
+ BasicParticleSet & atoms = s.Atoms();
+ @approx Temperature(atoms), 300.0, 1.0E-10
  s.SetTemperature(150.0);
- @approx Temperature(cell), 150.0, 1.0E-10 
+ @approx Temperature(atoms), 150.0, 1.0E-10 
 }
 @end
 
 @test Test de CurrentStep() a cero
 {
- Simulation s;
+ Simulation<> s;
  @equal s.CurrentStep(), 0
 }
 @end
 
 @test Test de DoSteps()
 {
- SimulationCell cell;
- Simulation s(cell);
+ Simulation<> s(108, Atom("Ar"));
  MockIntegrator integ;
  s.SetIntegrator(integ);
  s.DoSteps(5);

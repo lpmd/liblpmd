@@ -3,7 +3,7 @@
 #
 
 TESTS = vectortest utiltest steppertest tasktest orthogonalcelltest nonorthogonalcelltest arraytest atomtest fixedsizeparticlesettest \
-        simulationtest simulationcelltest
+        simulationtest 
 
 vectortest_SOURCES = vectortest.unit
 utiltest_SOURCES = utiltest.unit
@@ -15,7 +15,7 @@ arraytest_SOURCES = arraytest.unit
 atomtest_SOURCES = atomtest.unit
 fixedsizeparticlesettest_SOURCES = fixedsizeparticlesettest.unit
 simulationtest_SOURCES = simulationtest.unit
-simulationcelltest_SOURCES = simulationcelltest.unit
+#simulationcelltest_SOURCES = simulationcelltest.unit
 
 #
 #
