@@ -5,8 +5,6 @@
 #include <lpmd/simulation.h>
 #include <lpmd/timer.h>
 #include <lpmd/properties.h>
-#include <lpmd/fixedsizeparticleset.h>
-#include <lpmd/orthogonalcell.h>
 
 #define DT (1.0)
 
@@ -44,9 +42,7 @@ template <typename AtomContainer, typename CellType> double TestUpdateForces(Ato
   {
    const Vector & v_i = atoms[i].Position();
    const Vector & v_j = atoms[j].Position();
-//   Vector dist = cell.Displacement(v_i, v_j);
-   dist = v_j-v_i;
-   cell.FixDisplacement(dist);
+   Vector dist = cell.Displacement(v_i, v_j);
    if (dist.Module() < 8.5)
    {
     energycache += pairEnergy(dist.Module());
@@ -108,10 +104,11 @@ template <typename AtomContainer, typename CellType> void GenerateFCC(AtomContai
 
 int main()
 {
- Simulation<FixedSizeParticleSet, OrthogonalCell> md(108, Atom("Ar"));
- FixedSizeParticleSet & atoms = md.Atoms();
+ Simulation * simp = FixedOrthogonalEngine(108, Atom("Ar"));
+ Simulation & md = (*simp);
 
- OrthogonalCell & cell = md.Cell();
+ BasicParticleSet & atoms = md.Atoms();
+ BasicCell & cell = md.Cell();
 
  cell[0] = 17.1191*e1;                   // define los vectores de la celda
  cell[1] = 17.1191*e2;
@@ -152,6 +149,8 @@ int main()
  std::cout << "Total energy fluctuations = " << totalenergy_fluct << '\n';
  std::cout << "Fluctuation percentage = " << 100.0*totalenergy_fluct/fabs(totalenergy_av) << "%\n";
  timer.ShowElapsedTimes();
+
+ delete simp;
  return 0;
 }
 

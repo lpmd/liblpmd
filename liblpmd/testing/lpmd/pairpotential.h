@@ -7,8 +7,7 @@
 
 #include <lpmd/vector.h>
 #include <lpmd/potential.h>
-#include <lpmd/basicparticleset.h>
-#include <lpmd/basiccell.h>
+#include <lpmd/simulation.h>
 
 namespace lpmd
 {

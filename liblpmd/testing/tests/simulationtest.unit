@@ -10,7 +10,7 @@ class MockIntegrator: public Integrator
 {
  public:
    MockIntegrator(): counter(0) { }
-   void Advance(BasicParticleSet & atoms, BasicCell & cell, Potential & pot) { counter++; }
+   void Advance(Simulation & sim, Potential & pot) { counter++; }
 
    long int counter;
 };
@@ -19,7 +19,8 @@ class MockIntegrator: public Integrator
 
 @test Inicializacion con numero de atomos
 {
- Simulation<> s(108, Atom("Cu"));
+ Simulation * simp = GeneralEngine(108, Atom("Cu"));
+ Simulation & s = (*simp);
  BasicParticleSet & atoms = s.Atoms();
  @equal atoms.Size(), 108
 }
@@ -27,7 +28,8 @@ class MockIntegrator: public Integrator
 
 @test GetIntegrator sin integrador activo arroja error
 {
- Simulation<> s;
+ Simulation * simp = GeneralEngine(108, Atom("Cu"));
+ Simulation & s = (*simp);
  try
  {
   Integrator & integ = s.Integrator();
@@ -42,7 +44,8 @@ class MockIntegrator: public Integrator
 
 @test Test de SetIntegrator
 {
- Simulation<> s;
+ Simulation * simp = GeneralEngine(108, Atom("Cu"));
+ Simulation & s = (*simp);
  MockIntegrator integ;
  s.SetIntegrator(integ);
  @equal &integ, &(s.Integrator())
@@ -51,7 +54,8 @@ class MockIntegrator: public Integrator
 
 @test Seteo y calculo de temperatura
 {
- Simulation<> s(108, Atom("Cu"));
+ Simulation * simp = GeneralEngine(108, Atom("Cu"));
+ Simulation & s = (*simp);
  s.SetTemperature(300.0);
  BasicParticleSet & atoms = s.Atoms();
  @approx Temperature(atoms), 300.0, 1.0E-10
@@ -62,14 +66,16 @@ class MockIntegrator: public Integrator
 
 @test Test de CurrentStep() a cero
 {
- Simulation<> s;
+ Simulation * simp = GeneralEngine(108, Atom("Cu"));
+ Simulation & s = (*simp);
  @equal s.CurrentStep(), 0
 }
 @end
 
 @test Test de DoSteps()
 {
- Simulation<> s(108, Atom("Ar"));
+ Simulation * simp = GeneralEngine(108, Atom("Cu"));
+ Simulation & s = (*simp);
  MockIntegrator integ;
  s.SetIntegrator(integ);
  s.DoSteps(5);

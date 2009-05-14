@@ -10,8 +10,9 @@
 
 namespace lpmd
 {
+ class Simulation; // forward
+ class Potential;
 
- class Potential;                    // forward declaration
 
 class Integrator
 {
@@ -28,9 +29,9 @@ class Integrator
    BasicParticleSet & OldAtoms() const;
    BasicCell & OldCell() const;
 
-   virtual void Initialize(BasicParticleSet & atoms, BasicCell & cell, Potential & p);
+   virtual void Initialize(Simulation & sim, Potential & p);
 
-   virtual void Advance(BasicParticleSet & atoms, BasicCell & cell, Potential & p) = 0;
+   virtual void Advance(Simulation & sim, Potential & p) = 0;
 
  protected:
    double dt;

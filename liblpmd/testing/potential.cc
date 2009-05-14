@@ -3,6 +3,7 @@
 //
 
 #include <lpmd/potential.h>
+#include <lpmd/simulation.h>
 #include <lpmd/util.h>
 
 #include <cmath>
@@ -13,7 +14,11 @@ Potential::Potential() { rcutoff = HUGE_VAL; }
 
 Potential::~Potential() { }
 
-void Potential::Initialize(BasicParticleSet & atoms, BasicCell & cell) { energycache = 0; }
+void Potential::Initialize(Simulation & sim) { energycache = 0; innersim = &sim; }
+
+double Potential::energy(Simulation & sim) { return energy(sim.Atoms(), sim.Cell()); }
+
+void Potential::UpdateForces(Simulation & sim) { UpdateForces(sim.Atoms(), sim.Cell()); }
 
 void Potential::SetValidSpecies(int s1, int s2) { spc_sum = s1+s2; }
 

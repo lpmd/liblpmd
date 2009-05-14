@@ -13,9 +13,9 @@ namespace lpmd
 class OneStepIntegrator: public Integrator
 {
  public:
-   void Advance(BasicParticleSet & atoms, BasicCell & cell, Potential & p);
+   void Advance(Simulation & sim, Potential & p);
 
-   virtual void Advance(BasicParticleSet & atoms, BasicCell & cell, long i) = 0;
+   virtual void Advance(Simulation & sim, long i) = 0;
 };
 
 } // lpmd

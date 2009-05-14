@@ -22,23 +22,22 @@ void PairPotential::UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
  energycache = 0.0;
  double tmpvir = 0.0;
  double stress[3][3];
+ Simulation & sim = GetSimulation(); // FIXME: el metodo es solo un hack!
  for (int i=0;i<3;i++)
  {
   for (int j=0;j<3;j++) stress[i][j]=0.0e0;
  }
- for (long i=0;i<n-1;++i)    // was i<n
+ for (long i=0;i<n;++i)    // was i<n
  {
-  /*
-  std::vector<Neighbor> nlist;
-  sc.BuildNeighborList(i, nlist, false, GetCutoff());
-  for (unsigned long int k=0;k<nlist.size();++k)
+  Array<Neighbor> & nlist = sim.NeighborList(i, false, GetCutoff());
+  for (long int k=0;k<nlist.Size();++k)
   {
    const Neighbor & nn = nlist[k];
-   if (AppliesTo(sc[i].Z(), nn.j->Z()) && nn.r < GetCutoff()) 
+   if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r < GetCutoff()) 
    {
     energycache += pairEnergy(nn.r);
     ff = pairForce(nn.rij);
-    sc[i].Acceleration() += ff*(forcefactor/sc[i].Mass());
+    atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
     nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());
     tmpvir -= Dot(nn.rij, ff); // virial de pares
     //if (ff.Module() > 10.0) throw HorrendousForce(ff.Module());
@@ -53,24 +52,6 @@ void PairPotential::UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
     }
    }
   }
-  */
-  // 
-  //
-  for (long j=i+1;j<n;++j)
-  {
-   const Vector & v_i = atoms[i].Position();
-   const Vector & v_j = atoms[j].Position();
-   Vector dist = cell.Displacement(v_i, v_j);
-   if (dist.Module() < 8.5)
-   {
-    energycache += pairEnergy(dist.Module());
-    ff = pairForce(dist);
-    atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
-    atoms[j].Acceleration() -= ff*(forcefactor/atoms[j].Mass());
-   }
-  }
- //
- //
  }
  #warning "comentado AddToVirial y StressTensor"
  // sc.AddToVirial(tmpvir);

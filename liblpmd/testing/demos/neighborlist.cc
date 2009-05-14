@@ -5,8 +5,6 @@
 #include <lpmd/simulation.h>
 #include <lpmd/cellgenerator.h>
 #include <lpmd/cellmanager.h>
-#include <lpmd/particleset.h>
-#include <lpmd/orthogonalcell.h>
 #include <lpmd/pluginmanager.h>
 
 #include <iostream>
@@ -18,7 +16,8 @@ using namespace lpmd;
 int main()
 {
  PluginManager pm;
- Simulation<ParticleSet, OrthogonalCell> md(108, Atom("Ar"));
+ Simulation * simp = GeneralEngine(108, Atom("Ar"));
+ Simulation & md = (*simp);
 
  BasicCell & cell = md.Cell();
  cell[0] = 17.1191*e1;
@@ -27,7 +26,8 @@ int main()
 
  md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
 
- ParticleSet & atoms = md.Atoms();
+ BasicParticleSet & atoms = md.Atoms();
+
  assert(atoms.Size() == 108);
  CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
  cg.Generate(atoms, cell);
@@ -47,6 +47,7 @@ int main()
  }
  std::cerr << "NeighborList passed OK!\n";
 
+ delete simp;
  return 0;
 }
 

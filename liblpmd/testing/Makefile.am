@@ -15,7 +15,7 @@ nobase_include_HEADERS =  lpmd/atom.h lpmd/array.h lpmd/arraytest.h lpmd/atomint
                           lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h lpmd/cellmanager.h lpmd/cellreader.h lpmd/cellwriter.h lpmd/cmdline.h \
                           lpmd/color.h lpmd/containable.h lpmd/coulomb.h lpmd/elements.h lpmd/error.h lpmd/properties.h lpmd/orthogonalcell.h \
                           lpmd/nonorthogonalcell.h lpmd/indirectatom.h lpmd/inputfile.h lpmd/instantproperty.h \
-                          lpmd/map.h lpmd/matrix.h lpmd/fixedsizeparticleset.h \
+                          lpmd/map.h lpmd/matrix.h lpmd/fixedsizeparticleset.h lpmd/twostepintegrator.h \
                           lpmd/stepper.h lpmd/metalpotential.h lpmd/module.h lpmd/paramlist.h \
                           lpmd/particleset.h lpmd/plugin.h lpmd/pluginmanager.h lpmd/potential.h lpmd/pairpotential.h lpmd/session.h \
                           lpmd/simulationcell.h lpmd/simulation.h lpmd/integrator.h lpmd/onestepintegrator.h \
@@ -26,7 +26,7 @@ noinst_HEADERS = version.h
 
 liblpmd_la_SOURCES = cell.cc cellgenerator.cc cellmanager.cc elements.cc error.cc module.cc paramlist.cc \
                      plugin.cc pluginmanager.cc potential.cc pairpotential.cc particleset.cc session.cc \
-                     timer.cc integrator.cc onestepintegrator.cc
+                     simulation.cc timer.cc integrator.cc onestepintegrator.cc twostepintegrator.cc
 
 #liblpmd_la_SOURCES =  cellformat.cc cellreader.cc cellwriter.cc cmdline.cc coulomb.cc inputfile.cc matrix.cc metalpotential.cc \
 #                       systemmixer.cc temporalproperty.cc visualizer.cc

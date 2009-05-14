@@ -32,7 +32,7 @@ BasicParticleSet & Integrator::OldAtoms() const { return *(oldatoms); }
 
 BasicCell & Integrator::OldCell() const { return *(oldcell); }
 
-void Integrator::Initialize(BasicParticleSet & atoms, BasicCell & cell, Potential & p) { }
+void Integrator::Initialize(Simulation & sim, Potential & p) { }
 
 void Integrator::GoBack(BasicParticleSet & atoms, BasicCell & cell)
 {

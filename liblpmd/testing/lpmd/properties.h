@@ -18,7 +18,7 @@ namespace lpmd
  template <typename T> double KineticEnergy(const T & atomcont)
  {
   double K = 0.0;
-  for (unsigned long int i=0;i<atomcont.Size();++i)
+  for (long int i=0;i<atomcont.Size();++i)
       K += 0.5*atomcont[i].Mass()*atomcont[i].Velocity().SquareModule();
   return K*KIN2EV;
  }
