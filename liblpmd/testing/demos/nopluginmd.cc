@@ -5,6 +5,8 @@
 #include <lpmd/simulation.h>
 #include <lpmd/timer.h>
 #include <lpmd/properties.h>
+#include <lpmd/fixedsizeparticleset.h>
+#include <lpmd/orthogonalcell.h>
 
 #define DT (1.0)
 
@@ -33,9 +35,9 @@ Vector pairForce(const Vector & r)
  return r*ff;
 }
 
-template <typename AtomContainer, typename CellType> double TestUpdateForces(AtomContainer & atoms, CellType & cell)
+double TestUpdateForces(FixedSizeParticleSet & atoms, OrthogonalCell & cell)
 {
- double energycache = 0.0;
+ double r, energycache = 0.0;
  Vector dist;
  for (long i=0;i<atoms.Size()-1;++i)
   for (long j=i+1;j<atoms.Size();++j)
@@ -43,9 +45,10 @@ template <typename AtomContainer, typename CellType> double TestUpdateForces(Ato
    const Vector & v_i = atoms[i].Position();
    const Vector & v_j = atoms[j].Position();
    Vector dist = cell.Displacement(v_i, v_j);
-   if (dist.Module() < 8.5)
+   r = dist.Module();
+   if (r < 8.5)
    {
-    energycache += pairEnergy(dist.Module());
+    energycache += pairEnergy(r);
     const Vector ff = pairForce(dist);
     atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
     atoms[j].Acceleration() -= ff*(forcefactor/atoms[j].Mass());
@@ -54,17 +57,22 @@ template <typename AtomContainer, typename CellType> double TestUpdateForces(Ato
  return energycache;
 }
 
-template <typename AtomContainer, typename CellType> double TestDoStep(AtomContainer & atoms, CellType & cell, double dt)
+void TestUpdatePositions(FixedSizeParticleSet & atoms, OrthogonalCell & cell, double dt)
 {
- for (unsigned long int i=0;i<atoms.Size();++i)
-    atoms[i].Acceleration() = Vector(0.0, 0.0, 0.0);
- double e = TestUpdateForces(atoms, cell);
- for (unsigned long int i=0;i<atoms.Size();++i)
+ for (long int i=0;i<atoms.Size();++i)
  {
   const Atom & now = atoms[i];
   atoms[i].Position() = cell.FittedInside(now.Position() + now.Velocity()*dt);
   atoms[i].Velocity() += now.Acceleration()*dt;
  }
+}
+
+double TestDoStep(FixedSizeParticleSet & atoms, OrthogonalCell & cell, double dt)
+{
+ for (unsigned long int i=0;i<atoms.Size();++i)
+    atoms[i].Acceleration() = Vector(0.0, 0.0, 0.0);
+ double e = TestUpdateForces(atoms, cell);
+ TestUpdatePositions(atoms, cell, dt);
  return e;
 }
 
@@ -107,8 +115,8 @@ int main()
  Simulation * simp = FixedOrthogonalEngine(108, Atom("Ar"));
  Simulation & md = (*simp);
 
- BasicParticleSet & atoms = md.Atoms();
- BasicCell & cell = md.Cell();
+ FixedSizeParticleSet & atoms = dynamic_cast<FixedSizeParticleSet&> (md.Atoms());
+ OrthogonalCell & cell = dynamic_cast<OrthogonalCell &> (md.Cell());
 
  cell[0] = 17.1191*e1;                   // define los vectores de la celda
  cell[1] = 17.1191*e2;

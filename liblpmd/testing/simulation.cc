@@ -10,6 +10,8 @@
 #include <lpmd/fixedsizeparticleset.h>
 #include <lpmd/orthogonalcell.h>
 #include <lpmd/nonorthogonalcell.h>
+#include <lpmd/integrator.h>
+#include <lpmd/cellmanager.h>
 
 namespace lpmd
 {
@@ -78,6 +80,8 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  }
 
  Array<Potential &> & Potentials() { return potarray; }
+ 
+ Potential & CombinedPotential() { return potarray; }
 
  void DoStep() 
  {  
@@ -144,8 +148,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
 
 Simulation * FixedOrthogonalEngine(long int atoms, const AtomInterface & at)
 {
- // return new SimulationEngine<FixedSizeParticleSet, OrthogonalCell>(atoms, at);
- return new SimulationEngine<ParticleSet, OrthogonalCell>(atoms, at);
+ return new SimulationEngine<FixedSizeParticleSet, OrthogonalCell>(atoms, at);
 }
 
 Simulation * GeneralEngine(long int atoms, const AtomInterface & at)

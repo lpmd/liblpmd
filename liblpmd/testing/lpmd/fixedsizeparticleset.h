@@ -9,11 +9,17 @@
 
 #include <lpmd/indirectatom.h>
 #include <lpmd/basicparticleset.h>
+#include <lpmd/error.h>
 
 namespace lpmd
 {
+ class ParticleSetIsFixed: public Error
+ {
+  public:
+    ParticleSetIsFixed(): Error("Cannot modify a FixedSizeParticleSet (for now...)") { }
+ };
 
-class FixedSizeParticleSet: public AtomArray
+class FixedSizeParticleSet: public BasicParticleSet
 {
  public: 
    FixedSizeParticleSet(long int n): nl(n)
@@ -62,6 +68,11 @@ class FixedSizeParticleSet: public AtomArray
     }
     return -1;
    }
+
+   // FIXME: Implementa la parte Mutable de BasicParticleSet con metodos vacios
+  void Append(const AtomInterface & x) { throw ParticleSetIsFixed(); }
+  void Clear() { throw ParticleSetIsFixed(); }
+  void Delete(long int i) { throw ParticleSetIsFixed(); }
 
  private:
    long int nl;

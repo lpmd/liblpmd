@@ -10,5 +10,5 @@ SystemModifier::SystemModifier() { }
 
 SystemModifier::~SystemModifier() { }
 
-void SystemModifier::Apply(SimulationCell & sc) { }
+void SystemModifier::Apply(Simulation & sim) { }
 

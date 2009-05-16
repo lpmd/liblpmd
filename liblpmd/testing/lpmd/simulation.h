@@ -5,13 +5,12 @@
 #ifndef __LPMD_SIMULATION_H__
 #define __LPMD_SIMULATION_H__
 
+#include <lpmd/configuration.h>
 #include <lpmd/cell.h>
 #include <lpmd/atom.h>
 #include <lpmd/array.h>
 #include <lpmd/potential.h>
 #include <lpmd/neighbor.h>
-#include <lpmd/cellmanager.h>
-#include <lpmd/integrator.h>
 #include <lpmd/error.h>
 
 // FIXME: no corresponde aqui
@@ -24,21 +23,21 @@ namespace lpmd
   public:
     NoIntegrator(): Error("No integrator defined") { }
  };
+ class Integrator;
+ class CellManager;
 
- class Simulation
+ class Simulation: public Configuration
  {
   public:
     virtual ~Simulation() { }
 
     virtual void SetTemperature(double temp) = 0;
 
-    virtual BasicCell & Cell() = 0;
-
-    virtual BasicParticleSet & Atoms() = 0;
-
     virtual Array<Neighbor> & NeighborList(long int i, bool full, double rcut) = 0;
 
     virtual Array<Potential &> & Potentials() = 0;
+
+    virtual Potential & CombinedPotential() = 0;
 
     virtual void DoStep() = 0;
  

@@ -9,8 +9,7 @@
 
 namespace lpmd
 {
-
- class MD;             // forward declaration
+ class Simulation; // forward
 
  class Visualizer: public Stepper
  {
@@ -19,7 +18,7 @@ namespace lpmd
    Visualizer();
    virtual ~Visualizer();
 
-   virtual void Apply(const MD & md) = 0;
+   virtual void Apply(const Simulation & md) = 0;
  };
 
 } // lpmd
