@@ -47,7 +47,7 @@
 #include <lpmd/atom.h>
 #include <lpmd/cell.h>
 #include <lpmd/particles.h>
-#include <lpmd/neighbor.h>
+#include <lpmd/atompair.h>
 #include <lpmd/simulationcell.h>
 
 // Potentials

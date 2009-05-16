@@ -2,6 +2,8 @@
 #include <lpmd/cellmanager.h>
 #include <lpmd/storedconfiguration.h>
 
+using namespace lpmd;
+
 class MockCellManager: public CellManager
 {
  public:
@@ -15,7 +17,7 @@ class MockCellManager: public CellManager
    } 
    void Reset() { }
    void UpdateCell(Configuration & conf) { }
-   void BuildNeighborList(Configuration & conf, long int i, Array<Neighbor> & nlist, bool full, double rcut)
+   void BuildNeighborList(Configuration & conf, long int i, NeighborList & nlist, bool full, double rcut)
    {
     last_cell = &conf;
     last_i = i;
@@ -24,7 +26,7 @@ class MockCellManager: public CellManager
     last_rcut = rcut;
    }
 
-   bool LastCallWas(Configuration & conf, long int i, const Array<Neighbor> & nlist, bool full, double rcut)
+   bool LastCallWas(Configuration & conf, long int i, const NeighborList & nlist, bool full, double rcut)
    {
     return ((((&conf == last_cell) && (i == last_i)) && ((&nlist == last_nlist) && (full == last_full))) && (fabs(rcut-last_rcut) < 1.0E-10));
    }
@@ -32,7 +34,7 @@ class MockCellManager: public CellManager
  private:
     Configuration * last_cell;
     long int last_i;
-    Array<Neighbor> * last_nlist;
+    NeighborList * last_nlist;
     bool last_full;
     double last_rcut;
 };
@@ -55,7 +57,7 @@ class MockCellManager: public CellManager
  StoredConfiguration s;
  MockCellManager cm;
  s.SetCellManager(cm);
- const Array<Neighbor> & nlist = s.NeighborList(0, true, 3.5);
+ const NeighborList & nlist = s.Neighbors(0, true, 3.5);
  @assert cm.LastCallWas(s, 0, nlist, true, 3.5)
 }
 @end

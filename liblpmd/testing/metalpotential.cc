@@ -4,7 +4,7 @@
 
 #include <lpmd/metalpotential.h>
 #include <lpmd/simulation.h>
-#include <lpmd/neighbor.h>
+#include <lpmd/atompair.h>
 #include <lpmd/session.h>
 
 using namespace lpmd;
@@ -32,10 +32,10 @@ void MetalPotential::Initialize(Configuration & conf)
  {
   const Atom & at = atoms[i];
   double rhoi=0.0e0;
-  Array<Neighbor> & nlist = conf.NeighborList(i, true, GetCutoff());
+  NeighborList & nlist = conf.Neighbors(i, true, GetCutoff());
   for (long int k=0;k<nlist.Size();++k)
   {
-   const Neighbor & nn = nlist[k];
+   const AtomPair & nn = nlist[k];
    if (AppliesTo(at.Z(), nn.j->Z()) && nn.r < GetCutoff()) rhoi += rhoij(nn.r);
   }
   rho[i] = rhoi + drhoi;
@@ -70,11 +70,11 @@ void MetalPotential::UpdateForces(Configuration & conf)
  for (long i=0;i<n;++i)
  {
   const Atom & at = atoms[i];
-  Array<Neighbor> & nlist = conf.NeighborList(i, false, GetCutoff());
+  NeighborList & nlist = conf.Neighbors(i, false, GetCutoff());
   //Ahora continuamos el calculo.
   for (long int k=0;k<nlist.Size();++k)
   {
-   const Neighbor & nn = nlist[k];
+   const AtomPair & nn = nlist[k];
    if (AppliesTo(at.Z(), nn.j->Z())) 
    {
     Vector pf, acci, accj, mb;

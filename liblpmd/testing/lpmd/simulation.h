@@ -10,7 +10,7 @@
 #include <lpmd/atom.h>
 #include <lpmd/array.h>
 #include <lpmd/potential.h>
-#include <lpmd/neighbor.h>
+#include <lpmd/atompair.h>
 #include <lpmd/error.h>
 
 // FIXME: no corresponde aqui

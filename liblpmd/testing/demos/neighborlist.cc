@@ -34,7 +34,7 @@ int main()
 
  for (long int i=0;i<atoms.Size();++i)
  {
-  Array<Neighbor> & nlist = md.NeighborList(i, true, RCUT);
+  NeighborList & nlist = md.Neighbors(i, true, RCUT);
   if (nlist.Size() != 12) 
   {
    std::cerr << "DEBUG Atom " << i << ", wrong number of neighbors: " << nlist.Size() << ", should be 12\n";

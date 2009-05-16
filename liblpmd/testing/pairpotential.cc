@@ -4,7 +4,7 @@
 
 #include <lpmd/session.h>
 #include <lpmd/pairpotential.h>
-#include <lpmd/neighbor.h>
+#include <lpmd/atompair.h>
 
 using namespace lpmd;
 
@@ -29,10 +29,10 @@ void PairPotential::UpdateForces(Configuration & conf)
  }
  for (long i=0;i<n;++i)    // was i<n
  {
-  Array<Neighbor> & nlist = conf.NeighborList(i, false, GetCutoff());
+  NeighborList & nlist = conf.Neighbors(i, false, GetCutoff());
   for (long int k=0;k<nlist.Size();++k)
   {
-   const Neighbor & nn = nlist[k];
+   const AtomPair & nn = nlist[k];
    if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r < GetCutoff()) 
    {
     energycache += pairEnergy(nn.r);

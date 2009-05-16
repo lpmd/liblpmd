@@ -28,7 +28,7 @@ namespace lpmd
 
     lpmd::CellManager & CellManager() { return (*cellman); }
 
-    Array<Neighbor> & NeighborList(long int i, bool full, double rcut)
+    NeighborList & Neighbors(long int i, bool full, double rcut)
     {
      cellman->BuildNeighborList(*this, i, neighlist, full, rcut);
      return neighlist;
@@ -36,7 +36,7 @@ namespace lpmd
 
   private:
     lpmd::CellManager * cellman;
-    Array<Neighbor> neighlist;
+    NeighborList neighlist;
  };
 }  // lpmd
 

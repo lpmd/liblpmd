@@ -8,7 +8,7 @@
 #define __LPMD_BASICPARTICLESET_H__
 
 #include <lpmd/atominterface.h>
-#include <lpmd/neighbor.h>
+#include <lpmd/atompair.h>
 #include <lpmd/array.h>
 
 namespace lpmd

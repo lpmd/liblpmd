@@ -2,21 +2,17 @@
  *
  */
 
-#ifndef __LPMD_NEIGHBOR_H__
-#define __LPMD_NEIGHBOR_H__
+#ifndef __LPMD_ATOMPAIR_H__
+#define __LPMD_ATOMPAIR_H__
 
 #include <lpmd/vector.h>
+#include <lpmd/array.h>
 #include <lpmd/atominterface.h>
-
-using namespace lpmd;
 
 namespace lpmd
 {
 
- class Atom;               // forward declaration
-
- // 
- class Neighbor
+ class AtomPair
  {
   public:
     AtomInterface * i;  //  
@@ -26,9 +22,9 @@ namespace lpmd
     Vector rij;         // Distancia vectorial del atomo i al atomo j
     double r;           // Modulo de rij (precalculado para optimizacion)
 
-  Neighbor(): i(0), j(0), rij(0.0, 0.0, 0.0), r(0.0) { }
+  AtomPair(): i(0), j(0), rij(0.0, 0.0, 0.0), r(0.0) { }
 
-  Neighbor(const Neighbor & nn) 
+  AtomPair(const AtomPair & nn) 
   {
    i = nn.i;
    j = nn.j;
@@ -38,7 +34,7 @@ namespace lpmd
    r = nn.r;
   } 
 
-  Neighbor & operator=(const Neighbor & nn)
+  AtomPair & operator=(const AtomPair & nn)
   {
    if (&nn != this)
    {
@@ -54,9 +50,9 @@ namespace lpmd
 
  };
 
+ typedef Array<AtomPair> NeighborList;
 
 }  // lpmd
 
 #endif
-
 
