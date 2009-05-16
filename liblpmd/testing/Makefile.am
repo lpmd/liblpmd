@@ -24,11 +24,11 @@ nobase_include_HEADERS =  lpmd/atom.h lpmd/array.h lpmd/arraytest.h lpmd/atomint
 
 noinst_HEADERS = version.h
 
-liblpmd_la_SOURCES = cell.cc cellgenerator.cc cellmanager.cc cmdline.cc inputfile.cc elements.cc error.cc module.cc metalpotential.cc paramlist.cc \
-                     plugin.cc pluginmanager.cc potential.cc pairpotential.cc particleset.cc session.cc matrix.cc simulation.cc timer.cc integrator.cc \
-                     systemmodifier.cc onestepintegrator.cc twostepintegrator.cc visualizer.cc
+liblpmd_la_SOURCES = cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc inputfile.cc elements.cc \
+                     error.cc module.cc metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc potential.cc pairpotential.cc particleset.cc \
+                     session.cc matrix.cc simulation.cc timer.cc integrator.cc systemmodifier.cc onestepintegrator.cc twostepintegrator.cc visualizer.cc
 
-#liblpmd_la_SOURCES =  cellformat.cc cellreader.cc cellwriter.cc systemmixer.cc instantproperty.cc temporalproperty.cc
+#liblpmd_la_SOURCES =  systemmixer.cc instantproperty.cc temporalproperty.cc
 
 #
 #

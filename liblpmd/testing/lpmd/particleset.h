@@ -21,6 +21,11 @@ namespace lpmd
 
    ParticleSet(long int s, const AtomInterface & at): Array<Atom>(s, at) { }
 
+   ParticleSet(const AtomArray & arr): Array<Atom>(arr.Size())
+   {
+    for (long int i=0;i<arr.Size();++i) (*this)[i] = arr[i];
+   }
+
    AtomInterface & operator[](long int i) { return Array<Atom>::operator[](i); }
 
    const AtomInterface & operator[](long int i) const { return Array<Atom>::operator[](i); }

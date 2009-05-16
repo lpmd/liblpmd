@@ -37,7 +37,7 @@ int main()
  assert(fabs(atoms[0].Mass() - 39.948) < 1.0E-10);
 
  CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
- cg.Generate(atoms, cell);
+ cg.Generate(md);
 
  assert(atoms.Size() == 108);
  for (int i=0;i<107;++i)

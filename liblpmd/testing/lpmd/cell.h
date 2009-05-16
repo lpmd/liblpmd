@@ -12,9 +12,7 @@
 
 namespace lpmd
 {
-
-typedef NonOrthogonalCell Cell;
-
+ typedef NonOrthogonalCell Cell;
 }
 
 #endif

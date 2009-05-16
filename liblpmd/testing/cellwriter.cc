@@ -3,7 +3,7 @@
 //
 
 #include <lpmd/cellwriter.h>
-#include <lpmd/simulationcell.h>
+#include <lpmd/simulationhistory.h>
 
 #include <fstream>
 
@@ -11,21 +11,18 @@ using namespace lpmd;
 
 CellWriter::~CellWriter() { }
 
-void CellWriter::Write(const std::string & filename, SimulationCell & sc) const
+void CellWriter::Write(const std::string & filename, Configuration & conf) const
 {
  std::ofstream os(filename.c_str());
  WriteHeader(os);
- WriteCell(os, sc);
+ WriteCell(os, conf);
 }
 
-void CellWriter::WriteMany(const std::string & filename, std::vector<SimulationCell> & scs) const
+void CellWriter::WriteMany(const std::string & filename, SimulationHistory & hist) const
 {
  std::ofstream os(filename.c_str());
  WriteHeader(os);
- for (unsigned long i=0;i<scs.size();++i)
- {
-  WriteCell(os, scs[i]);
- }
+ for (long i=0;i<hist.Size();++i) WriteCell(os, hist[i]);
 }
 
 std::string CellWriter::GetFile() { return writefile; }

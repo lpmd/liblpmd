@@ -70,8 +70,10 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  }
 
  CellType & Cell() { return (*cell); }
+ const CellType & Cell() const { return (*cell); }
 
  AtomContainer & Atoms() { return (*atoms); }
+ const AtomContainer & Atoms() const { return (*atoms); }
 
  Array<Neighbor> & NeighborList(long int i, bool full, double rcut)
  {

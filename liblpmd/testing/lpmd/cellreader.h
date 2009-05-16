@@ -9,32 +9,29 @@
 #include <lpmd/error.h>
 
 #include <iostream>
-#include <vector>
 
 namespace lpmd
 {
-
  class InvalidInput: public Error
  {
   public:
    InvalidInput(const std::string & filename); 
  };
 
- class BasicParticleSet;     // forward declaration
- class BasicCell;      // forward declaration
+ class SimulationHistory; // forward
+ class Configuration;     // forward
 
  class CellReader: public CellGenerator
  {
   public:
-      //
-      void Generate(BasicParticleSet & atoms, BasicCell & cell) const;
+      void Generate(Configuration & conf) const;
  
       // ReadHeader y ReadCell implementan la lectura del archivo y Generate simplemente los llama
       virtual void ReadHeader(std::istream & is) const = 0;
-      virtual bool ReadCell(std::istream & is, BasicParticleSet & atoms, BasicCell & cell) const = 0;
+      virtual bool ReadCell(std::istream & is, Configuration & conf) const = 0;
  
-      void Read(const std::string & filename, BasicParticleSet & atoms, BasicCell & cell) const;
-//      void ReadMany(const std::string & filename, std::vector<SimulationCell> & scs) const;
+      void Read(const std::string & filename, Configuration & conf) const;
+      void ReadMany(const std::string & filename, SimulationHistory & scs) const;
 
   protected:
       std::string readfile;

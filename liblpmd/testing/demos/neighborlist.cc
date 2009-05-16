@@ -30,7 +30,7 @@ int main()
 
  assert(atoms.Size() == 108);
  CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
- cg.Generate(atoms, cell);
+ cg.Generate(md);
 
  for (long int i=0;i<atoms.Size();++i)
  {

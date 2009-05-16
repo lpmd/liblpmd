@@ -7,25 +7,23 @@
 
 #include <string>
 #include <iostream>
-#include <vector>
 
 namespace lpmd
 {
-
- class SimulationCell;      // forward declaration
+ class SimulationHistory; // forward
+ class Configuration;     // forward
 
  class CellWriter
  {
   public:
-  //
    virtual ~CellWriter();
 
-   virtual void WriteHeader(std::ostream & os, std::vector<SimulationCell> *cells=NULL) const = 0;
-   virtual void WriteCell(std::ostream & os, SimulationCell & sc) const = 0;
+   virtual void WriteHeader(std::ostream & os, SimulationHistory * hist = 0) const = 0;
+   virtual void WriteCell(std::ostream & os, Configuration & conf) const = 0;
    virtual long int GetInterval() const = 0;
 
-   void Write(const std::string & filename, SimulationCell & sc) const;
-   void WriteMany(const std::string & filename, std::vector<SimulationCell> & scs) const;
+   void Write(const std::string & filename, Configuration & conf) const;
+   void WriteMany(const std::string & filename, SimulationHistory & scs) const;
 
    std::string GetFile();
 
