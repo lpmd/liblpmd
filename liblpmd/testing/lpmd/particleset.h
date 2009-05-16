@@ -36,9 +36,20 @@ namespace lpmd
 
    void Append(const AtomInterface & at) { Array<Atom>::Append(at); }
 
+   const Array<int> & Elements() const
+   {
+    // FIXME: esta operacion va a ser costosa si se llama a cada rato
+    elements.Clear();
+    for (long int i=0;i<Size();++i) elements.AppendUnique((*this)[i].Z());
+    return elements; 
+   }
+
    void Clear() { Array<Atom>::Clear(); }
 
    void Delete(long int i) { Array<Atom>::Delete(i); } 
+
+ private:
+   mutable Array<int> elements;
  };
 
 } // lpmd

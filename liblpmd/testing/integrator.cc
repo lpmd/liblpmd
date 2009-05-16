@@ -4,38 +4,35 @@
 
 #include <lpmd/integrator.h>
 #include <lpmd/potential.h>
-#include <lpmd/particleset.h>
-#include <lpmd/nonorthogonalcell.h>
+#include <lpmd/storedconfiguration.h>
 #include <lpmd/util.h>
 
 using namespace lpmd;
 
-Integrator::Integrator(): oldatoms(0), oldcell(0) { }
+Integrator::Integrator(): oldconfig(0) { }
 
 Integrator::~Integrator() 
 { 
- delete oldatoms;
- delete oldcell;
+ delete oldconfig;
 }
 
-void Integrator::UseOldCell(BasicParticleSet & atoms, BasicCell & cell) 
+void Integrator::UseOldConfig(Configuration & conf) 
 {
- if (oldcell == NULL)
+ if (oldconfig == 0)
  {
-  oldatoms = new ParticleSet(atoms.Size());
-  oldcell = new NonOrthogonalCell(cell);
-  GoBack(*oldatoms, *oldcell);
+  oldconfig = new StoredConfiguration(conf);
+  GoBack(*oldconfig);
  }
 }
 
-BasicParticleSet & Integrator::OldAtoms() const { return *(oldatoms); }
-
-BasicCell & Integrator::OldCell() const { return *(oldcell); }
+Configuration & Integrator::OldConfig() const { return *(oldconfig); }
 
 void Integrator::Initialize(Simulation & sim, Potential & p) { }
 
-void Integrator::GoBack(BasicParticleSet & atoms, BasicCell & cell)
+void Integrator::GoBack(Configuration & conf)
 {
+ BasicParticleSet & atoms = conf.Atoms();
+ BasicCell & cell = conf.Cell();
  Vector newpos, newvel;
  for (long int i=0;i<atoms.Size();++i)
  {

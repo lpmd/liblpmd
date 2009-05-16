@@ -8,6 +8,8 @@
 #define __LPMD_BASICPARTICLESET_H__
 
 #include <lpmd/atominterface.h>
+#include <lpmd/neighbor.h>
+#include <lpmd/array.h>
 
 namespace lpmd
 {
@@ -25,6 +27,7 @@ class AtomArray
 
   virtual long int Find(const AtomInterface & t) = 0;
 
+  virtual const Array<int> & Elements() const = 0;
 };
 
 class MutableAtomArray: public AtomArray

@@ -7,12 +7,10 @@
 
 #include <lpmd/array.h>
 #include <lpmd/neighbor.h>
-#include <lpmd/basiccell.h>
-#include <lpmd/basicparticleset.h>
 
 namespace lpmd
 {
-
+ class Configuration; // forward
  class CellManager
  {
   public:
@@ -23,8 +21,8 @@ namespace lpmd
    virtual double Cutoff() const;
 
    virtual void Reset() = 0;
-   virtual void UpdateCell(BasicParticleSet & atoms, BasicCell & cell) = 0;
-   virtual void BuildNeighborList(BasicParticleSet & atoms, BasicCell & cell, long i, Array<Neighbor> & nlist, bool full=true, double rcut=0.0e0) = 0;   
+   virtual void UpdateCell(Configuration & conf) = 0;
+   virtual void BuildNeighborList(Configuration & conf, long i, Array<Neighbor> & nlist, bool full=true, double rcut=0.0e0) = 0;   
  };
 
 } // lpmd 

@@ -18,8 +18,8 @@ class PairPotential: public Potential
   PairPotential();
   virtual ~PairPotential();
 
-  double energy(BasicParticleSet & atoms, BasicCell & cell);
-  void UpdateForces(BasicParticleSet & atoms, BasicCell & cell);
+  double energy(Configuration & conf);
+  void UpdateForces(Configuration & conf);
 
   virtual double pairEnergy(const double & r) const = 0;
 

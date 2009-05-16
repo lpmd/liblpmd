@@ -19,6 +19,12 @@ namespace lpmd
   public:
     StoredConfiguration() { }
 
+    StoredConfiguration(BasicParticleSet & at, BasicCell & cl)
+    {
+     atoms = at;
+     cell = cl;
+    }
+
     StoredConfiguration(const Configuration & conf)
     {
      atoms = conf.Atoms();

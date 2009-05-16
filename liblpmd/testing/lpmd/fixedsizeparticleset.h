@@ -69,7 +69,15 @@ class FixedSizeParticleSet: public BasicParticleSet
     return -1;
    }
 
-   // FIXME: Implementa la parte Mutable de BasicParticleSet con metodos vacios
+   const Array<int> & Elements() const
+   {
+    // FIXME: esta operacion va a ser costosa si se llama a cada rato
+    elements.Clear();
+    for (long int i=0;i<Size();++i) elements.AppendUnique((*this)[i].Z());
+    return elements; 
+   }
+
+  // FIXME: Implementa la parte Mutable de BasicParticleSet con metodos vacios
   void Append(const AtomInterface & x) { throw ParticleSetIsFixed(); }
   void Clear() { throw ParticleSetIsFixed(); }
   void Delete(long int i) { throw ParticleSetIsFixed(); }
@@ -79,6 +87,7 @@ class FixedSizeParticleSet: public BasicParticleSet
    IndirectAtom * atomarray;
    double * storepos, * storevel, * storeacc;
    Vector * posarray, * velarray, * accarray;
+   mutable Array<int> elements;
 };
 
 }  // lpmd

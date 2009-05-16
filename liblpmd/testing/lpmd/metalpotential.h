@@ -19,12 +19,12 @@ class MetalPotential: public Potential
 
   virtual ~MetalPotential();
 
-  void Initialize(Simulation & sim);
+  void Initialize(Configuration & conf);
 
-  double energy(BasicParticleSet & atoms, BasicCell & cell);
-  void UpdateForces(BasicParticleSet & atoms, BasicCell & cell);
+  double energy(Configuration & conf);
+  void UpdateForces(Configuration & conf);
 
-  void VirialEvaluate(BasicParticleSet & atoms, BasicCell & cell);
+  void VirialEvaluate(Configuration & conf);
 
   virtual double pairEnergy(const double & r) const = 0;
 

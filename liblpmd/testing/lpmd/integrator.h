@@ -20,14 +20,13 @@ class Integrator: public Solver
    Integrator();
    virtual ~Integrator();
 
-   void GoBack(BasicParticleSet & atoms, BasicCell & cell);
+   void GoBack(Configuration & conf);
 
    double Timestep() const;
 
-   void UseOldCell(BasicParticleSet & atoms, BasicCell & cell);
+   void UseOldConfig(Configuration & conf);
 
-   BasicParticleSet & OldAtoms() const;
-   BasicCell & OldCell() const;
+   Configuration & OldConfig() const;
    
    void Advance(Simulation & sim) { Advance(sim, sim.CombinedPotential()); }
     
@@ -38,8 +37,7 @@ class Integrator: public Solver
    double dt;
 
  private:
-   BasicParticleSet * oldatoms;
-   BasicCell * oldcell;
+   Configuration * oldconfig;
 };
 
 } // lpmd

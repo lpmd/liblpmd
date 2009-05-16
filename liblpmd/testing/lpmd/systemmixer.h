@@ -7,9 +7,7 @@
 
 namespace lpmd
 {
-
- class SimulationCell; // forward declaration 
-
+ class Configuration;     // forward
  class SystemMixer
  {
   public:
@@ -17,7 +15,7 @@ namespace lpmd
    SystemMixer();
    virtual ~SystemMixer();
 
-   virtual SimulationCell Apply(SimulationCell & sc1, SimulationCell & sc2) = 0;
+   virtual Configuration & Apply(Configuration & config1, Configuration & config2) = 0;
  };
 
 } // lpmd 

@@ -5,25 +5,19 @@
 #ifndef __LPMD_TEMPORALPROPERTY_H__
 #define __LPMD_TEMPORALPROPERTY_H__
 
-#include <list>
-
-#include <lpmd/simulationcell.h>
-
 namespace lpmd
 {
- 
- class Potential;                   // forward declaration
+ class SimulationHistory;  // forward
+ class Potential;          // forward
 
  class TemporalProperty
  {
   public:
-   //
    TemporalProperty();
-   TemporalProperty(const std::vector<SimulationCell> & simcells, Potential & pot);
+   TemporalProperty(const SimulationHistory & hist, Potential & pot);
    virtual ~TemporalProperty();
 
-   virtual void Evaluate(const std::vector<SimulationCell> & simcells, Potential & pot);
- 
+   virtual void Evaluate(const SimulationHistory & hist, Potential & pot);
  };
 
 } // lpmd

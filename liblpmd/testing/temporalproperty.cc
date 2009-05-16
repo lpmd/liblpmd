@@ -3,14 +3,15 @@
 //
 
 #include <lpmd/temporalproperty.h>
+#include <lpmd/simulationhistory.h>
 
 using namespace lpmd;
 
 TemporalProperty::TemporalProperty() { }
 
-TemporalProperty::TemporalProperty(const std::vector<SimulationCell> & simcells, Potential & pot) { }
+TemporalProperty::TemporalProperty(const SimulationHistory & hist, Potential & pot) { }
 
 TemporalProperty::~TemporalProperty() { }
 
-void TemporalProperty::Evaluate(const std::vector<SimulationCell> & simcells, Potential & pot) { }
+void TemporalProperty::Evaluate(const SimulationHistory & hist, Potential & pot) { }
 

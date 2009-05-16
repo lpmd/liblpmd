@@ -161,26 +161,6 @@ class MockCellManager: public CellManager
 }
 @end
 
-@test Test de SetCellManager
-{
- SimulationCell cell;
- MockCellManager cm;
- cell.SetCellManager(cm); 
- @equal &cm, &(cell.GetCellManager())
-}
-@end
-
-@test Test de BuildNeighborList
-{
- SimulationCell cell;
- MockCellManager cm;
- cell.SetCellManager(cm);
- std::vector<Neighbor> nlist;
- cell.BuildNeighborList(0, nlist, true, 3.5);
- @assert cm.LastCallWas(cell, 0, nlist, true, 3.5)
-}
-@end
-
 @test Test de ClearForces
 {
  SimulationCell cell;

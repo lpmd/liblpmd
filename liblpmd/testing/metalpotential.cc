@@ -15,11 +15,11 @@ MetalPotential::MetalPotential(const MetalPotential & mp) { rho = NULL; }
 
 MetalPotential::~MetalPotential() { if (rho!=NULL) { delete [] rho; rho=NULL; } }
 
-void MetalPotential::Initialize(Simulation & sim)
+void MetalPotential::Initialize(Configuration & conf)
 {
- Potential::Initialize(sim);
- BasicParticleSet & atoms = sim.Atoms();
- BasicCell & cell = sim.Cell();
+ Potential::Initialize(conf);
+ BasicParticleSet & atoms = conf.Atoms();
+ BasicCell & cell = conf.Cell();
  const long int n = atoms.Size();
  //Almacena densidad en variable rho de la clase metalpotential.
  delete [] rho;
@@ -32,7 +32,7 @@ void MetalPotential::Initialize(Simulation & sim)
  {
   const Atom & at = atoms[i];
   double rhoi=0.0e0;
-  Array<Neighbor> & nlist = sim.NeighborList(i, true, GetCutoff());
+  Array<Neighbor> & nlist = conf.NeighborList(i, true, GetCutoff());
   for (long int k=0;k<nlist.Size();++k)
   {
    const Neighbor & nn = nlist[k];
@@ -42,9 +42,10 @@ void MetalPotential::Initialize(Simulation & sim)
  }
 }
 
-void MetalPotential::VirialEvaluate(BasicParticleSet & atoms, BasicCell & cell)
+void MetalPotential::VirialEvaluate(Configuration & conf)
 {
 // double vc = 0.0;
+ BasicParticleSet & atoms = conf.Atoms();
  const long int n = atoms.Size();
  double mrho = 0.0;
  for (long i=0;i<n;++i) mrho+=rho[i];
@@ -54,13 +55,14 @@ void MetalPotential::VirialEvaluate(BasicParticleSet & atoms, BasicCell & cell)
 // sc.AddToVirial(vc);
 }
 
-double MetalPotential::energy(BasicParticleSet & atoms, BasicCell & cell) { return energycache; }
+double MetalPotential::energy(Configuration & conf) { return energycache; }
 
-void MetalPotential::UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
+void MetalPotential::UpdateForces(Configuration & conf)
 {
  const double forcefactor = GlobalSession.GetDouble("forcefactor");
- Simulation & sim = GetSimulation(); // FIXME: el metodo es solo un hack!
- Initialize(sim);
+ Initialize(conf);
+ BasicParticleSet & atoms = conf.Atoms();
+ BasicCell & cell = conf.Cell();
  double tmpvir = 0.0;
  energycache = 0.0;
  const long int n = atoms.Size();
@@ -68,7 +70,7 @@ void MetalPotential::UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
  for (long i=0;i<n;++i)
  {
   const Atom & at = atoms[i];
-  Array<Neighbor> & nlist = sim.NeighborList(i, false, GetCutoff());
+  Array<Neighbor> & nlist = conf.NeighborList(i, false, GetCutoff());
   //Ahora continuamos el calculo.
   for (long int k=0;k<nlist.Size();++k)
   {

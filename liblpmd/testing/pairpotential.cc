@@ -12,24 +12,24 @@ PairPotential::PairPotential() { }
 
 PairPotential::~PairPotential() { }
 
-double PairPotential::energy(BasicParticleSet & atoms, BasicCell & cell) { return energycache; } 
+double PairPotential::energy(Configuration & conf) { return energycache; }
 
-void PairPotential::UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
+void PairPotential::UpdateForces(Configuration & conf)
 {
  const double forcefactor = GlobalSession.GetDouble("forcefactor");
  Vector ff, acci, accj;
+ BasicParticleSet & atoms = conf.Atoms();
  const long int n = atoms.Size();
  energycache = 0.0;
  double tmpvir = 0.0;
  double stress[3][3];
- Simulation & sim = GetSimulation(); // FIXME: el metodo es solo un hack!
  for (int i=0;i<3;i++)
  {
   for (int j=0;j<3;j++) stress[i][j]=0.0e0;
  }
  for (long i=0;i<n;++i)    // was i<n
  {
-  Array<Neighbor> & nlist = sim.NeighborList(i, false, GetCutoff());
+  Array<Neighbor> & nlist = conf.NeighborList(i, false, GetCutoff());
   for (long int k=0;k<nlist.Size();++k)
   {
    const Neighbor & nn = nlist[k];

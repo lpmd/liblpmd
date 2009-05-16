@@ -11,9 +11,8 @@
 
 namespace lpmd
 {
-
- class SimulationCell;               // forward declaration
- class Potential;                    // forward declaration
+ class Potential;        // forward
+ class Configuration;    // forward
 
  class InstantProperty: public Stepper
  {
@@ -23,7 +22,7 @@ namespace lpmd
    virtual ~InstantProperty();
 
    // Metodos virtuales
-   virtual void Evaluate(SimulationCell & simcell, Potential & pot);
+   virtual void Evaluate(Configuration & conf, Potential & pot);
 
    //
    std::string outputfile;
@@ -32,5 +31,4 @@ namespace lpmd
 } // lpmd
 
 #endif
-
 

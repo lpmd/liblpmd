@@ -14,11 +14,7 @@ Potential::Potential() { rcutoff = HUGE_VAL; }
 
 Potential::~Potential() { }
 
-void Potential::Initialize(Simulation & sim) { energycache = 0; innersim = &sim; }
-
-double Potential::energy(Simulation & sim) { return energy(sim.Atoms(), sim.Cell()); }
-
-void Potential::UpdateForces(Simulation & sim) { UpdateForces(sim.Atoms(), sim.Cell()); }
+void Potential::Initialize(Configuration & conf) { energycache = 0; }
 
 void Potential::SetValidSpecies(int s1, int s2) { spc_sum = s1+s2; }
 

@@ -33,8 +33,6 @@ namespace lpmd
 
     virtual void SetTemperature(double temp) = 0;
 
-    virtual Array<Neighbor> & NeighborList(long int i, bool full, double rcut) = 0;
-
     virtual Array<Potential &> & Potentials() = 0;
 
     virtual Potential & CombinedPotential() = 0;
@@ -47,12 +45,7 @@ namespace lpmd
 
     virtual void SetIntegrator(lpmd::Integrator & itg) = 0;
 
-    virtual void SetCellManager(lpmd::CellManager & cm) = 0;
-
     virtual lpmd::Integrator & Integrator() = 0;
- 
-    virtual lpmd::CellManager & CellManager() = 0;
-
  };
 
  Simulation * FixedOrthogonalEngine(long int atoms, const AtomInterface & at);

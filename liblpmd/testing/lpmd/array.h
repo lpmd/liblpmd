@@ -34,6 +34,10 @@ template <typename T> class Array: private std::vector<T>
   inline long int Size() const { return static_cast<const std::vector<T> &>(*this).size(); }
 
   inline void Append(const T & x) { push_back(x); }
+  inline void AppendUnique(const T & x) 
+  {
+   if (Find(x) == -1) Append(x);
+  }
 
   inline void Clear() { (static_cast<std::vector<T> &>(*this)).clear(); }
 
@@ -64,11 +68,16 @@ template <typename T> class Array<T &>: private std::vector<T *>
 
   inline const T & operator[](long int i) const { return *((static_cast<const std::vector<T *> &>(*this)).operator[](i)); }
 
-  inline long int Size() const { return (static_cast<std::vector<T *> &>(*this)).size(); }
+  inline long int Size() const { return (static_cast<const std::vector<T *> &>(*this)).size(); }
   
   inline long int Size() { return (static_cast<std::vector<T *> &>(*this)).size(); }
 
   inline void Append(T & x) { push_back(&x); }
+
+  inline void AppendUnique(T & x) 
+  {
+   if (Find(x) == -1) Append(x);
+  }
 
   inline void Clear() { static_cast<std::vector<T *> &>(*this).clear(); }
 

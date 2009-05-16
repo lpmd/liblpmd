@@ -3,6 +3,7 @@
 //
 
 #include <lpmd/instantproperty.h>
+#include <lpmd/util.h>
 
 #include <iostream>
 
@@ -12,7 +13,7 @@ InstantProperty::InstantProperty() { }
 
 InstantProperty::~InstantProperty() { }
 
-void InstantProperty::Evaluate(SimulationCell & simcell, Potential & pot)
+void InstantProperty::Evaluate(Configuration & conf, Potential & pot)
 {
- std::cerr << "[Warning] Ejecutando InstantProperty::Evaluate, que es una implementacion vacia!" << '\n';
+ ShowWarning("instantproperty", "Ejecutando InstantProperty::Evaluate, que es una implementacion vacia!");
 }

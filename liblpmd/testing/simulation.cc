@@ -19,16 +19,16 @@ namespace lpmd
 class PotentialArray: public Array<Potential &>, public Potential
 {
  public:
-   double energy(BasicParticleSet & atoms, BasicCell & cell)
+   double energy(Configuration & conf)
    {
     double en = 0.0;
-    for (int p=0;p<Size();++p) en += (*this)[p].energy(atoms, cell);
+    for (int p=0;p<Size();++p) en += (*this)[p].energy(conf);
     return en;
    }
 
-   void UpdateForces(BasicParticleSet & atoms, BasicCell & cell)
+   void UpdateForces(Configuration & conf)
    {
-    for (int p=0;p<Size();++p) (*this)[p].UpdateForces(atoms, cell);
+    for (int p=0;p<Size();++p) (*this)[p].UpdateForces(conf);
    }
 };
 
@@ -75,12 +75,6 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  AtomContainer & Atoms() { return (*atoms); }
  const AtomContainer & Atoms() const { return (*atoms); }
 
- Array<Neighbor> & NeighborList(long int i, bool full, double rcut)
- {
-  cellman->BuildNeighborList(*atoms, *cell, i, neighlist, full, rcut);
-  return neighlist;
- }
-
  Array<Potential &> & Potentials() { return potarray; }
  
  Potential & CombinedPotential() { return potarray; }
@@ -98,16 +92,12 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
 
  void SetIntegrator(lpmd::Integrator & itg) { integ = &itg; }
 
- void SetCellManager(lpmd::CellManager & cm) { cellman = &cm; }
-
  lpmd::Integrator & Integrator() 
  { 
   if (integ == 0) throw NoIntegrator();
   return (*integ); 
  }
  
- lpmd::CellManager & CellManager() { return (*cellman); }
-
  private:
   void InitVelocities() 
   { 
@@ -141,10 +131,8 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   CellType * cell;
   PotentialArray potarray;
   lpmd::Integrator * integ;
-  lpmd::CellManager * cellman;
   bool velocitiesSet;
   bool initialized;
-  Array<Neighbor> neighlist;
   long int step;
 };
 
