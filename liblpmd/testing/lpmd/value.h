@@ -2,50 +2,30 @@
 //
 //
 
-#ifndef __LPMD_VALUE_H__
-#define __LPMD_VALUE_H__
+#ifndef __LPMD_CONTAINABLE_H__
+#define __LPMD_CONTAINABLE_H__
 
-#include <lpmd/containable.h>
+#include <iostream>
 
 namespace lpmd
 {
 
-template <typename T> class Value: public IContainable
+template <typename T> class Value
 {
  public:
-   Value() { ClearAverage(); }
-   virtual ~Value() { }
+   virtual ~Value();
 
-   // Implementaciones de metodos de IContainable
-   void ClearAverage()
-   { 
-    v_av = T();
-    n = 0;
-   }
-
-   void AddToAverage()
-   {
-    v_av += CurrentValue(); 
-    ++n;
-   }
-
-   void OutputTo(std::ostream & os) const { os << CurrentValue(); } 
-
-   void OutputAverageTo(std::ostream & os) const
-   {
-    if (n > 0) os << v_av/double(n);
-    else os << T();
-   }
-
-   // Metodos virtuales
+   virtual void ClearAverage() = 0;
+   virtual void AddToAverage() = 0;
+   virtual T & CurrentValue() = 0;
    virtual const T & CurrentValue() const = 0;
 
- private:
-   T v_av;
-   long n;
+   virtual void OutputTo(std::ostream & os) const = 0;
+   virtual void OutputAverageTo(std::ostream & os) const = 0;
 };
 
 } // lpmd
 
 #endif
+
 

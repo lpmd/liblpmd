@@ -17,21 +17,21 @@
 namespace lpmd
 {
 
-class Vector
+template <typename T> class GenericVector
 {
  public:
 
-   Vector() 
+   GenericVector() 
    { 
-    for (int q=0;q<3;++q) v[q] = 0.0;
+    for (int q=0;q<3;++q) v[q] = T();
    }
 
-   Vector(const Vector & a)
+   GenericVector(const GenericVector<T> & a)
    {
     for (int q=0;q<3;++q) v[q] = a.v[q];
    }
 
-   Vector & operator=(const Vector & a)
+   GenericVector<T> & operator=(const GenericVector<T> & a)
    {
     if (this != &a) 
     {
@@ -40,17 +40,17 @@ class Vector
     return (*this);
    }
 
-   Vector(double x, double y, double z)
+   GenericVector(const T & x, const T & y, const T & z)
    {
     v[0] = x; v[1] = y; v[2] = z;
    }
  
-   Vector(double * w) 
+   GenericVector(T * w) 
    {
     for (int q=0;q<3;++q) v[q] = w[q];
    }  
 
-   Vector(const char * str)
+   GenericVector(const char * str)
    {
     char * s = (char *)(malloc((strlen(str)+1)*sizeof(char)));
     strncpy(s, str, strlen(str));
@@ -94,45 +94,47 @@ class Vector
     free(s);
    }
 
-   inline double & operator[](int q) { return v[q]; }
+   inline T & operator[](int q) { return v[q]; }
 
-   inline const double & operator[](int q) const { return v[q]; }
+   inline const T & operator[](int q) const { return v[q]; }
 
    inline void Normalize() 
    { 
-    double mod = sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); 
+    const T mod = Module();
     for (int q=0;q<3;++q) v[q] /= mod;
    }
 
-   inline double Module() const { return sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); }
+   inline T Module() const { return sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); }
 
-   inline double SquareModule() const { return v[0]*v[0]+v[1]*v[1]+v[2]*v[2]; }
+   inline T SquareModule() const { return v[0]*v[0]+v[1]*v[1]+v[2]*v[2]; }
 
-   inline double Azimuth() const { return atan2(v[1], v[0]); }
+   inline T Azimuth() const { return atan2(v[1], v[0]); }
 
-   inline double Zenith() const { return acos(v[2]/Module()); }
+   inline T Zenith() const { return acos(v[2]/Module()); }
 
-   inline Vector & operator*=(const double a)
+   inline GenericVector<T> & operator*=(const T a)
    {
     for (int q=0;q<3;++q) v[q] *= a;
     return (*this);
    }
    
-   inline Vector & operator+=(const Vector & a)
+   inline GenericVector<T> & operator+=(const GenericVector<T> & a)
    {
     for (int q=0;q<3;++q) v[q] += a[q];
     return (*this);
    }
 
-   inline Vector & operator-=(const Vector & a)
+   inline GenericVector<T> & operator-=(const GenericVector<T> & a)
    {
     for (int q=0;q<3;++q) v[q] -= a[q];
     return (*this);
    }
 
  private:
-   double v[3];
+   T v[3];
 };
+
+typedef GenericVector<double> Vector;
 
 //
 //
@@ -164,6 +166,8 @@ inline void FormattedWrite(std::ostream & os, const Vector & v)
 const Vector e1(1.0, 0.0, 0.0);
 const Vector e2(0.0, 1.0, 0.0);
 const Vector e3(0.0, 0.0, 1.0);
+
+const Vector identity[3] = { e1, e2, e3 };
 
 inline Vector RandomVector(double m=1.0)
 {

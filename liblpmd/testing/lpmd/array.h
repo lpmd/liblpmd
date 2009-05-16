@@ -55,8 +55,6 @@ template <typename T> class Array: private std::vector<T>
    if (it != e) return (it-b);
    else return -1;
   }
-
- private:
 };
 
 template <typename T> class Array<T &>: private std::vector<T *>
@@ -95,8 +93,6 @@ template <typename T> class Array<T &>: private std::vector<T *>
    if (it != e) return (it-b);
    else return -1;
   }
-
- private:
 };
 
 } // lpmd

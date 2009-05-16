@@ -17,11 +17,6 @@
  *
  */
 
-// Abstract interfaces
-
-#include <lpmd/applicable.h>
-#include <lpmd/containable.h>
-
 // General program utilities
 
 #include <lpmd/timer.h>
