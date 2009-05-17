@@ -89,10 +89,36 @@ using namespace lpmd;
 }
 @end
 
-@test Metodo Mass()
+@test Masas por defecto
 {
  Atom at("Ar");
  @approx at.Mass(), 39.948, 1.0E-10
 }
 @end
+
+@test Modificacion de la masa
+{
+ Atom at("Ar"), at2("Ar");
+ at.Mass() = 1.0;
+ @approx at.Mass(), 1.0, 1.0E-10 
+ @approx at2.Mass(), 39.948, 1.0E-10
+}
+@end
+
+@test Carga por defecto
+{
+ Atom at("Fe");
+ @approx at.Charge(), 0.0, 1.0E-10
+}
+@end
+
+@test Modificacion de la carga
+{
+ Atom at("Cl"), at2("Cl");
+ at.Charge() = -1.0;
+ @approx at.Charge(), -1.0, 1.0E-10 
+ @approx at2.Charge(), 0.0, 1.0E-10
+}
+@end
+
 

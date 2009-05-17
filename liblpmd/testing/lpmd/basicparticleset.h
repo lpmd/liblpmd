@@ -10,11 +10,12 @@
 #include <lpmd/basicatom.h>
 #include <lpmd/atompair.h>
 #include <lpmd/array.h>
+#include <lpmd/taghandler.h>
 
 namespace lpmd
 {
 
-class AtomArray
+class AtomArray: public TagHandler<BasicAtom>
 {
  public:
   virtual ~AtomArray() { };

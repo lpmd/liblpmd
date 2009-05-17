@@ -1,0 +1,79 @@
+
+#include <lpmd/atom.h>
+#include <lpmd/taghandler.h>
+
+using namespace lpmd;
+
+@testsuite Tests de TagHandler
+
+@test Metodo Have devuelve false si no hay tag
+{
+ TagHandler<BasicAtom> h;
+ Atom at("Cu");
+ @assert !(h.Have(at, Tag("nuevotag")))
+}
+@end
+
+@test Metodo GetTag tira excepcion si no hay tag
+{
+ TagHandler<BasicAtom> h;
+ Atom at("Cu");
+ try
+ { 
+  h.GetTag(at, Tag("nuevotag"));
+  @assert false
+ }
+ catch (Error & e)
+ {
+  @assert true
+ }
+}
+@end
+
+@test Seteo de un tag
+{
+ TagHandler<BasicAtom> h;
+ Atom at("Cu");
+ h.SetTag(at, Tag("nuevotag"), true);
+ @assert h.Have(at, Tag("nuevotag"))
+ @equal h.GetTag(at, Tag("nuevotag")), "true"
+}
+@end
+
+@test Seteo explicito de un contenedor especifico de tags
+{
+ TagHandler<BasicAtom> h;
+ Atom at("Cu"), at2("Ag");
+ h.AssignTagGroup(at, Tag("mi_atomtype"));
+ h.AssignTagGroup(at2, Tag("mi_atomtype"));
+ Map & pl = h.GetTagGroup(Tag("mi_atomtype"));
+ h.SetTag(at, Tag("nuevotag"), "HolaMundo");
+ @equal h.GetTag(at, Tag("nuevotag")), "HolaMundo"
+ @equal h.GetTag(at2, Tag("nuevotag")), "HolaMundo"
+ @assert pl.Defined("nuevotag") 
+ @equal pl["nuevotag"], "HolaMundo"
+}
+@end
+
+@test Metodo HaveAny con SetTag
+{
+ TagHandler<BasicAtom> h;
+ Atom at("Cu");
+ @assert !(h.HaveAny(Tag("fixedpos")))
+ h.SetTag(at, Tag("fixedpos"), "true");
+ @assert h.HaveAny(Tag("fixedpos"))
+}
+@end
+
+@test Metodo HaveAny con TagGroup
+{
+ TagHandler<BasicAtom> h;
+ Atom at("Cu");
+ @assert !(h.HaveAny(Tag("fixedpos")))
+ h.AssignTagGroup(at, Tag("mi_atomtype"));
+ Map & pl = h.GetTagGroup(Tag("mi_atomtype"));
+ pl["fixedpos"] = "true";
+ @assert h.HaveAny(Tag("fixedpos"))
+}
+@end
+

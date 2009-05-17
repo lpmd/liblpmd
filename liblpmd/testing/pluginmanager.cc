@@ -17,26 +17,21 @@ PluginManager::PluginManager()
  const char * pathvariable = getenv("LPMD_PATH");
  if (pathvariable != NULL) path = path + std::string(pathvariable);
  path = path + ":" + PLUGINPATH;
- const std::list<std::string> lst = StringSplit< std::list<std::string> >(path, ':'); 
- for (std::list<std::string>::const_iterator it=lst.begin();it!=lst.end();++it)
+ const Array<std::string> lst = StringSplit(path, ':'); 
+ for (long int i=0;i<lst.Size();++i)
  {
-  if ((*it) != "") AddToPluginPath(*it);
+  if (lst[i] != "") AddToPluginPath(lst[i]);
  }
 }
 
 PluginManager::~PluginManager()
 {
- std::string name;
- std::list<std::string> kill_list;
- for (std::map<std::string, Module *>::iterator it=modules.begin();it != modules.end();++it) kill_list.push_back(it->first);
- for (std::list<std::string>::iterator it=kill_list.begin();it != kill_list.end();++it)
- {
-  name = *it;
-  UnloadPlugin(name);
- }
+ Array<std::string> kill_list;
+ for (std::map<std::string, Module *>::iterator it=modules.begin();it != modules.end();++it) kill_list.Append(it->first);
+ for (long int i=0;i<kill_list.Size();++i) UnloadPlugin(kill_list[i]);
 }
 
-void PluginManager::AddToPluginPath(std::string pdir) { pluginpath.push_front(pdir); }
+void PluginManager::AddToPluginPath(std::string pdir) { pluginpath.Append(pdir); }
 
 void PluginManager::LoadPluginFile(std::string path, std::string id, std::string args)
 {
@@ -45,17 +40,17 @@ void PluginManager::LoadPluginFile(std::string path, std::string id, std::string
  mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
  // Agrega nuevas propiedades a la lista
- std::list<std::string> proplist = StringSplit< std::list<std::string> >(mm->Provides());
- for (std::list<std::string>::const_iterator it=proplist.begin();it!=proplist.end();++it) { namedprops[*it] = mm; }
+ Array<std::string> proplist = StringSplit(mm->Provides());
+ for (long int i=0;i<proplist.Size();++i) { namedprops[proplist[i]] = mm; }
 }
 
 void PluginManager::LoadPlugin(std::string name, std::string id, std::string args)
 {
  Module * mm = NULL;
- for (std::list<std::string>::const_iterator p=pluginpath.begin();p != pluginpath.end();++p)
+ for (long int i=0;i<pluginpath.Size();++i)
  {
   mm = NULL;
-  const std::string & plugindir = *p;
+  const std::string & plugindir = pluginpath[i];
   mm = LoadPluginModule(plugindir+"/"+name+".so", args);
   if (mm != NULL) break;
  }
@@ -63,8 +58,8 @@ void PluginManager::LoadPlugin(std::string name, std::string id, std::string arg
  mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
  // Agrega nuevas propiedades a la lista
- std::list<std::string> proplist = StringSplit< std::list<std::string> >(mm->Provides());
- for (std::list<std::string>::const_iterator it=proplist.begin();it!=proplist.end();++it) { namedprops[*it] = mm; }
+ Array<std::string> proplist = StringSplit(mm->Provides());
+ for (long int i=0;i<proplist.Size();++i) { namedprops[proplist[i]] = mm; }
 }
 
 void PluginManager::LoadPlugin(std::string name, std::string args) { LoadPlugin(name, name, args); }
@@ -76,8 +71,8 @@ void PluginManager::UnloadPlugin(std::string id)
  if (m != NULL)
  {
   // Elimina las propiedades de la lista
-  std::list<std::string> proplist = StringSplit< std::list<std::string> >(m->Provides());
-  for (std::list<std::string>::const_iterator it=proplist.begin();it!=proplist.end();++it) { namedprops.erase(*it); }
+  Array<std::string> proplist = StringSplit(m->Provides());
+  for (long int i=0;i<proplist.Size();++i) { namedprops.erase(proplist[i]); }
   delete m;
  }
 }
@@ -100,10 +95,10 @@ Module & PluginManager::Provider(const std::string property)
  else return *(namedprops[property]);
 }
 
-std::list<std::string> PluginManager::NamedProperties()
+Array<std::string> PluginManager::NamedProperties()
 {
- std::list<std::string> tmp;
- for (std::map<std::string, Module *>::iterator it=namedprops.begin();it!=namedprops.end();++it) { tmp.push_back(it->first); }
+ Array<std::string> tmp;
+ for (std::map<std::string, Module *>::iterator it=namedprops.begin();it!=namedprops.end();++it) { tmp.Append(it->first); }
  return tmp;
 }
 

@@ -98,17 +98,17 @@ class NonOrthogonalCell: public BasicCell
    }
    else
    {
-    std::vector<std::string> vecs = StringSplit< std::vector<std::string> >(str,' ');
-    if (vecs.size() == 3)
+    Array<std::string> vecs = StringSplit(str,' ');
+    if (vecs.Size() == 3)
     {
      for (int q=0;q<3;++q) v[q] = Vector(vecs[q].c_str());
     }
-    else if(vecs.size()==6)
+    else if(vecs.Size()==6)
     {
      NonOrthogonalCell tmp(atof(vecs[0].c_str()),atof(vecs[1].c_str()),atof(vecs[2].c_str()),atof(vecs[3].c_str()),atof(vecs[4].c_str()),atof(vecs[5].c_str()));
      (*this) = tmp;
     }
-    else if(vecs.size()==9)
+    else if(vecs.Size()==9)
     {
      for (int p=0;p<3;++p)
        for (int q=0;q<3;++q) v[p][q] = atof(vecs[q+3*p].c_str());

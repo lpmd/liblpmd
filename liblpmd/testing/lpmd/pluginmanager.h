@@ -5,7 +5,6 @@
 #ifndef __LPMD_PLUGINMANAGER_H__
 #define __LPMD_PLUGINMANAGER_H__
 
-#include <list>
 #include <map>
 
 #include <lpmd/plugin.h>
@@ -47,13 +46,13 @@ class PluginManager
    std::string GetPluginKeywords(std::string name);
    bool IsProvided(const std::string property);
    Module & Provider(const std::string property);
-   std::list<std::string> NamedProperties();
+   Array<std::string> NamedProperties();
 
    Module & operator[](std::string id); 
 
  private:
    std::map<std::string, Module *> modules;
-   std::list<std::string> pluginpath;
+   Array<std::string> pluginpath;
    std::map<std::string, Module *> namedprops;
    ParamList aliasdict;
 };

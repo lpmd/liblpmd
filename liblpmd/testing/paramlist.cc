@@ -37,11 +37,11 @@ const std::string & ParamList::operator[](const std::string & key) const
 
 void ParamList::Remove(const std::string & key) { (paramlist_impl->innermap).erase(key); }
 
-std::list<std::string> ParamList::Parameters() const
+Array<std::string> ParamList::Parameters() const
 {
- std::list<std::string> tmp;
+ Array<std::string> tmp;
  std::map<std::string, std::string> & im = paramlist_impl->innermap;
- for (std::map<std::string, std::string>::const_iterator it=im.begin();it != im.end();++it) tmp.push_back(it->first);
+ for (std::map<std::string, std::string>::const_iterator it=im.begin();it != im.end();++it) tmp.Append(it->first);
  return tmp;
 }
 

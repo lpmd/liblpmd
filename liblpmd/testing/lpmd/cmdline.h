@@ -25,7 +25,7 @@ class CommandArguments: public ParamList
 
   //
   void Parse(int argc, char *argv[]);
-  std::list<std::string> Arguments() const;
+  Array<std::string> Arguments() const;
  
  private:
    class CommandArgumentsImpl * clpimpl;

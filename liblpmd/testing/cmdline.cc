@@ -26,8 +26,8 @@ class lpmd::CommandArgumentsImpl
    CommandArgumentsImpl() { };
    ~CommandArgumentsImpl() { };
 
-   std::list<Option> optlist;
-   std::list<std::string> arglist;
+   Array<Option> optlist;
+   Array<std::string> arglist;
 };
 
 UnknownCmdLineOption::UnknownCmdLineOption(const std::string name): Error("Unknown command line option: "+name) { }
@@ -58,33 +58,33 @@ void CommandArguments::DefineOption(const std::string & longname, const std::str
  opt.longname = longname;
  opt.shortname = shortname;
  opt.args = args;
- impl.optlist.push_back(opt);
+ impl.optlist.Append(opt);
 }
 
 void CommandArguments::Parse(int argc, char *argv[])
 {
  CommandArgumentsImpl & impl = *clpimpl;
  Option curropt;
- std::list<std::string> optargs;
+ Array<std::string> optargs;
  for (int i=0;i<argc;++i)
  {
-  if (!strcmp(argv[i], "-")) impl.arglist.push_back(std::string(argv[i]));
+  if (!strcmp(argv[i], "-")) impl.arglist.Append(std::string(argv[i]));
   else if ((strlen(argv[i]) > 1) && (argv[i][0] == '-') && (argv[i][1] == '-'))
   {
    // Opcion larga 
    std::string optname(&argv[i][2]);
    bool optfound = false;
-   for (std::list<Option>::const_iterator it=impl.optlist.begin();it!=impl.optlist.end();++it)
+   for (int i=0;i<impl.optlist.Size();++i)
    {
-    if (optname == (*it).longname)
+    if (optname == impl.optlist[i].longname)
     {
-     curropt = (*it);
+     curropt = impl.optlist[i];
      optfound = true;
      break;
     }
    }
    if (optfound == false) throw UnknownCmdLineOption("--"+optname);
-   optargs = StringSplit< std::list<std::string> >(curropt.args);
+   optargs = StringSplit(curropt.args);
    AssignParameter(curropt.longname, "true");
   }
   else if ((strlen(argv[i]) > 0) && (argv[i][0] == '-'))
@@ -92,36 +92,32 @@ void CommandArguments::Parse(int argc, char *argv[])
    // Opcion corta
    std::string optname(&argv[i][1]);
    bool optfound = false;
-   for (std::list<Option>::const_iterator it=impl.optlist.begin();it!=impl.optlist.end();++it)
+   for (int i=0;i<impl.optlist.Size();++i)
    {
-    if (optname == (*it).shortname)
+    if (optname == impl.optlist[i].shortname)
     {
-     curropt = (*it);
+     curropt = impl.optlist[i];
      optfound = true;
      break;
     }
    }
    if (optfound == false) throw UnknownCmdLineOption("-"+optname);
-   optargs = StringSplit< std::list<std::string> >(curropt.args);
+   optargs = StringSplit(curropt.args);
    AssignParameter(curropt.longname, "true");
   }
   else
   {
    // Argumento de una opcion o argumento general del programa
-   if (optargs.size() > 0)
+   if (optargs.Size() > 0)
    {
-    std::string this_arg = optargs.front();
-    optargs.pop_front();
+    std::string this_arg = optargs[0];
+    optargs.Delete(0);
     AssignParameter(curropt.longname+"-"+this_arg, std::string(argv[i]));
    }
-   else impl.arglist.push_back(std::string(argv[i]));
+   else impl.arglist.Append(std::string(argv[i]));
   }
  }
 }
 
-std::list<std::string> CommandArguments::Arguments() const
-{
- ;
- return clpimpl->arglist;
-}
+Array<std::string> CommandArguments::Arguments() const {  return clpimpl->arglist; }
 

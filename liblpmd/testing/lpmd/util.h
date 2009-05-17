@@ -6,11 +6,12 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
 #include <sstream>
 #include <cctype>
 #include <cmath>
 #include <cstdlib>
+
+#include <lpmd/array.h>
 
 namespace lpmd
 {
@@ -65,45 +66,12 @@ inline void RemoveUnnecessarySpaces(std::string & input_string)
 //
 // Devuelve una coleccion de strings desde un string separando por un delimitador
 //
-template <class T> T StringSplit(const std::string & line, char delimiter=' ')
-{
- std::string tmpline(line);
- RemoveUnnecessarySpaces(tmpline);
- T words;
- std::string l;
- // Para manejar correctamente espacios y tabs
- if (delimiter == ' ')
- {
-  std::string::size_type sp = std::string::npos;
-  for (std::string::size_type p=0;p<tmpline.size();p++)
-  {
-   if (! isspace(tmpline[p])) 
-   {
-    if (sp == std::string::npos) sp = p;
-   }
-   else
-   {
-    if (sp != std::string::npos)
-    {
-     words.push_back(tmpline.substr(sp, p-sp));
-     sp = std::string::npos;
-    }
-   }
-  }
-  if (sp != std::string::npos) words.push_back(tmpline.substr(sp, tmpline.size()-sp));
- }
- else 
- {
-  std::istringstream iss(tmpline);
-  while (std::getline(iss, l, delimiter)) words.push_back(l);
- }
- return words;
-}
+Array<std::string> StringSplit(const std::string & line, char delimiter=' ');
 
 //
-inline std::vector<std::string> SplitSpeciesPair(const std::string & pair)
+inline Array<std::string> SplitSpeciesPair(const std::string & pair)
 {
- return StringSplit< std::vector<std::string> >(pair, '-');
+ return StringSplit(pair, '-');
 }
 
 template <class T> const std::string ToString(const T & object)
@@ -113,11 +81,11 @@ template <class T> const std::string ToString(const T & object)
  return(os.str());
 }
 
-inline std::vector<std::string> FindBetween(std::string & line)
+inline Array<std::string> FindBetween(std::string & line)
 {
  std::string tmpline(line);
  RemoveUnnecessarySpaces(tmpline);
- std::vector<std::string> words;
+ Array<std::string> words;
  size_t pc=0;
  size_t uc=0;
  int counter=0;
@@ -129,7 +97,7 @@ inline std::vector<std::string> FindBetween(std::string & line)
   std::string t1=tmpline.substr(pc,uc-pc+1);
   t1.erase(0,1);
   t1.erase(t1.size()-1,1);
-  words.push_back(t1);
+  words.Append(t1);
   std::stringstream sst;
   sst << counter ;
   std::string t2="%"+sst.str();

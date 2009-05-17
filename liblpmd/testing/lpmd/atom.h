@@ -61,7 +61,12 @@ class Atom: public BasicAtom
   Vector iv[3];
 };
 
+inline bool operator==(const Atom & a, const Atom & b)
+{
+ return ((a.Z() == b.Z()) && (a.Position() == b.Position()));
 }
+
+}  // lpmd
 
 #endif
 

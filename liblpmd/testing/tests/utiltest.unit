@@ -4,9 +4,6 @@
 
 #include <lpmd/util.h>
 
-#include <vector>
-#include <list>
-
 using namespace lpmd;
 
 @testsuite Tests de util.h
@@ -39,25 +36,13 @@ using namespace lpmd;
 }
 @end
 
-@test StringSplit devolviendo std::vector
+@test StringSplit
 {
- std::vector <std::string> vec = StringSplit< std::vector<std::string> >("1 2 3 4 5 6 7 8 9 10",' ');
- @equal vec.size(), 10
+ Array<std::string> vec = StringSplit("1 2 3 4 5 6 7 8 9 10",' ');
+ @equal vec.Size(), 10
  for(int i=0;i<10;++i) 
  {
   @equal int(atof(vec[i].c_str())), i+1
- }
-}
-@end
-
-@test StringSplit devolviendo std::list
-{
- std::list <std::string> lst =StringSplit< std::list<std::string> >("1 2 3 4 5 6 7 8 9 10",' ');
- int i = 1;
- for (std::list<std::string>::const_iterator it=lst.begin();it!=lst.end();++it)
- {
-  @equal int(atof((*it).c_str())), i
-  i++;
  }
 }
 @end
@@ -90,7 +75,7 @@ using namespace lpmd;
 
 @test SplitSpeciesPair
 {
- std::vector<std::string> sp;
+ Array<std::string> sp;
  sp = SplitSpeciesPair("Ar-Kr");
  @equal sp[0], "Ar"
  @equal sp[1], "Kr"
@@ -103,9 +88,9 @@ using namespace lpmd;
 @test FindBetween
 {
  std::string line = "hola mundo \"esta es una\" prueba";
- std::vector<std::string> vec = FindBetween(line);
+ Array<std::string> vec = FindBetween(line);
  @equal line, "hola mundo %0 prueba"
- @equal vec.size(), 1
+ @equal vec.Size(), 1
  @equal vec[0], "esta es una"
  // que pasa con mas de un par de comillas?
 }

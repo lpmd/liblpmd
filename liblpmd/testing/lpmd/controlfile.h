@@ -8,7 +8,6 @@
 #include <lpmd/error.h>
 #include <lpmd/map.h>
 
-#include <list>
 #include <map>
 
 namespace lpmd
@@ -49,7 +48,7 @@ class ControlFile: public Map
  
    void Remove(const std::string & key);
 
-   std::list<std::string> Parameters() const;
+   Array<std::string> Parameters() const;
 
    void DeclareStatement(const std::string & cmd, const std::string & args);
  
@@ -58,8 +57,8 @@ class ControlFile: public Map
    virtual int OnStatement(const std::string & name, const std::string & keywords, bool regular);
 
  protected:
-   std::list<std::string> words; // FIXME: hacer que words sea private, implementar funciones de acceso
-   std::string MatchCommand(std::list<std::string> & w);
+   Array<std::string> words; // FIXME: hacer que words sea private, implementar funciones de acceso
+   std::string MatchCommand(Array<std::string> & w);
    std::string ParseCommandArguments(const std::string & cmd, const std::string & validkeywords);
    std::string GetNextWord();
 

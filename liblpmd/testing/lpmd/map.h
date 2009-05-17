@@ -7,9 +7,9 @@
 
 #include <iostream>
 #include <string>
-#include <list>
 #include <cstdlib>
 #include <lpmd/vector.h>
+#include <lpmd/array.h>
 #include <lpmd/util.h>
 
 namespace lpmd
@@ -33,7 +33,7 @@ namespace lpmd
 
    virtual void Remove(const std::string & key) = 0;
 
-   virtual std::list<std::string> Parameters() const = 0;
+   virtual Array<std::string> Parameters() const = 0;
 
    // 
    //
@@ -85,9 +85,8 @@ namespace lpmd
 //
 inline std::ostream & operator<<(std::ostream & os, const lpmd::Map & m)
 {
- std::list<std::string> params = m.Parameters();
- for (std::list<std::string>::const_iterator it=params.begin();it != params.end();++it)
-   os << (*it) << " = " << m[*it] << '\n';
+ Array<std::string> params = m.Parameters();
+ for (long int i=0;i<params.Size();++i) { os << params[i] << " = " << m[params[i]] << '\n'; }
  return os;
 }
 

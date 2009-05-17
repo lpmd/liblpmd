@@ -17,7 +17,7 @@ class lpmd::ModuleImpl
 {
  public:
    bool used;
-   std::list<std::string> words;
+   Array<std::string> words;
    ParamList defvalues;
    std::string name;
    bool emptycall;
@@ -48,8 +48,8 @@ Module::Module(const Module & mod)
  impl->emptycall = false;
  impl->strictkw = mod.impl->strictkw;
  impl->kwstr = mod.impl->kwstr;
- std::list<std::string> kwd = mod.Parameters();
- for (std::list<std::string>::const_iterator it=kwd.begin();it!=kwd.end();++it) AssignParameter(*it, mod.GetString(*it));
+ Array<std::string> kwd = mod.Parameters();
+ for (long int i=0;i<kwd.Size();++i) AssignParameter(kwd[i], mod.GetString(kwd[i]));
 }
 
 Module::Module(std::string modulename, bool strictkw)
@@ -76,8 +76,8 @@ Module & Module::operator=(const Module & mod)
   impl->emptycall = false;
   impl->strictkw = mod.impl->strictkw;
   impl->kwstr = mod.impl->kwstr;
-  std::list<std::string> kwd = mod.Parameters();
-  for (std::list<std::string>::const_iterator it=kwd.begin();it!=kwd.end();++it) AssignParameter(*it, mod.GetString(*it));
+  Array<std::string> kwd = mod.Parameters();
+  for (long int i=0;i<kwd.Size();++i) AssignParameter(kwd[i], mod.GetString(kwd[i]));
  }
  return (*this);
 }
@@ -86,19 +86,21 @@ void Module::ProcessArguments(std::string line)
 {
  if (!Defined("debug")) DefineKeyword("debug", "stderr");
  // Registra los parametros que ya tengan valores (por omision)
- std::list<std::string> kwd = Parameters();
- for (std::list<std::string>::const_iterator it=kwd.begin();it!=kwd.end();++it)
-     impl->defvalues.AssignParameter(*it, GetString(*it));
+ Array<std::string> kwd = Parameters();
+ for (long int i=0;i<kwd.Size();++i)
+ {
+  impl->defvalues.AssignParameter(kwd[i], GetString(kwd[i]));
+ }
  // Asigna los nuevos valores, dados en line
  std::string tmp;
- impl->words = StringSplit< std::list<std::string> >(line);
- if (impl->words.size() == 0) impl->emptycall = true;
+ impl->words = StringSplit(line);
+ if (impl->words.Size() == 0) impl->emptycall = true;
  else
  {
-  while (impl->words.size() > 0)
+  while (impl->words.Size() > 0)
   {
-   tmp = impl->words.front();
-   impl->words.pop_front();
+   tmp = impl->words[0];
+   impl->words.Delete(0);
    RemoveUnnecessarySpaces(tmp);
    SetParameter(tmp);
   }
@@ -108,10 +110,10 @@ void Module::ProcessArguments(std::string line)
 
 std::string Module::GetNextWord()
 {
- if (impl->words.size() > 0)
+ if (impl->words.Size() > 0)
  {
-  std::string tmp = impl->words.front();
-  impl->words.pop_front();
+  std::string tmp = impl->words[0];
+  impl->words.Delete(0);
   return tmp;
  } 
  return "(null)";
@@ -125,8 +127,8 @@ std::string Module::GetNextWord(char d)
  else if(d=='(') e= ')';
  else e=d;
 
- std::string nextword = impl->words.front();
- impl->words.pop_front();
+ std::string nextword = impl->words[0];
+ impl->words.Delete(0);
  if(nextword[0]!=d) {std::cerr << "Error reading module" << '\n';exit(0);}
  if(nextword[0]==d && (nextword[nextword.size()-1]==e && nextword.size()>1)) return nextword;
 
@@ -135,9 +137,9 @@ std::string Module::GetNextWord(char d)
  nextword = " ";
  while(nextword[nextword.size()-1]!=e)
  {
-  nextword = impl->words.front();
+  nextword = impl->words[0];
   ostr <<" "<< nextword;
-  impl->words.pop_front();
+  impl->words.Delete(0);
  }
  return ostr.str();
 }
@@ -167,23 +169,23 @@ void Module::Show(std::ostream & os) const
  os << "Module " << impl->name;
  if (Defined("module") && (GetString("module") != Name())) os << " (loaded as \"" << GetString("module") << "\")";
  os << ": " << '\n'; 
- std::list<std::string> kwds;
- if (impl->strictkw) kwds = StringSplit< std::list<std::string> >(Keywords());
+ Array<std::string> kwds;
+ if (impl->strictkw) kwds = StringSplit(Keywords());
  else kwds = Parameters();
- for (std::list<std::string>::const_iterator it=kwds.begin();it!=kwds.end();++it)
+ for (long int i=0;i<kwds.Size();++i)
  {
-  if ((*it) == "module") continue;      // No muestra parametro "module", reservado para uso interno
-  if ((*it) == "fullpath") continue;  // parametro reservado
+  if ((kwds[i]) == "module") continue;      // No muestra parametro "module", reservado para uso interno
+  if ((kwds[i]) == "fullpath") continue;  // parametro reservado
   if (impl->emptycall) 
   { 
-   os << "   " << std::setw(20) << (*it);
-   if (impl->defvalues.Defined(*it)) os << " = " << std::setw(30) << impl->defvalues.GetString(*it) << '\n';
+   os << "   " << std::setw(20) << (kwds[i]);
+   if (impl->defvalues.Defined(kwds[i])) os << " = " << std::setw(30) << impl->defvalues.GetString(kwds[i]) << '\n';
    else os << " has no default value\n";
   }
   else
   {
-   os << "   " << std::setw(20) << (*it) << " = " << std::setw(30) << GetString(*it);
-   if (impl->defvalues.Defined(*it)) os << " (default: " << impl->defvalues.GetString(*it) << ")\n";
+   os << "   " << std::setw(20) << (kwds[i]) << " = " << std::setw(30) << GetString(kwds[i]);
+   if (impl->defvalues.Defined(kwds[i])) os << " (default: " << impl->defvalues.GetString(kwds[i]) << ")\n";
    else os << '\n';
   }
  }

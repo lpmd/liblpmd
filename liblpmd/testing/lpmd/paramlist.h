@@ -27,7 +27,7 @@ class ParamList: public Map
  
    void Remove(const std::string & key);
 
-   std::list<std::string> Parameters() const;
+   Array<std::string> Parameters() const;
 
  private:
    class ParamListImpl * paramlist_impl;

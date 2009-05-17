@@ -37,39 +37,37 @@ const std::string & ControlFile::operator[](const std::string & key) const { ret
 
 void ControlFile::Remove(const std::string & key) { innermap->Remove(key); }
 
-std::list<std::string> ControlFile::Parameters() const { return innermap->Parameters(); }
+Array<std::string> ControlFile::Parameters() const { return innermap->Parameters(); }
 
 void ControlFile::DeclareStatement(const std::string & cmd, const std::string & args) { reservedkw[cmd] = args; }
 
 //
 //
 //
-std::string ControlFile::MatchCommand(std::list<std::string> & w)
+std::string ControlFile::MatchCommand(Array<std::string> & w)
 {
  std::string tmp;
  for (std::map<std::string, std::string>::const_iterator it=reservedkw.begin();it != reservedkw.end();++it)
  {
   std::string key = it->first;
-  std::list<std::string> lt = StringSplit< std::list<std::string> >(key);
+  Array<std::string> lt = StringSplit(key);
   bool badmatch = false;
-  std::list<std::string>::const_iterator kt = w.begin();
-  for (std::list<std::string>::const_iterator jt=lt.begin();jt != lt.end();++jt)
+  for (long int j=0;j<lt.Size();++j)
   {
-   std::string ak = (*jt);
-   std::string bk = (*kt);
+   const std::string & ak = lt[j];
+   const std::string & bk = w[j];
    if (ak != bk) 
    {
     badmatch = true;
     break;
    }
-   ++kt;
   }
   if (badmatch == false) 
   {
-   while (lt.size() > 0) 
+   while (lt.Size() > 0) 
    {
-    lt.pop_front();
-    w.pop_front();
+    lt.Delete(0);
+    w.Delete(0);
    }
    return reservedkw[key];
   }
@@ -82,21 +80,21 @@ std::string ControlFile::MatchCommand(std::list<std::string> & w)
 //
 std::string ControlFile::ParseCommandArguments(const std::string & cmd, const std::string & validkeywords)
 {
- unsigned int argcount = 0;
+ long int argcount = 0;
  std::string kvpairs = "";
- const std::vector<std::string> kvect = StringSplit< std::vector<std::string> >(validkeywords);
+ const Array<std::string> kvect = StringSplit(validkeywords);
  Map & param = (*this);
- while (words.size() > 0)
+ while (words.Size() > 0)
  {
-  std::string arg = words.front(); 
-  words.pop_front();
-  std::list<std::string> alist = StringSplit< std::list<std::string> >(arg, '=');
-  if (alist.size() == 1)
+  std::string arg = words[0]; 
+  words.Delete(0);
+  Array<std::string> alist = StringSplit(arg, '=');
+  if (alist.Size() == 1)
   {
    // El argumento actual no es de tipo keyword, se evaluara posicionalmente
-   if (argcount >= kvect.size()) continue;
+   if (argcount >= kvect.Size()) continue;
    std::string keyword = kvect[argcount];
-   std::string value = alist.front();
+   std::string value = alist[0];
    param[cmd+"-"+keyword] = value;
    kvpairs += (keyword + " " + value + " ");
    argcount++;
@@ -104,8 +102,8 @@ std::string ControlFile::ParseCommandArguments(const std::string & cmd, const st
   else
   {
    // El argumento actual es de tipo keyword
-   std::string keyword = alist.front();
-   std::string value = alist.back();
+   std::string keyword = alist[0];
+   std::string value = alist[alist.Size()-1];
    param[cmd+"-"+keyword] = value; 
    kvpairs += (keyword + " " + value + " ");
   }
@@ -118,9 +116,9 @@ std::string ControlFile::ParseCommandArguments(const std::string & cmd, const st
 //
 std::string ControlFile::GetNextWord()
 {
- if (words.size() == 0) throw InputSyntaxError();
- std::string nextword = words.front();
- words.pop_front();
+ if (words.Size() == 0) throw InputSyntaxError();
+ std::string nextword = words[0];
+ words.Delete(0);
  return nextword;
 }
 
@@ -163,27 +161,28 @@ void ControlFile::Read(std::istream & istr, const ParamList & options, const std
   std::ostringstream strlnum;
   strlnum << line_count;
   // Sustituye las opciones
-  std::list<std::string> opts = options.Parameters();
-  for (std::list<std::string>::const_iterator jt=opts.begin();jt!=opts.end();++jt)
+  Array<std::string> opts = options.Parameters();
+  for (long int j=0;j<opts.Size();++j)
   {
-   std::string searchstr = "$("+(*jt)+")";
+   const std::string & jt = opts[j];
+   std::string searchstr = "$("+(jt)+")";
    std::string::size_type idx = 0;
    while (true)
    {
     idx = tmp.find(searchstr, idx);
     if (idx == std::string::npos) break;
-    tmp.replace(idx, searchstr.size(), options.GetString(*jt));
-    idx += options.GetString(*jt).length();
+    tmp.replace(idx, searchstr.size(), options.GetString(jt));
+    idx += options.GetString(jt).length();
    }  
   }
   if (tmp.find("$(", 0) != std::string::npos) throw InputError("Variable(s) undefined in input file \""+inpfile+"\"", line_count, tmp);
   //
-  words = StringSplit< std::list<std::string> >(tmp);
-  if (words.size() == 0) continue;
-  if (words.front()[0] == '#') continue;
-  std::string first_word = words.front();
+  words = StringSplit(tmp);
+  if (words.Size() == 0) continue;
+  if (words[0][0] == '#') continue;
+  std::string first_word = words[0];
   std::string statement_args = MatchCommand(words);
-  if (statement_args == "") words.pop_front();
+  if (statement_args == "") words.Delete(0);
   if (statement_args != "")
   {
    // Palabra clave de tipo regular, o no valida

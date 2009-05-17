@@ -15,7 +15,7 @@ Matrix::Matrix(long cols, long rows)
  nc = cols;
  nr = rows;
  values = new double*[rows];
- for (long i=0;i<cols;++i) col_labels.push_back(" ? ");
+ for (long i=0;i<cols;++i) col_labels.Append(" ? ");
  for (long j=0;j<rows;++j)
  {
   values[j] = new double[cols]; 
@@ -35,7 +35,7 @@ Matrix::Matrix(const Matrix & m)
  nc = m.Columns();
  nr = m.Rows();
  values = new double*[nr];
- for (long i=0;i<nc;++i) col_labels.push_back(m.GetLabel(i));
+ for (long i=0;i<nc;++i) col_labels.Append(m.GetLabel(i));
  for (long j=0;j<nr;++j)
  {
   values[j] = new double[nc]; 
@@ -69,7 +69,7 @@ Matrix & Matrix::operator=(const Matrix & m)
 {
  if ((nr == m.Rows()) && (nc == m.Columns()))
  {
-  for (long i=0;i<nc;++i) col_labels.push_back(m.GetLabel(i));
+  for (long i=0;i<nc;++i) col_labels.Append(m.GetLabel(i));
   for (long j=0;j<m.Rows();++j)
   {
    for (long i=0;i<m.Columns();++i) Set(i, j, m.Get(i, j));
@@ -86,7 +86,7 @@ Matrix & Matrix::operator=(const Matrix & m)
   nc = m.Columns();
   nr = m.Rows();
   values = new double*[nr];
-  for (long i=0;i<nc;++i) col_labels.push_back(m.GetLabel(i));
+  for (long i=0;i<nc;++i) col_labels.Append(m.GetLabel(i));
   for (long j=0;j<nr;++j)
   {
    values[j] = new double[nc]; 
@@ -101,7 +101,7 @@ Matrix & Matrix::operator+=(const Matrix & m)
  if ((Rows() == 0) && (Columns() == 0)) return (this->operator=(m));
  else if ((Rows() == m.Rows()) && (Columns() == m.Columns()))
  {
-  for (long i=0;i<Columns();++i) col_labels.push_back(m.GetLabel(i));
+  for (long i=0;i<Columns();++i) col_labels.Append(m.GetLabel(i));
   for (long j=0;j<m.Rows();++j)
     for (long i=0;i<m.Columns();++i) Set(i, j, Get(i, j) + m.Get(i, j));
   return (*this);
