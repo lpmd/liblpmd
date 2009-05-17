@@ -31,7 +31,8 @@ int main()
  // Carga de plugins con sus parametros
  PluginManager pm;
 
- md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
+ //md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
+ md.SetCellManager(pm.LoadPluginAs<CellManager>("lc2", "cutoff 8.5 nx 7 ny 7 nz 7"));
 
  BasicParticleSet & atoms = md.Atoms();
  assert(fabs(atoms[0].Mass() - 39.948) < 1.0E-10);

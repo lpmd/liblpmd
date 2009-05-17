@@ -79,6 +79,7 @@ void MetalPotential::UpdateForces(Configuration & conf)
    {
     Vector pf, acci, accj, mb;
     pf = PairForce(nn.rij);
+    assert(nn.j_index != -1);
     mb = ManyBodies(nn.rij, rho[i], rho[nn.j_index]);
     acci = at.Acceleration();
     accj = nn.j->Acceleration(); 

@@ -24,7 +24,11 @@ namespace lpmd
     virtual BasicCell & Cell() = 0;
     virtual const BasicCell & Cell() const = 0;
 
-    void SetCellManager(lpmd::CellManager & cm) { cellman = &cm; }
+    void SetCellManager(lpmd::CellManager & cm) 
+    { 
+     cellman = &cm; 
+     cm.UpdateCell(*this);
+    }
 
     lpmd::CellManager & CellManager() { return (*cellman); }
 

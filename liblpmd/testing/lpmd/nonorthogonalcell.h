@@ -190,6 +190,22 @@ class NonOrthogonalCell: public BasicCell
    }
   }
 
+  Vector Fractional(const Vector & cv) const
+  {
+   Vector tmp(cv);
+   ConvertToInternal(tmp);
+   for (int q=0;q<3;++q) tmp[q] /= v[q].Module();
+   return tmp;
+  }
+  
+  Vector Cartesian(const Vector & cv) const
+  {
+   Vector tmp(cv);
+   for (int q=0;q<3;++q) tmp[q] *= v[q].Module();
+   ConvertToExternal(tmp);
+   return tmp;
+  }
+
   Vector FittedInside(const Vector & a) const
   {
    Vector vtmp(a);

@@ -4,11 +4,19 @@
  *
  */
 
-#include <lpmd/simulationengine.h>
+#ifndef __LPMD_SIMULATION_ENGINE_H__
+#define __LPMD_SIMULATION_ENGINE_H__
 
-using namespace lpmd;
+#include <lpmd/simulation.h>
+#include <lpmd/properties.h>
+#include <lpmd/particleset.h>
+#include <lpmd/fixedsizeparticleset.h>
+#include <lpmd/orthogonalcell.h>
+#include <lpmd/nonorthogonalcell.h>
+#include <lpmd/combinedpotential.h>
+#include <lpmd/integrator.h>
+#include <lpmd/cellmanager.h>
 
-/*
 namespace lpmd
 {
 
@@ -114,16 +122,11 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   long int step;
 };
 
-}
+Simulation * FixedOrthogonalEngine(long int atoms, const BasicAtom & at);
 
-*/
-Simulation * lpmd::FixedOrthogonalEngine(long int atoms, const BasicAtom & at)
-{
- return new SimulationEngine<FixedSizeParticleSet, OrthogonalCell>(atoms, at);
-}
+Simulation * GeneralEngine(long int atoms, const BasicAtom & at);
 
-Simulation * lpmd::GeneralEngine(long int atoms, const BasicAtom & at)
-{
- return new SimulationEngine<ParticleSet, NonOrthogonalCell>(atoms, at);
-}
+}  // lpmd
+
+#endif
 

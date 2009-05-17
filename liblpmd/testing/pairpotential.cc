@@ -36,6 +36,7 @@ void PairPotential::UpdateForces(Configuration & conf)
    if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r < GetCutoff()) 
    {
     energycache += pairEnergy(nn.r);
+    std::cerr << nn.r << '\n';
     ff = pairForce(nn.rij);
     atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
     nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());
