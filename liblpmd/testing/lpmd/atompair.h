@@ -7,7 +7,7 @@
 
 #include <lpmd/vector.h>
 #include <lpmd/array.h>
-#include <lpmd/atominterface.h>
+#include <lpmd/basicatom.h>
 
 namespace lpmd
 {
@@ -15,8 +15,8 @@ namespace lpmd
  class AtomPair
  {
   public:
-    AtomInterface * i;  //  
-    AtomInterface * j;  //
+    BasicAtom * i;  //  
+    BasicAtom * j;  //
     long int i_index;
     long int j_index;
     Vector rij;         // Distancia vectorial del atomo i al atomo j

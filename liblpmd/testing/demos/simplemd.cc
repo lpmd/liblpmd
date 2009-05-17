@@ -40,13 +40,6 @@ int main()
  cg.Generate(md);
 
  assert(atoms.Size() == 108);
- for (int i=0;i<107;++i)
-  for (int j=i+1;j<108;++j)
-  {
-   double r = (atoms[j].Position() - atoms[i].Position()).Module();
-   if (r < 1.0E-08) std::cerr << "DEBUG atoms " << i << " and " <<j << '\n';
-   assert(r >= 1.0E-08);
-  }
 
  Potential & pot = pm.LoadPluginAs<Potential>("lennardjones", "sigma 3.41 epsilon 0.0103408 cutoff 8.5");
  Array<Potential &> & potentials = md.Potentials();
@@ -55,7 +48,6 @@ int main()
  potentials.Append(pot);
 
  md.SetTemperature(168.0);
- std::cerr << "DEBUG Temp = " << Temperature(atoms) << '\n';
  md.SetIntegrator(pm.LoadPluginAs<Integrator>(INTEGRATOR, "dt 1.0"));
 
  for (int i=0;i<atoms.Size();++i) atoms[i].Acceleration() = Vector(0.0, 0.0, 0.0);
@@ -66,7 +58,6 @@ int main()
  assert(&(potentials[0]) == &pot);
 
  md.DoStep();
- std::cerr << "DEBUG Temp = " << Temperature(atoms) << '\n';
  double av=0.0, av2=0.0;
  long nsteps = 5000, nav = 0;
  Timer timer;

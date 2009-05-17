@@ -4,20 +4,20 @@
  *
  */
 
-#ifndef __LPMD_ATOMINTERFACE_H__
-#define __LPMD_ATOMINTERFACE_H__
+#ifndef __LPMD_BASICATOM_H__
+#define __LPMD_BASICATOM_H__
 
 #include <lpmd/vector.h>
-#include "elements.h"
+#include <lpmd/elements.h>
 
 namespace lpmd
 {
 
-class AtomInterface
+class BasicAtom
 {
  public:
-  AtomInterface(int z0, Vector * ip, Vector * iv, Vector * ia): z(z0), ipos(ip), ivel(iv), iacc(ia) { }
-  virtual ~AtomInterface() { }
+  BasicAtom(int z0, Vector * ip, Vector * iv, Vector * ia): z(z0), ipos(ip), ivel(iv), iacc(ia) { }
+  virtual ~BasicAtom() { }
 
   inline int Z() const { return z; }
   inline std::string Symbol() const { return ElemSym[Z()]; }
@@ -29,7 +29,7 @@ class AtomInterface
   inline Vector & Acceleration() { return *iacc; }
   inline double Mass() const { return ElemMass[Z()]; }
 
-  inline AtomInterface & operator=(const AtomInterface & at) 
+  inline BasicAtom & operator=(const BasicAtom & at) 
   {
    if (&at != this)
    {
@@ -46,7 +46,7 @@ class AtomInterface
   Vector * ipos, * ivel, * iacc;
 };
 
-inline bool operator==(const AtomInterface & a, const AtomInterface & b)
+inline bool operator==(const BasicAtom & a, const BasicAtom & b)
 {
  return ((a.Z() == b.Z()) && (a.Position() == b.Position()));
 }

@@ -23,8 +23,9 @@ namespace lpmd
   public:
     NoIntegrator(): Error("No integrator defined") { }
  };
- class Integrator;
- class CellManager;
+
+ class Integrator;  // forward
+ class CombinedPotential; // forward
 
  class Simulation: public Configuration
  {
@@ -33,9 +34,7 @@ namespace lpmd
 
     virtual void SetTemperature(double temp) = 0;
 
-    virtual Array<Potential &> & Potentials() = 0;
-
-    virtual Potential & CombinedPotential() = 0;
+    virtual CombinedPotential & Potentials() = 0;
 
     virtual void DoStep() = 0;
  
@@ -48,9 +47,9 @@ namespace lpmd
     virtual lpmd::Integrator & Integrator() = 0;
  };
 
- Simulation * FixedOrthogonalEngine(long int atoms, const AtomInterface & at);
+ Simulation * FixedOrthogonalEngine(long int atoms, const BasicAtom & at);
 
- Simulation * GeneralEngine(long int atoms, const AtomInterface & at);
+ Simulation * GeneralEngine(long int atoms, const BasicAtom & at);
 
 } // lpmd
 

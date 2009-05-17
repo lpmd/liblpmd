@@ -27,7 +27,7 @@ class FixedSizeParticleSet: public BasicParticleSet
     AllocateMemory(n);
    }
 
-   FixedSizeParticleSet(long int n, const AtomInterface & at): nl(n)
+   FixedSizeParticleSet(long int n, const BasicAtom & at): nl(n)
    {
     AllocateMemory(n);
     for (long int i=0;i<n;++i) (*this)[i] = at;
@@ -54,13 +54,13 @@ class FixedSizeParticleSet: public BasicParticleSet
     delete [] storeacc;
    }
 
-   inline AtomInterface & operator[](long int i) { return atomarray[i]; }
+   inline BasicAtom & operator[](long int i) { return atomarray[i]; }
 
-   inline const AtomInterface & operator[](long int i) const { return atomarray[i]; }
+   inline const BasicAtom & operator[](long int i) const { return atomarray[i]; }
 
    inline long int Size() const { return nl; }
 
-   inline long int Find(const AtomInterface & t)
+   inline long int Find(const BasicAtom & t)
    {
     for (long int i=0;i<Size();++i) 
     {
@@ -78,7 +78,7 @@ class FixedSizeParticleSet: public BasicParticleSet
    }
 
   // FIXME: Implementa la parte Mutable de BasicParticleSet con metodos vacios
-  void Append(const AtomInterface & x) { throw ParticleSetIsFixed(); }
+  void Append(const BasicAtom & x) { throw ParticleSetIsFixed(); }
   void Clear() { throw ParticleSetIsFixed(); }
   void Delete(long int i) { throw ParticleSetIsFixed(); }
 

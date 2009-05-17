@@ -15,16 +15,6 @@
 namespace lpmd
 {
 
-class ModuleInfo
-{
- public:
-   std::string name;
-   std::string id;
-   std::string args;
-
-   ModuleInfo(std::string modulename, std::string moduleid, std::string moduleargs);
-};
-
 // Safe casting of Modules into specific kinds of plugins
 template<class T> T & CastModule(Module & m)
 {

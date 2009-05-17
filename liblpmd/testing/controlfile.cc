@@ -2,8 +2,9 @@
 //
 //
 
-#include <lpmd/inputfile.h>
+#include <lpmd/controlfile.h>
 #include <lpmd/util.h>
+#include <lpmd/paramlist.h>
 
 #include <iostream>
 #include <fstream>
@@ -18,32 +19,32 @@ InputError::InputError(const std::string desc, int nl, const std::string line): 
 
 InputSyntaxError::InputSyntaxError(): Error("Syntax error on input file") { }
 
-InputFile::InputFile(Map & m) { innermap = &m; }
+ControlFile::ControlFile(Map & m) { innermap = &m; }
 
-InputFile::~InputFile() { }
+ControlFile::~ControlFile() { }
 
-void InputFile::SetMap(Map & m) { innermap = &m; }
+void ControlFile::SetMap(Map & m) { innermap = &m; }
 
-Map & InputFile::GetMap() const { return (*innermap); }
+Map & ControlFile::GetMap() const { return (*innermap); }
 
-bool InputFile::Defined(const std::string & key) const { return innermap->Defined(key); }
+bool ControlFile::Defined(const std::string & key) const { return innermap->Defined(key); }
 
-void InputFile::AssignParameter(const std::string & key, std::string value) { innermap->AssignParameter(key, value); }
+void ControlFile::AssignParameter(const std::string & key, std::string value) { innermap->AssignParameter(key, value); }
 
-std::string & InputFile::operator[](const std::string & key) { return (*innermap)[key]; }
+std::string & ControlFile::operator[](const std::string & key) { return (*innermap)[key]; }
 
-const std::string & InputFile::operator[](const std::string & key) const { return (*innermap)[key]; } 
+const std::string & ControlFile::operator[](const std::string & key) const { return (*innermap)[key]; } 
 
-void InputFile::Remove(const std::string & key) { innermap->Remove(key); }
+void ControlFile::Remove(const std::string & key) { innermap->Remove(key); }
 
-std::list<std::string> InputFile::Parameters() const { return innermap->Parameters(); }
+std::list<std::string> ControlFile::Parameters() const { return innermap->Parameters(); }
 
-void InputFile::DeclareStatement(const std::string & cmd, const std::string & args) { reservedkw[cmd] = args; }
+void ControlFile::DeclareStatement(const std::string & cmd, const std::string & args) { reservedkw[cmd] = args; }
 
 //
 //
 //
-std::string InputFile::MatchCommand(std::list<std::string> & w)
+std::string ControlFile::MatchCommand(std::list<std::string> & w)
 {
  std::string tmp;
  for (std::map<std::string, std::string>::const_iterator it=reservedkw.begin();it != reservedkw.end();++it)
@@ -79,7 +80,7 @@ std::string InputFile::MatchCommand(std::list<std::string> & w)
 //
 //
 //
-std::string InputFile::ParseCommandArguments(const std::string & cmd, const std::string & validkeywords)
+std::string ControlFile::ParseCommandArguments(const std::string & cmd, const std::string & validkeywords)
 {
  unsigned int argcount = 0;
  std::string kvpairs = "";
@@ -115,7 +116,7 @@ std::string InputFile::ParseCommandArguments(const std::string & cmd, const std:
 //
 //
 //
-std::string InputFile::GetNextWord()
+std::string ControlFile::GetNextWord()
 {
  if (words.size() == 0) throw InputSyntaxError();
  std::string nextword = words.front();
@@ -126,12 +127,12 @@ std::string InputFile::GetNextWord()
 //
 //
 //
-int InputFile::OnStatement(const std::string & name, const std::string & keywords, bool regular) { return 0; }
+int ControlFile::OnStatement(const std::string & name, const std::string & keywords, bool regular) { return 0; }
 
 //
 //
 //
-void InputFile::Read(std::string inpfile, const ParamList & options)
+void ControlFile::Read(std::string inpfile, const ParamList & options)
 {
  if (inpfile == "-") Read(std::cin, options, "-");
  else
@@ -146,7 +147,7 @@ void InputFile::Read(std::string inpfile, const ParamList & options)
 //
 //
 //
-void InputFile::Read(std::istream & istr, const ParamList & options, const std::string inpfile)
+void ControlFile::Read(std::istream & istr, const ParamList & options, const std::string inpfile)
 {
  std::string tmp;
  int line_count = 0;

@@ -20,11 +20,11 @@ class Option
 };
 
 //
-class lpmd::CmdLineParserImpl
+class lpmd::CommandArgumentsImpl
 {
  public:
-   CmdLineParserImpl() { };
-   ~CmdLineParserImpl() { };
+   CommandArgumentsImpl() { };
+   ~CommandArgumentsImpl() { };
 
    std::list<Option> optlist;
    std::list<std::string> arglist;
@@ -35,25 +35,25 @@ UnknownCmdLineOption::UnknownCmdLineOption(const std::string name): Error("Unkno
 //
 //
 //
-CmdLineParser::CmdLineParser()
+CommandArguments::CommandArguments()
 {
- clpimpl = new CmdLineParserImpl();
+ clpimpl = new CommandArgumentsImpl();
 }
 
-CmdLineParser::CmdLineParser(int argc, char *argv[])
+CommandArguments::CommandArguments(int argc, char *argv[])
 {
- clpimpl = new CmdLineParserImpl();
+ clpimpl = new CommandArgumentsImpl();
  Parse(argc, argv);
 }
 
-CmdLineParser::~CmdLineParser() 
+CommandArguments::~CommandArguments() 
 { 
  delete clpimpl;
 }
 
-void CmdLineParser::DefineOption(const std::string & longname, const std::string & shortname, const std::string & args)
+void CommandArguments::DefineOption(const std::string & longname, const std::string & shortname, const std::string & args)
 {
- CmdLineParserImpl & impl = *clpimpl;
+ CommandArgumentsImpl & impl = *clpimpl;
  Option opt;
  opt.longname = longname;
  opt.shortname = shortname;
@@ -61,9 +61,9 @@ void CmdLineParser::DefineOption(const std::string & longname, const std::string
  impl.optlist.push_back(opt);
 }
 
-void CmdLineParser::Parse(int argc, char *argv[])
+void CommandArguments::Parse(int argc, char *argv[])
 {
- CmdLineParserImpl & impl = *clpimpl;
+ CommandArgumentsImpl & impl = *clpimpl;
  Option curropt;
  std::list<std::string> optargs;
  for (int i=0;i<argc;++i)
@@ -119,7 +119,7 @@ void CmdLineParser::Parse(int argc, char *argv[])
  }
 }
 
-std::list<std::string> CmdLineParser::Arguments() const
+std::list<std::string> CommandArguments::Arguments() const
 {
  ;
  return clpimpl->arglist;

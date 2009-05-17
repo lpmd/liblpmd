@@ -19,22 +19,22 @@ namespace lpmd
 
    ParticleSet(long int s): Array<Atom>(s) { }
 
-   ParticleSet(long int s, const AtomInterface & at): Array<Atom>(s, at) { }
+   ParticleSet(long int s, const BasicAtom & at): Array<Atom>(s, at) { }
 
    ParticleSet(const AtomArray & arr): Array<Atom>(arr.Size())
    {
     for (long int i=0;i<arr.Size();++i) (*this)[i] = arr[i];
    }
 
-   AtomInterface & operator[](long int i) { return Array<Atom>::operator[](i); }
+   BasicAtom & operator[](long int i) { return Array<Atom>::operator[](i); }
 
-   const AtomInterface & operator[](long int i) const { return Array<Atom>::operator[](i); }
+   const BasicAtom & operator[](long int i) const { return Array<Atom>::operator[](i); }
 
    long int Size() const { return Array<Atom>::Size(); }
 
-   long int Find(const AtomInterface & at) { return Array<Atom>::Find(at); }
+   long int Find(const BasicAtom & at) { return Array<Atom>::Find(at); }
 
-   void Append(const AtomInterface & at) { Array<Atom>::Append(at); }
+   void Append(const BasicAtom & at) { Array<Atom>::Append(at); }
 
    const Array<int> & Elements() const
    {

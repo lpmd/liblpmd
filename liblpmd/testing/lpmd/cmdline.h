@@ -12,13 +12,13 @@
 namespace lpmd
 {
 
-class CmdLineParser: public ParamList
+class CommandArguments: public ParamList
 {
  public:
   //
-  CmdLineParser();
-  CmdLineParser(int argc, char *argv[]);
-  ~CmdLineParser();
+  CommandArguments();
+  CommandArguments(int argc, char *argv[]);
+  ~CommandArguments();
 
   //
   void DefineOption(const std::string & longname, const std::string & shortname, const std::string & args);
@@ -28,7 +28,7 @@ class CmdLineParser: public ParamList
   std::list<std::string> Arguments() const;
  
  private:
-   class CmdLineParserImpl * clpimpl;
+   class CommandArgumentsImpl * clpimpl;
 };
 
 class UnknownCmdLineOption: public Error

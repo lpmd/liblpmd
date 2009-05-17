@@ -8,11 +8,11 @@
 #include <lpmd/basiccell.h>
 #include <lpmd/basicparticleset.h>
 #include <lpmd/solver.h>
+#include <lpmd/combinedpotential.h>
 
 namespace lpmd
 {
- class Simulation; // forward
- class Potential;
+ class Potential;  // forward
 
 class Integrator: public Solver
 {
@@ -28,7 +28,7 @@ class Integrator: public Solver
 
    Configuration & OldConfig() const;
    
-   void Advance(Simulation & sim) { Advance(sim, sim.CombinedPotential()); }
+   void Advance(Simulation & sim) { Advance(sim, sim.Potentials()); }
     
    virtual void Initialize(Simulation & sim, Potential & p);
    virtual void Advance(Simulation & sim, Potential & p) = 0;

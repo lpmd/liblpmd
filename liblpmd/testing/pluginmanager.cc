@@ -10,13 +10,6 @@
 
 using namespace lpmd;
 
-ModuleInfo::ModuleInfo(std::string modulename, std::string moduleid, std::string moduleargs)
-{
- name = modulename;
- id = moduleid;
- args = moduleargs;
-}
-
 PluginManager::PluginManager() 
 { 
  // Inicializa el pluginpath 

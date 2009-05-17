@@ -7,16 +7,16 @@
 #ifndef __LPMD_INDIRECT_ATOM_H__
 #define __LPMD_INDIRECT_ATOM_H__
 
-#include <lpmd/atominterface.h>
+#include <lpmd/basicatom.h>
 
 namespace lpmd
 {
 
-class IndirectAtom: public AtomInterface
+class IndirectAtom: public BasicAtom
 {
  public:
-   IndirectAtom(): AtomInterface(0, 0, 0, 0) {  }
-   IndirectAtom(int z): AtomInterface(z, 0, 0, 0) {  }
+   IndirectAtom(): BasicAtom(0, 0, 0, 0) {  }
+   IndirectAtom(int z): BasicAtom(z, 0, 0, 0) {  }
    ~IndirectAtom() {  }
   
    inline void SetAddresses(Vector * pos, Vector * vel, Vector * acc) 

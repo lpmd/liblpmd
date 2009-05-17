@@ -10,27 +10,14 @@
 #include <lpmd/fixedsizeparticleset.h>
 #include <lpmd/orthogonalcell.h>
 #include <lpmd/nonorthogonalcell.h>
+#include <lpmd/combinedpotential.h>
 #include <lpmd/integrator.h>
 #include <lpmd/cellmanager.h>
 
+using namespace lpmd;
+
 namespace lpmd
 {
-
-class PotentialArray: public Array<Potential &>, public Potential
-{
- public:
-   double energy(Configuration & conf)
-   {
-    double en = 0.0;
-    for (int p=0;p<Size();++p) en += (*this)[p].energy(conf);
-    return en;
-   }
-
-   void UpdateForces(Configuration & conf)
-   {
-    for (int p=0;p<Size();++p) (*this)[p].UpdateForces(conf);
-   }
-};
 
 template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell> class SimulationEngine: public Simulation
 {
@@ -49,7 +36,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
    cell = new CellType();
   }
 
-  SimulationEngine(long int natoms, const AtomInterface & t): atoms(0), cell(0), integ(0), velocitiesSet(false), initialized(false), step(0)
+  SimulationEngine(long int natoms, const BasicAtom & t): atoms(0), cell(0), integ(0), velocitiesSet(false), initialized(false), step(0)
   {
    // This fixes the number of atoms for SimulationEngine
    atoms = new AtomContainer(natoms, t);  // maybe ParticleSet, or another type of ParticleSet
@@ -75,10 +62,8 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  AtomContainer & Atoms() { return (*atoms); }
  const AtomContainer & Atoms() const { return (*atoms); }
 
- Array<Potential &> & Potentials() { return potarray; }
+ CombinedPotential & Potentials() { return potarray; }
  
- Potential & CombinedPotential() { return potarray; }
-
  void DoStep() 
  {  
   if (! initialized) Initialize();
@@ -129,19 +114,19 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
 
   AtomContainer * atoms;
   CellType * cell;
-  PotentialArray potarray;
+  lpmd::CombinedPotential potarray;
   lpmd::Integrator * integ;
   bool velocitiesSet;
   bool initialized;
   long int step;
 };
 
-Simulation * FixedOrthogonalEngine(long int atoms, const AtomInterface & at)
+Simulation * FixedOrthogonalEngine(long int atoms, const BasicAtom & at)
 {
  return new SimulationEngine<FixedSizeParticleSet, OrthogonalCell>(atoms, at);
 }
 
-Simulation * GeneralEngine(long int atoms, const AtomInterface & at)
+Simulation * GeneralEngine(long int atoms, const BasicAtom & at)
 {
  return new SimulationEngine<ParticleSet, NonOrthogonalCell>(atoms, at);
 }

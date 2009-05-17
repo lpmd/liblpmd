@@ -2,11 +2,11 @@
 //
 //
 
-#ifndef __LPMD_INPUTREADER_H__
-#define __LPMD_INPUTREADER_H__
+#ifndef __LPMD_CONTROLFILE_H__
+#define __LPMD_CONTROLFILE_H__
 
-#include <lpmd/paramlist.h>
 #include <lpmd/error.h>
+#include <lpmd/map.h>
 
 #include <list>
 #include <map>
@@ -26,12 +26,13 @@ class InputSyntaxError: public Error
    InputSyntaxError();
 };
 
-class InputFile: public Map
+class ParamList; // forward
+class ControlFile: public Map
 {
  public:
    // 
-   InputFile(Map & m);
-   virtual ~InputFile();
+   ControlFile(Map & m);
+   virtual ~ControlFile();
 
    void SetMap(Map & m);
 
