@@ -118,9 +118,9 @@ int main()
  FixedSizeParticleSet & atoms = dynamic_cast<FixedSizeParticleSet&> (md.Atoms());
  OrthogonalCell & cell = dynamic_cast<OrthogonalCell &> (md.Cell());
 
- cell[0] = 17.1191*e1;                   // define los vectores de la celda
- cell[1] = 17.1191*e2;
- cell[2] = 17.1191*e3;
+ cell[0] = 1*17.1191*e1;                   // define los vectores de la celda
+ cell[1] = 1*17.1191*e2;
+ cell[2] = 1*17.1191*e3;
 
  //CheckMasses(atoms);
 
