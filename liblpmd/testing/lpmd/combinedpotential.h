@@ -25,6 +25,7 @@ class CombinedPotential: public Array<Potential &>, public Potential
 
    void UpdateForces(Configuration & conf)
    {
+    conf.CellManager().UpdateCell(conf);
     for (int p=0;p<Size();++p) (*this)[p].UpdateForces(conf);
    }
 };

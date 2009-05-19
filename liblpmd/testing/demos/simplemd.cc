@@ -20,13 +20,13 @@ using namespace lpmd;
 
 int main()
 {
- Simulation * simp = FixedOrthogonalEngine(1728, Atom("Ar"));
+ Simulation * simp = FixedOrthogonalEngine(108, Atom("Ar"));
  Simulation & md = (*simp);
 
  BasicCell & cell = md.Cell();
- cell[0] = 4*17.1191*e1;
- cell[1] = 2*17.1191*e2;
- cell[2] = 2*17.1191*e3;
+ cell[0] = 17.1191*e1;
+ cell[1] = 17.1191*e2;
+ cell[2] = 17.1191*e3;
 
  // Carga de plugins con sus parametros
  PluginManager pm;
@@ -37,10 +37,10 @@ int main()
  BasicParticleSet & atoms = md.Atoms();
  assert(fabs(atoms[0].Mass() - 39.948) < 1.0E-10);
 
- CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystalfcc", "symbol Ar nx 12 ny 6 nz 6");
+ CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
  cg.Generate(md);
 
- assert(atoms.Size() == 1728);
+ assert(atoms.Size() == 108);
 
  Potential & pot = pm.LoadPluginAs<Potential>("lennardjones", "sigma 3.41 epsilon 0.0103408 cutoff 8.5");
  Array<Potential &> & potentials = md.Potentials();
