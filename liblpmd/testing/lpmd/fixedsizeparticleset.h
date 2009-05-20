@@ -77,6 +77,17 @@ class FixedSizeParticleSet: public BasicParticleSet
     return elements; 
    }
 
+   const Array<int> WithZ(int z) const
+   {
+    // FIXME: esta operacion va a ser costosa si se llama a cada rato
+    Array<int> elwz;
+    for (long int i=0;i<Size();++i)
+    {
+     if ((*this)[i].Z() == z ) {elwz.Append(i);}
+    }
+    return elwz;
+   }
+
   // FIXME: Implementa la parte Mutable de BasicParticleSet con metodos vacios
   void Append(const BasicAtom & x) { throw ParticleSetIsFixed(); }
   void Clear() { throw ParticleSetIsFixed(); }
