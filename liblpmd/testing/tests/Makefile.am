@@ -3,7 +3,7 @@
 #
 
 TESTS = vectortest utiltest steppertest tasktest orthogonalcelltest nonorthogonalcelltest arraytest atomtest fixedsizeparticlesettest \
-        configurationtest simulationtest taghandler manipulations
+        configurationtest simulationtest taghandler manipulations particlesettest
 
 vectortest_SOURCES = vectortest.unit
 utiltest_SOURCES = utiltest.unit
@@ -18,6 +18,7 @@ configurationtest_SOURCES =  configurationtest.unit
 simulationtest_SOURCES = simulationtest.unit
 taghandler_SOURCES = taghandler.unit
 manipulations_SOURCES = manipulations.unit
+particlesettest_SOURCES = particlesettest.unit
 #simulationcelltest_SOURCES = simulationcelltest.unit
 
 #

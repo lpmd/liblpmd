@@ -44,6 +44,17 @@ namespace lpmd
     return elements; 
    }
 
+   const Array<int> WithZ(int z) const
+   {
+    // FIXME: esta operacion va a ser costosa si se llama a cada rato
+    Array<int> elwz;
+    for (long int i=0;i<Size();++i)
+    {
+     if ((*this)[i].Z() == z ) {elwz.Append(i);}
+    }
+    return elwz;
+   }
+
    void Clear() { Array<Atom>::Clear(); }
 
    void Delete(long int i) { Array<Atom>::Delete(i); } 
