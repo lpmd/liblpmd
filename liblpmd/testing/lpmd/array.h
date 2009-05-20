@@ -55,6 +55,8 @@ template <typename T> class Array: private std::vector<T>
    if (it != e) return (it-b);
    else return -1;
   }
+
+  inline bool Contains(const T & t) { return (Find(t) != -1); }
 };
 
 template <typename T> class Array<T &>: private std::vector<T *>
@@ -93,6 +95,8 @@ template <typename T> class Array<T &>: private std::vector<T *>
    if (it != e) return (it-b);
    else return -1;
   }
+ 
+  inline bool Contains(const T & t) { return (Find(t) != -1); }
 };
 
 } // lpmd

@@ -113,3 +113,17 @@ using namespace lpmd;
 }
 @end
 
+@test Metodo Contains
+{
+ Array<int> a(3);
+ a[0] = 17;
+ a[1] = 2;
+ a[2] = 42;
+ @assert a.Contains(17)
+ @assert a.Contains(2)
+ @assert a.Contains(42)
+ @assert (!a.Contains(73))
+ @assert (!a.Contains(55))
+}
+@end
+
