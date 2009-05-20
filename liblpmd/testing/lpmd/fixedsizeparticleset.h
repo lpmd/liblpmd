@@ -88,6 +88,18 @@ class FixedSizeParticleSet: public BasicParticleSet
     return elwz;
    }
 
+   Vector CenterOfMass() const
+   {
+    Vector cm; 
+    double mass = 0.0;
+    for (long int i=0;i<Size();++i) 
+    {
+     mass += (*this)[i].Mass();
+     cm += (*this)[i].Mass()*(*this)[i].Position();
+    }
+    return cm/mass;
+   }
+
   // FIXME: Implementa la parte Mutable de BasicParticleSet con metodos vacios
   void Append(const BasicAtom & x) { throw ParticleSetIsFixed(); }
   void Clear() { throw ParticleSetIsFixed(); }

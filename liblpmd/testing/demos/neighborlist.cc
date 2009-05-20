@@ -6,6 +6,7 @@
 #include <lpmd/cellgenerator.h>
 #include <lpmd/cellmanager.h>
 #include <lpmd/pluginmanager.h>
+#include <lpmd/manipulations.h>
 
 #include <iostream>
 
@@ -32,10 +33,39 @@ void ExtractCorrectPairs(Array<Pair> & ap)
  ap = tmp;
 }
 
+template <typename AtomContainer, typename CellType> void GenerateFCC(AtomContainer & atoms, CellType & cell)
+{
+ long int cc = 0;
+ double ax = 1.0/3.0;
+ double ay = 1.0/3.0;
+ double az = 1.0/3.0;
+ for (long k=0;k<3;++k)
+  for (long j=0;j<3;++j)
+   for (long i=0;i<3;++i)
+   {
+    atoms[cc++].Position() = cell.ScaleByCell(Vector((double(i)+0.5)*ax, (double(j)+0.5)*ay, (double(k)+0.5)*az));
+    atoms[cc++].Position() = cell.ScaleByCell(Vector((double(i)+0.5)*ax, double(j)*ay, (double(k)+1.0)*az));
+    atoms[cc++].Position() = cell.ScaleByCell(Vector((double(i)+1.0)*ax, double(j)*ay, (double(k)+0.5)*az));
+    atoms[cc++].Position() = cell.ScaleByCell(Vector((double(i)+1.0)*ax, (double(j)+0.5)*ay, (double(k)+1.0)*az));
+   }
+ CenterByCenterOfMass(atoms, cell);
+}
+
+template <typename AtomContainer, typename CellType> void CheckAllInside(AtomContainer & atoms, CellType & cell)
+{
+ for (int q=0;q<atoms.Size();++q)
+ {
+  Vector vpos = cell.Fractional(atoms[q].Position());
+  assert((vpos[0] >= 0.0) && (vpos[0] <= 1.0));
+  assert((vpos[1] >= 0.0) && (vpos[1] <= 1.0));
+  assert((vpos[2] >= 0.0) && (vpos[2] <= 1.0));
+ }
+}
+
 int main()
 {
  PluginManager pm;
- Simulation * simp = GeneralEngine(108, Atom("Ar"));
+ Simulation * simp = FixedOrthogonalEngine(108, Atom("Ar"));
  Simulation & md = (*simp);
 
  BasicCell & cell = md.Cell();
@@ -46,10 +76,11 @@ int main()
  BasicParticleSet & atoms = md.Atoms();
 
  assert(atoms.Size() == 108);
- CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
- cg.Generate(md);
+ GenerateFCC(atoms, cell);
+ CheckAllInside(atoms, cell);
 
- md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
+ //md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
+ md.SetCellManager(pm.LoadPluginAs<CellManager>("lc2", "cutoff 8.5 nx 7 ny 7 nz 7"));
 
  Array<Pair> pairs;
  for (long int i=0;i<atoms.Size();++i)

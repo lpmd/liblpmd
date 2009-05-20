@@ -31,6 +31,8 @@ class AtomArray: public TagHandler<BasicAtom>
   virtual const Array<int> & Elements() const = 0;
 
   virtual const Array<int> WithZ(int z) const = 0;
+
+  virtual Vector CenterOfMass() const = 0;
 };
 
 class MutableAtomArray: public AtomArray

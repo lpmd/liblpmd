@@ -85,9 +85,17 @@ class OrthogonalCell: public BasicCell
    return nv;
   }
 
-  inline Vector Fractional(const Vector & v) const { return Vector(v[0]/modv[0], v[1]/modv[1], v[2]/modv[2]); }
+  inline Vector Fractional(const Vector & v) const 
+  { 
+   if (mustupdate) UpdateInternals();
+   return Vector(v[0]/modv[0], v[1]/modv[1], v[2]/modv[2]); 
+  }
   
-  inline Vector Cartesian(const Vector & v) const { return Vector(v[0]*modv[0], v[1]*modv[1], v[2]*modv[2]); }
+  inline Vector Cartesian(const Vector & v) const 
+  { 
+   if (mustupdate) UpdateInternals();
+   return Vector(v[0]*modv[0], v[1]*modv[1], v[2]*modv[2]); 
+  }
 
   Vector FittedInside(const Vector & a) const
   {

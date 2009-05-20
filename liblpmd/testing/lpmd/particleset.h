@@ -55,6 +55,18 @@ namespace lpmd
     return elwz;
    }
 
+   Vector CenterOfMass() const
+   {
+    Vector cm; 
+    double mass = 0.0;
+    for (long int i=0;i<Size();++i) 
+    {
+     mass += (*this)[i].Mass();
+     cm += (*this)[i].Mass()*(*this)[i].Position();
+    }
+    return cm/mass;
+   }
+
    void Clear() { Array<Atom>::Clear(); }
 
    void Delete(long int i) { Array<Atom>::Delete(i); } 

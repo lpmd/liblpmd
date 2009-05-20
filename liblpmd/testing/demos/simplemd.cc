@@ -7,6 +7,7 @@
 #include <lpmd/timer.h>
 #include <lpmd/simulation.h>
 #include <lpmd/properties.h>
+#include <lpmd/manipulations.h>
 #include <lpmd/cellgenerator.h>
 #include <lpmd/cellmanager.h>
 #include <lpmd/integrator.h>
@@ -14,33 +15,53 @@
 
 #include <iostream>
 
+#define NX 7
+#define NY 7
+#define NZ 7
+
 using namespace lpmd;
 
 #define INTEGRATOR "euler"
 
+template <typename AtomContainer, typename CellType> void CheckAllInside(AtomContainer & atoms, CellType & cell)
+{
+ for (int q=0;q<atoms.Size();++q)
+ {
+  Vector vpos = cell.Fractional(atoms[q].Position());
+  assert((vpos[0] >= 0.0) && (vpos[0] <= 1.0));
+  assert((vpos[1] >= 0.0) && (vpos[1] <= 1.0));
+  assert((vpos[2] >= 0.0) && (vpos[2] <= 1.0));
+ }
+}
+
 int main()
 {
- Simulation * simp = FixedOrthogonalEngine(108, Atom("Ar"));
+ Simulation * simp = FixedOrthogonalEngine(NX*NY*NZ*4, Atom("Ar"));
  Simulation & md = (*simp);
 
  BasicCell & cell = md.Cell();
- cell[0] = 17.1191*e1;
- cell[1] = 17.1191*e2;
- cell[2] = 17.1191*e3;
+ cell[0] = NX*5.7063666667*e1;
+ cell[1] = NX*5.7063666667*e2;
+ cell[2] = NX*5.7063666667*e3;
 
  // Carga de plugins con sus parametros
  PluginManager pm;
 
- md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
- //md.SetCellManager(pm.LoadPluginAs<CellManager>("lc2", "cutoff 8.5 nx 7 ny 7 nz 7"));
-
  BasicParticleSet & atoms = md.Atoms();
  assert(fabs(atoms[0].Mass() - 39.948) < 1.0E-10);
 
- CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystalfcc", "symbol Ar nx 3 ny 3 nz 3");
+ CellGenerator & cg = pm.LoadPluginAs<CellGenerator>("crystal3d", "type fcc symbol Ar nx "+ToString(NX)+" ny "+ToString(NY)+" nz "+ToString(NZ));
  cg.Generate(md);
+ 
+ CenterByCenterOfMass(atoms, cell);
+ CheckAllInside(atoms, cell);
 
- assert(atoms.Size() == 108);
+ assert(atoms.Size() == NX*NY*NZ*4);
+ std::cerr << "-> Running MD with " << atoms.Size() << " atoms\n";
+
+ //md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
+ md.SetCellManager(pm.LoadPluginAs<CellManager>("lc2", "cutoff 8.5 nx 15 ny 15 nz 15"));
+ //md.SetCellManager(pm.LoadPluginAs<CellManager>("linkedcell", "cutoff 8.5 nx 15 ny 15 nz 15"));
 
  Potential & pot = pm.LoadPluginAs<Potential>("lennardjones", "sigma 3.41 epsilon 0.0103408 cutoff 8.5");
  Array<Potential &> & potentials = md.Potentials();
