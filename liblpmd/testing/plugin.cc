@@ -64,5 +64,3 @@ template<class TYPE> TYPE function_cast(void * symbol)
  return cast.function;
 }
 
-PluginError::PluginError(const std::string pluginname, const std::string message): Error("(in plugin "+pluginname+"): "+message) { }
-

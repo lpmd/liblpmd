@@ -5,7 +5,6 @@
 #ifndef __LPMD_CONTROLFILE_H__
 #define __LPMD_CONTROLFILE_H__
 
-#include <lpmd/error.h>
 #include <lpmd/map.h>
 
 #include <map>
@@ -13,19 +12,8 @@
 namespace lpmd
 {
 
-class InputError: public Error
-{
- public:
-   InputError(const std::string desc, int nl, const std::string line);
-};
-
-class InputSyntaxError: public Error
-{
- public:
-   InputSyntaxError();
-};
-
 class ParamList; // forward
+
 class ControlFile: public Map
 {
  public:
@@ -65,10 +53,10 @@ class ControlFile: public Map
  private:
    Map * innermap;
    std::map<std::string, std::string> reservedkw;
+   std::string filename;
 };
 
 } // lpmd
 
 #endif
-
 

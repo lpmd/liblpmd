@@ -3,6 +3,7 @@
 //
 
 #include <lpmd/matrix.h>
+#include <lpmd/error.h>
 
 #include <iostream>
 #include <iomanip>
@@ -106,11 +107,7 @@ Matrix & Matrix::operator+=(const Matrix & m)
     for (long i=0;i<m.Columns();++i) Set(i, j, Get(i, j) + m.Get(i, j));
   return (*this);
  }
- else 
- {
-  std::cerr << "[Warning] Matrix sizes differ, Rows: " << Rows() << " != " << m.Rows() << ", Columns: " << Columns() << " != " << m.Columns() << '\n';
-  throw MatrixException();
- }
+ else throw InvalidOperation("Adding matrices with different size");
 }
 
 Matrix lpmd::operator+(const Matrix & a, const Matrix & b)
@@ -122,11 +119,7 @@ Matrix lpmd::operator+(const Matrix & a, const Matrix & b)
     for (long i=0;i<a.Columns();++i) s.Set(i, j, s.Get(i, j) + b.Get(i, j));
   return s;
  }
- else 
- {
-  std::cerr << "[Warning] Matrix sizes differ, Rows: " << a.Rows() << " != " << b.Rows() << ", Columns: " << a.Columns() << " != " << b.Columns() << '\n';
-  throw MatrixException();
- }
+ else throw InvalidOperation("Adding matrices with different size");
 }
 
 Matrix lpmd::operator*(const Matrix & a, double f)

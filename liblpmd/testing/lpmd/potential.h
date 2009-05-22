@@ -5,8 +5,6 @@
 #ifndef __LPMD_POTENTIAL_H__
 #define __LPMD_POTENTIAL_H__
 
-#include <lpmd/error.h>
-
 namespace lpmd
 {
  class Configuration;   // forward
@@ -37,12 +35,6 @@ class Potential
  protected:
    double energycache;
 };
-
- class HorrendousForce: public Error
- {
-  public:
-    HorrendousForce(double mag);
- };
 
 } // lpmd
 

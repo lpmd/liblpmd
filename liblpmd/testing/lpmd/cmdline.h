@@ -6,7 +6,6 @@
 #define __LPMD_CMDLINE_H__
 
 #include <lpmd/paramlist.h>
-#include <lpmd/error.h>
 #include <cstring>
 
 namespace lpmd
@@ -29,12 +28,6 @@ class CommandArguments: public ParamList
  
  private:
    class CommandArgumentsImpl * clpimpl;
-};
-
-class UnknownCmdLineOption: public Error
-{
- public:
-   UnknownCmdLineOption(const std::string name);
 };
 
 } // lpmd

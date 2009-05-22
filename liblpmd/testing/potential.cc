@@ -20,5 +20,3 @@ void Potential::SetValidSpecies(int s1, int s2) { spc_sum = s1+s2; }
 
 bool Potential::AppliesTo(int s1, int s2) const { return ((s1+s2) == spc_sum); }
 
-HorrendousForce::HorrendousForce(double mag): Error("Horrendous force! |F| = "+ToString<double>(mag)+" eV/angstrom") { }
-

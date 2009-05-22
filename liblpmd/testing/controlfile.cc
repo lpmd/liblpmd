@@ -5,6 +5,7 @@
 #include <lpmd/controlfile.h>
 #include <lpmd/util.h>
 #include <lpmd/paramlist.h>
+#include <lpmd/error.h>
 
 #include <iostream>
 #include <fstream>
@@ -15,10 +16,6 @@ using namespace lpmd;
 //
 //
 //
-InputError::InputError(const std::string desc, int nl, const std::string line): Error(desc+", line "+ToString<int>(nl)+"\n  "+line) { }
-
-InputSyntaxError::InputSyntaxError(): Error("Syntax error on input file") { }
-
 ControlFile::ControlFile(Map & m) { innermap = &m; }
 
 ControlFile::~ControlFile() { }
@@ -116,7 +113,7 @@ std::string ControlFile::ParseCommandArguments(const std::string & cmd, const st
 //
 std::string ControlFile::GetNextWord()
 {
- if (words.Size() == 0) throw InputSyntaxError();
+ if (words.Size() == 0) throw SyntaxError("reading control file "+filename);
  std::string nextword = words[0];
  words.Delete(0);
  return nextword;
@@ -149,6 +146,7 @@ void ControlFile::Read(std::istream & istr, const ParamList & options, const std
 {
  std::string tmp;
  int line_count = 0;
+ filename = inpfile;
  while(getline(istr, tmp))
  {
   while (tmp[tmp.size()-1] == '\\')
@@ -175,7 +173,8 @@ void ControlFile::Read(std::istream & istr, const ParamList & options, const std
     idx += options.GetString(jt).length();
    }  
   }
-  if (tmp.find("$(", 0) != std::string::npos) throw InputError("Variable(s) undefined in input file \""+inpfile+"\"", line_count, tmp);
+  if (tmp.find("$(", 0) != std::string::npos)
+    throw SyntaxError("Variable(s) undefined in input file \""+filename+"\", line "+ToString(line_count)+"\n  "+tmp);
   //
   words = StringSplit(tmp);
   if (words.Size() == 0) continue;
@@ -188,12 +187,12 @@ void ControlFile::Read(std::istream & istr, const ParamList & options, const std
    // Palabra clave de tipo regular, o no valida
    std::string kvpairs = ParseCommandArguments(first_word, statement_args);
    int st = OnStatement(first_word, kvpairs, true);
-   if (st != 0) throw InputError("Unexpected error in input file \""+inpfile+"\"", line_count, tmp);
+   if (st != 0) throw SyntaxError("Unexpected error in input file \""+filename+"\", line "+ToString(line_count)+"\n  "+tmp);
   }
   else 
   {
    int st = OnStatement(first_word, "", false);
-   if (st == 1) throw InputError("Unexpected instruction was found in input file \""+inpfile+"\"", line_count, tmp);
+   if (st == 1) throw SyntaxError("Unexpected instruction was found in input file \""+filename+"\", line "+ToString(line_count)+"\n  "+tmp);
   }
  }
 

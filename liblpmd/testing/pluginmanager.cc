@@ -36,7 +36,7 @@ void PluginManager::AddToPluginPath(std::string pdir) { pluginpath.Append(pdir);
 void PluginManager::LoadPluginFile(std::string path, std::string id, std::string args)
 {
  Module * mm = LoadPluginModule(path, args);
- if (mm == NULL) throw ModuleNotFound(path);
+ if (mm == NULL) throw InvalidRequest("Plugin at "+path);
  mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
  // Agrega nuevas propiedades a la lista
@@ -54,7 +54,7 @@ void PluginManager::LoadPlugin(std::string name, std::string id, std::string arg
   mm = LoadPluginModule(plugindir+"/"+name+".so", args);
   if (mm != NULL) break;
  }
- if (mm == NULL) throw ModuleNotFound(name);
+ if (mm == NULL) throw InvalidRequest("Plugin "+name);
  mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
  // Agrega nuevas propiedades a la lista
@@ -91,7 +91,7 @@ bool PluginManager::IsProvided(const std::string property) { return (namedprops.
 
 Module & PluginManager::Provider(const std::string property)
 {
- if (! IsProvided(property)) { throw PropertyNotFound(property); }
+ if (! IsProvided(property)) { throw InvalidRequest("Property "+property); }
  else return *(namedprops[property]);
 }
 
@@ -104,17 +104,9 @@ Array<std::string> PluginManager::NamedProperties()
 
 void PluginManager::DefineAlias(const std::string id, const std::string name) { aliasdict[id] = name; }
 
-Module & PluginManager::operator[](std::string id) 
+Module & PluginManager::operator[](std::string id)
 {
- if (modules.count(id) == 0) throw ModuleNotFound(id); 
+ if (modules.count(id) == 0) throw InvalidRequest("Plugin "+id);
  else return *(modules[id]); 
 }
-
-//
-//
-//
-
-PropertyNotFound::PropertyNotFound(const std::string name): Error("Property \""+name+"\" is not provided by any loaded module.") { }
-
-ModuleNotFound::ModuleNotFound(const std::string name): Error("El modulo \""+name+"\" no existe.") { }
 

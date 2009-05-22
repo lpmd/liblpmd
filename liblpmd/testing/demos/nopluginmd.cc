@@ -2,9 +2,9 @@
  * Ejemplo simple de dinamica molecular usando solo Simulation
  */
 
-#include <lpmd/simulation.h>
 #include <lpmd/timer.h>
 #include <lpmd/properties.h>
+#include <lpmd/simulationbuilder.h>
 #include <lpmd/fixedsizeparticleset.h>
 #include <lpmd/orthogonalcell.h>
 
@@ -112,8 +112,8 @@ template <typename AtomContainer, typename CellType> void GenerateFCC(AtomContai
 
 int main()
 {
- Simulation * simp = FixedOrthogonalEngine(108, Atom("Ar"));
- Simulation & md = (*simp);
+ SimulationBuilder sb;
+ Simulation & md = sb.CreateFixedOrthogonal(108, Atom("Ar"));
 
  FixedSizeParticleSet & atoms = dynamic_cast<FixedSizeParticleSet&> (md.Atoms());
  OrthogonalCell & cell = dynamic_cast<OrthogonalCell &> (md.Cell());
@@ -158,7 +158,6 @@ int main()
  std::cout << "Fluctuation percentage = " << 100.0*totalenergy_fluct/fabs(totalenergy_av) << "%\n";
  timer.ShowElapsedTimes();
 
- delete simp;
  return 0;
 }
 

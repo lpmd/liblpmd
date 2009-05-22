@@ -18,12 +18,6 @@ namespace lpmd
 
  typedef const std::string Tag;
 
- class TagNotFound: public Error
- {
-  public: 
-    TagNotFound(Tag & tag): Error("Tag not found, "+tag) { }
- };
-
  template <typename T> class TagHandler
  {
   public:
@@ -44,7 +38,7 @@ namespace lpmd
 
     Map & GetTagGroup(Tag & container_tag) 
     { 
-     if (namedcontainers.count(container_tag) == 0) throw TagNotFound(container_tag);
+     if (namedcontainers.count(container_tag) == 0) throw InvalidRequest("Tag "+container_tag);
      return *(namedcontainers[container_tag]); 
     }
 
@@ -81,9 +75,9 @@ namespace lpmd
 
     const std::string GetTag(const T & obj, Tag & tag)
     {
-     if (objmapper.count(&obj) == 0) throw TagNotFound(tag);
+     if (objmapper.count(&obj) == 0) throw InvalidRequest("Tag "+tag);
      try { return objmapper[&obj]->operator[](tag); }
-     catch (std::exception & e) { throw TagNotFound(tag); }
+     catch (std::exception & e) { throw InvalidRequest("Tag "+tag); }
     }
 
   private:

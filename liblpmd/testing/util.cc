@@ -12,6 +12,22 @@
 
 using namespace lpmd;
 
+Array<std::string> lpmd::ParseThreeVectors(const std::string & str)
+{
+ Array<std::string> bv(3);
+ int start = 0, k=0;
+ for (unsigned int i=0;i<str.size();++i)
+ {
+  if (str[i] == '>') 
+  {
+   bv[k++] = str.substr(start, i-start+1);
+   start = -1;
+  } 
+  if ((start == -1) && (str[i] == '<')) start = i;
+ }
+ return bv;
+}
+
 Array<std::string> lpmd::StringSplit(const std::string & line, char delimiter)
 {
  std::string tmpline(line);

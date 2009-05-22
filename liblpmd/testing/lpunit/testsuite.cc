@@ -43,7 +43,8 @@ void TestSuite::Register(Test * newtest) { impl->tests.push_back(newtest); }
 int TestSuite::PerformAllTests()
 {
  unsigned long int n = impl->tests.size();
- std::cout << '\n' << impl->description << " (" << n << " tests) : " << '\n';
+ if (n == 1) std::cout << '\n' << impl->description << " (" << n << " test) : " << '\n';
+ else std::cout << '\n' << impl->description << " (" << n << " tests) : " << '\n';
  int cfailed = 0;
  if (n == 0)
  {

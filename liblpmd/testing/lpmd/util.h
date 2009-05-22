@@ -27,10 +27,9 @@ inline void ShowWarning(const std::string who, const std::string text)
  std::cerr << "[Warning (from " << who << "): " << text << '\n';
 }
 
-//
-//Convertidor de Grados a Radianes.
-//
 inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
+
+Array<std::string> ParseThreeVectors(const std::string & str);
 
 //
 //Remueve espacios innecesarios de un string

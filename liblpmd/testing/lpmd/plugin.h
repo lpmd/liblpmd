@@ -6,7 +6,6 @@
 #define __LPMD_PLUGIN_H__
 
 #include <lpmd/module.h>
-#include <lpmd/error.h>
 
 // Prototype for function
 template<class TYPE> TYPE function_cast(void * symbol);
@@ -21,12 +20,6 @@ namespace lpmd
 {
 
 Module * LoadPluginModule(std::string path, std::string args);
-
-class PluginError: public Error
-{
- public:
-   PluginError(const std::string pluginname, const std::string message);
-};
 
 } // lpmd
 

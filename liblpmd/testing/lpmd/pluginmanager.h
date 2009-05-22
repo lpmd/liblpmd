@@ -18,7 +18,7 @@ namespace lpmd
 template<class T> T & CastModule(Module & m)
 {
  try { return dynamic_cast<T &>(m); }
- catch (std::exception & ex) { throw InvalidModuleType(); }
+ catch (std::exception & ex) { throw InvalidOperation("The requested casting of plugins"); }
 }
 
 class PluginManager
@@ -55,18 +55,6 @@ class PluginManager
    Array<std::string> pluginpath;
    std::map<std::string, Module *> namedprops;
    ParamList aliasdict;
-};
-
-class ModuleNotFound: public Error
-{
- public:
-   ModuleNotFound(const std::string name);
-};
-
-class PropertyNotFound: public Error
-{
- public:
-   PropertyNotFound(const std::string name);
 };
 
 } // lpmd 

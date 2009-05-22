@@ -5,7 +5,7 @@
 #include <lpmd/array.h>
 #include <lpmd/pluginmanager.h>
 #include <lpmd/timer.h>
-#include <lpmd/simulation.h>
+#include <lpmd/simulationbuilder.h>
 #include <lpmd/properties.h>
 #include <lpmd/manipulations.h>
 #include <lpmd/cellgenerator.h>
@@ -15,9 +15,9 @@
 
 #include <iostream>
 
-#define NX 7
-#define NY 7
-#define NZ 7
+#define NX 3
+#define NY 3
+#define NZ 3
 
 using namespace lpmd;
 
@@ -36,8 +36,8 @@ template <typename AtomContainer, typename CellType> void CheckAllInside(AtomCon
 
 int main()
 {
- Simulation * simp = FixedOrthogonalEngine(NX*NY*NZ*4, Atom("Ar"));
- Simulation & md = (*simp);
+ SimulationBuilder sb;
+ Simulation & md = sb.CreateFixedOrthogonal(NX*NY*NZ*4, Atom("Ar"));
 
  BasicCell & cell = md.Cell();
  cell[0] = NX*5.7063666667*e1;
@@ -59,8 +59,8 @@ int main()
  assert(atoms.Size() == NX*NY*NZ*4);
  std::cerr << "-> Running MD with " << atoms.Size() << " atoms\n";
 
- //md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
- md.SetCellManager(pm.LoadPluginAs<CellManager>("lc2", "cutoff 8.5 nx 15 ny 15 nz 15"));
+ md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
+ //md.SetCellManager(pm.LoadPluginAs<CellManager>("lc2", "cutoff 8.5 nx 15 ny 15 nz 15"));
  //md.SetCellManager(pm.LoadPluginAs<CellManager>("linkedcell", "cutoff 8.5 nx 15 ny 15 nz 15"));
 
  Potential & pot = pm.LoadPluginAs<Potential>("lennardjones", "sigma 3.41 epsilon 0.0103408 cutoff 8.5");
@@ -109,7 +109,6 @@ int main()
  std::cout << "Fluctuation percentage = " << 100.0*totalenergy_fluct/fabs(totalenergy_av) << "%\n";
  timer.ShowElapsedTimes();
 
- delete simp;
  return 0;
 }
 

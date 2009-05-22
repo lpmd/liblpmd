@@ -11,19 +11,12 @@
 #include <lpmd/array.h>
 #include <lpmd/potential.h>
 #include <lpmd/atompair.h>
-#include <lpmd/error.h>
 
 // FIXME: no corresponde aqui
 const double kboltzmann = 8.6173422E-05;
 
 namespace lpmd
 {
- class NoIntegrator: public Error
- {
-  public:
-    NoIntegrator(): Error("No integrator defined") { }
- };
-
  class Integrator;  // forward
  class CombinedPotential; // forward
 
@@ -46,10 +39,6 @@ namespace lpmd
 
     virtual lpmd::Integrator & Integrator() = 0;
  };
-
- Simulation * FixedOrthogonalEngine(long int atoms, const BasicAtom & at);
-
- Simulation * GeneralEngine(long int atoms, const BasicAtom & at);
 
 } // lpmd
 

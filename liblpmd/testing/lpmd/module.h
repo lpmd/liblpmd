@@ -12,7 +12,6 @@
 #define __LPMD_MODULE_H__
 
 #include <lpmd/paramlist.h>
-#include <lpmd/error.h>
 
 #include <list>
 #include <iostream>
@@ -74,19 +73,6 @@ class Module: public ParamList
 
  private:
    class ModuleImpl * impl;
-};
-
-//
-class InvalidModuleType: public Error
-{
- public:
-   InvalidModuleType();
-};
-
-class UnknownProperty: public Error
-{
- public:
-   UnknownProperty(const std::string name);
 };
 
 } // lpmd

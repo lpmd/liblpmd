@@ -4,6 +4,7 @@
 
 #include <lpmd/cmdline.h>
 #include <lpmd/util.h>
+#include <lpmd/error.h>
 
 #include <iostream>
 #include <list>
@@ -29,8 +30,6 @@ class lpmd::CommandArgumentsImpl
    Array<Option> optlist;
    Array<std::string> arglist;
 };
-
-UnknownCmdLineOption::UnknownCmdLineOption(const std::string name): Error("Unknown command line option: "+name) { }
 
 //
 //
@@ -83,7 +82,7 @@ void CommandArguments::Parse(int argc, char *argv[])
      break;
     }
    }
-   if (optfound == false) throw UnknownCmdLineOption("--"+optname);
+   if (optfound == false) throw SyntaxError("Unknown command line option, --"+optname);
    optargs = StringSplit(curropt.args);
    AssignParameter(curropt.longname, "true");
   }
@@ -101,7 +100,7 @@ void CommandArguments::Parse(int argc, char *argv[])
      break;
     }
    }
-   if (optfound == false) throw UnknownCmdLineOption("-"+optname);
+   if (optfound == false) throw SyntaxError("Unknown command line option, -"+optname);
    optargs = StringSplit(curropt.args);
    AssignParameter(curropt.longname, "true");
   }

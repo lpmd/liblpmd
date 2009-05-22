@@ -5,6 +5,7 @@
 #include <lpmd/module.h>
 #include <lpmd/pluginmanager.h>
 #include <lpmd/util.h>
+#include <lpmd/error.h>
 
 #include <iostream>
 #include <fstream>
@@ -244,8 +245,4 @@ PluginManager & Module::GetManager() const
  if (impl->manager == NULL) throw PluginError(impl->name, "Called GetManager() on an unmanaged plugin");
  return *(impl->manager); 
 }
-
-InvalidModuleType::InvalidModuleType(): Error("Attempted to load module of the wrong type") { }
-
-UnknownProperty::UnknownProperty(const std::string name): Error("Requesting unknown property, \""+name+"\"") { }
 

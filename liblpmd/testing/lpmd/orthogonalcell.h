@@ -158,11 +158,7 @@ class OrthogonalCell: public BasicCell
    }
   }
 
-  double Volume() const 
-  {
-   Vector tmp = Cross(v[0], v[1]);
-   return fabs(Dot(tmp, v[2]));
-  }
+  inline double Volume() const { return v[0].Module()*v[1].Module()*v[2].Module(); }
 
  private:
    Vector v[3];

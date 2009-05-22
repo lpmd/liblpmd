@@ -50,12 +50,6 @@ Matrix operator/(const Matrix & a, double f);
 // Operador de salida
 std::ostream & operator<<(std::ostream & os, const Matrix & m);
 
-class MatrixException
-{
- public:
-
-};
-
 } // lpmd
 
 #endif

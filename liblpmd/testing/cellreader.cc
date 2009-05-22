@@ -13,11 +13,6 @@ using namespace lpmd;
 //
 //
 
-InvalidInput::InvalidInput(const std::string & filename): Error("Invalid input in file \""+filename+"\"") { }
-
-//
-//
-
 void CellReader::Generate(Configuration & conf) const { Read(readfile, conf); }
 
 void CellReader::Read(const std::string & filename, Configuration & conf) const
@@ -25,7 +20,7 @@ void CellReader::Read(const std::string & filename, Configuration & conf) const
  std::ifstream is(filename.c_str());
  if (! is.good()) throw FileNotFound(filename);
  ReadHeader(is);
- if (! ReadCell(is, conf)) throw InvalidInput(filename);
+ if (! ReadCell(is, conf)) throw SyntaxError("Invalid input in file \""+filename+"\"");
  #warning "Corregir sc.NumEspec()"
 // sc.NumEspec();
 }
