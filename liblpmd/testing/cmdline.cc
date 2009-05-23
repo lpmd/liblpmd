@@ -34,21 +34,9 @@ class lpmd::CommandArgumentsImpl
 //
 //
 //
-CommandArguments::CommandArguments()
-{
- clpimpl = new CommandArgumentsImpl();
-}
+CommandArguments::CommandArguments() { clpimpl = new CommandArgumentsImpl(); }
 
-CommandArguments::CommandArguments(int argc, char *argv[])
-{
- clpimpl = new CommandArgumentsImpl();
- Parse(argc, argv);
-}
-
-CommandArguments::~CommandArguments() 
-{ 
- delete clpimpl;
-}
+CommandArguments::~CommandArguments() { delete clpimpl; }
 
 void CommandArguments::DefineOption(const std::string & longname, const std::string & shortname, const std::string & args)
 {

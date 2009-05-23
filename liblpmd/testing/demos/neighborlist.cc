@@ -65,8 +65,7 @@ template <typename AtomContainer, typename CellType> void CheckAllInside(AtomCon
 int main()
 {
  PluginManager pm;
- SimulationBuilder sb;
- Simulation & md = sb.CreateFixedOrthogonal(108, Atom("Ar"));
+ Simulation & md = SimulationBuilder::CreateFixedOrthogonal(108, Atom("Ar"));
 
  BasicCell & cell = md.Cell();
  cell[0] = 17.1191*e1;

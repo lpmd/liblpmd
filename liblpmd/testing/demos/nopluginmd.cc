@@ -112,8 +112,7 @@ template <typename AtomContainer, typename CellType> void GenerateFCC(AtomContai
 
 int main()
 {
- SimulationBuilder sb;
- Simulation & md = sb.CreateFixedOrthogonal(108, Atom("Ar"));
+ Simulation & md = SimulationBuilder::CreateFixedOrthogonal(108, Atom("Ar"));
 
  FixedSizeParticleSet & atoms = dynamic_cast<FixedSizeParticleSet&> (md.Atoms());
  OrthogonalCell & cell = dynamic_cast<OrthogonalCell &> (md.Cell());

@@ -74,6 +74,8 @@ template <typename T> class Array<T &>: private std::vector<T *>
 
   inline void Append(T & x) { push_back(&x); }
 
+  inline void Append(const T & x) { push_back(const_cast<T *>(&x)); }
+
   inline void AppendUnique(T & x) 
   {
    if (Find(x) == -1) Append(x);

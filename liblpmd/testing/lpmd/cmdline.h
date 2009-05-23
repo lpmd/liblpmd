@@ -14,15 +14,11 @@ namespace lpmd
 class CommandArguments: public ParamList
 {
  public:
-  //
   CommandArguments();
-  CommandArguments(int argc, char *argv[]);
   ~CommandArguments();
 
-  //
   void DefineOption(const std::string & longname, const std::string & shortname, const std::string & args);
 
-  //
   void Parse(int argc, char *argv[]);
   Array<std::string> Arguments() const;
  
@@ -30,8 +26,7 @@ class CommandArguments: public ParamList
    class CommandArgumentsImpl * clpimpl;
 };
 
-} // lpmd
+}  // lpmd
 
 #endif
-
 

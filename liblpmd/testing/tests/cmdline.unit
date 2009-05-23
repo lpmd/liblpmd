@@ -1,0 +1,76 @@
+
+#include <lpmd/cmdline.h>
+
+using namespace lpmd;
+
+@testsuite Tests de CommandArguments
+
+@test Opciones simples
+{
+ int argc = 2;
+ char * argv[] = { "-x", "-y" };
+ CommandArguments cmd;
+ cmd.DefineOption("xoption", "x", "");
+ cmd.DefineOption("yoption", "y", "");
+ cmd.Parse(argc, argv);
+ @assert cmd.Defined("xoption")
+ @assert cmd.Defined("yoption")
+ @assert !cmd.Defined("zoption")
+ @equal cmd.Arguments().Size(), 0
+}
+@end
+
+@test Opciones con valores
+{
+ int argc = 3;
+ char * argv[] = { "-x", "-z", "hola" };
+ CommandArguments cmd;
+ cmd.DefineOption("xoption", "x", "");
+ cmd.DefineOption("zoption", "z", "word");
+ cmd.Parse(argc, argv);
+ @assert cmd.Defined("xoption")
+ @assert cmd.Defined("zoption")
+ @equal cmd["zoption-word"], "hola"
+ @equal cmd.Arguments().Size(), 0
+}
+@end
+
+@test Opciones y argumentos no opcionales
+{
+ int argc = 5;
+ char * argv[] = { "-x", "-z", "hola", "foo", "bar" };
+ CommandArguments cmd;
+ cmd.DefineOption("xoption", "x", "");
+ cmd.DefineOption("zoption", "z", "word");
+ cmd.Parse(argc, argv);
+ Array<std::string> args = cmd.Arguments();
+
+ @assert cmd.Defined("xoption")
+ @assert cmd.Defined("zoption")
+ @equal cmd["zoption-word"], "hola"
+ @equal args.Size(), 2
+ @equal args[0], "foo"
+ @equal args[1], "bar"
+}
+@end 
+
+@test Argumentos no opcionales mezclados con opciones
+{
+ int argc = 5;
+ char * argv[] = { "-x", "foo", "-z", "hola", "bar" };
+ CommandArguments cmd;
+ cmd.DefineOption("xoption", "x", "");
+ cmd.DefineOption("zoption", "z", "word");
+ cmd.Parse(argc, argv);
+ Array<std::string> args = cmd.Arguments();
+
+ @assert cmd.Defined("xoption")
+ @assert cmd.Defined("zoption")
+ @equal cmd["zoption-word"], "hola"
+ @equal args.Size(), 2
+ @equal args[0], "foo"
+ @equal args[1], "bar"
+}
+@end 
+
+

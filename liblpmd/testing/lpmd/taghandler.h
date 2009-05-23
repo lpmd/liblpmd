@@ -53,6 +53,18 @@ namespace lpmd
      catch (std::exception & e) { return false; }
     }
 
+    bool Have(const T & obj, Tag & tag) const
+    { 
+     if (objmapper.count(&obj) == 0) return false;
+     try 
+     { 
+      const typename std::map<const T *, ParamList *>::const_iterator & p = objmapper.find(&obj);
+      const ParamList & pl = *((*p).second);
+      return pl.Defined(tag);
+     } 
+     catch (std::exception & e) { return false; }
+    }
+
     bool HaveAny(Tag & tag)
     {
      for (typename std::map<Tag, ParamList *>::const_iterator it=namedcontainers.begin();it!=namedcontainers.end();++it)

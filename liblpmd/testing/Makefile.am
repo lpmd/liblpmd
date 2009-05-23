@@ -11,9 +11,9 @@ liblpmd_la_LDFLAGS = -version-info 2:0:0
 
 nobase_includeHEADERS_INSTALL = $(INSTALL) -D -p -c -m 644
 
-nobase_include_HEADERS =  lpmd/atom.h lpmd/array.h lpmd/basicatom.h lpmd/basiccell.h lpmd/basicparticleset.h \
+nobase_include_HEADERS =  lpmd/atom.h lpmd/array.h lpmd/basicatom.h lpmd/basiccell.h lpmd/basicparticleset.h lpmd/region.h lpmd/selector.h \
                           lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h lpmd/cellmanager.h lpmd/cellreader.h lpmd/cellwriter.h lpmd/cmdline.h \
-                          lpmd/color.h lpmd/storedvalue.h lpmd/elements.h lpmd/error.h lpmd/properties.h lpmd/orthogonalcell.h \
+                          lpmd/color.h lpmd/storedvalue.h lpmd/elements.h lpmd/error.h lpmd/properties.h lpmd/orthogonalcell.h lpmd/atomselector.h \
                           lpmd/nonorthogonalcell.h lpmd/indirectatom.h lpmd/controlfile.h lpmd/property.h lpmd/combinedpotential.h \
                           lpmd/map.h lpmd/matrix.h lpmd/fixedsizeparticleset.h lpmd/twostepintegrator.h lpmd/simulationhistory.h \
                           lpmd/stepper.h lpmd/metalpotential.h lpmd/module.h lpmd/paramlist.h lpmd/solver.h lpmd/storedconfiguration.h \
@@ -27,7 +27,7 @@ noinst_HEADERS = version.h
 liblpmd_la_SOURCES = cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc controlfile.cc elements.cc \
                      error.cc module.cc metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc potential.cc pairpotential.cc particleset.cc \
                      session.cc matrix.cc simulation.cc timer.cc integrator.cc systemmodifier.cc onestepintegrator.cc twostepintegrator.cc \
-                     systemmixer.cc visualizer.cc moduleinfo.cc util.cc simulationbuilder.cc
+                     systemmixer.cc visualizer.cc moduleinfo.cc util.cc simulationbuilder.cc atomselector.cc 
 
 #
 #

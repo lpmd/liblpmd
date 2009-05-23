@@ -5,6 +5,13 @@
  */
 
 #include <lpmd/simulationbuilder.h>
+#include <lpmd/nonorthogonalcell.h>
+#include <lpmd/orthogonalcell.h>
+#include <lpmd/particleset.h>
+#include <lpmd/fixedsizeparticleset.h>
+#include <lpmd/combinedpotential.h>
+#include <lpmd/integrator.h>
+#include <lpmd/properties.h>
 
 using namespace lpmd;
 
@@ -116,31 +123,29 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
 class lpmd::SimBuildImpl
 {
  public:
-  Array<Simulation *> s_array;
+   Array<Simulation *> s_array;
 };
 
-SimulationBuilder::SimulationBuilder()
-{
- impl = new SimBuildImpl();
-}
+lpmd::SimBuildImpl SimulationBuilder::impl = SimBuildImpl();
+
+SimulationBuilder::SimulationBuilder() { }
 
 SimulationBuilder::~SimulationBuilder()
 {
- for (long int i=0;i<impl->s_array.Size();++i) delete impl->s_array[i];
- delete impl;
+ for (long int i=0;i<impl.s_array.Size();++i) delete impl.s_array[i];
 }
 
 Simulation & SimulationBuilder::CreateFixedOrthogonal(long int atoms, const BasicAtom & at)
 {
  Simulation * simp = new SimulationEngine<FixedSizeParticleSet, OrthogonalCell>(atoms, at);
- impl->s_array.Append(simp);
+ impl.s_array.Append(simp);
  return (*simp);
 }
 
 Simulation & SimulationBuilder::CreateGeneric(long int atoms, const BasicAtom & at)
 {
  Simulation * simp = new SimulationEngine<ParticleSet, NonOrthogonalCell>(atoms, at);
- impl->s_array.Append(simp);
+ impl.s_array.Append(simp);
  return (*simp);
 }
 

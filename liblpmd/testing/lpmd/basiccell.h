@@ -7,15 +7,15 @@
 #ifndef __LPMD_BASICCELL_H__
 #define __LPMD_BASICCELL_H__
 
-#include <lpmd/vector.h>
+#include <lpmd/region.h>
 
 namespace lpmd
 {
 
- class BasicCell
+ class BasicCell: public Region
  {
   public:
-    virtual ~BasicCell() { };
+    virtual ~BasicCell() { }
 
     virtual bool IsOrthogonal() const = 0;
 
@@ -33,13 +33,9 @@ namespace lpmd
 
     virtual Vector ScaleByCell(const Vector & cv) const = 0;
 
-    virtual bool IsInside(const Vector & v) const = 0;
-
     virtual Vector FittedInside(const Vector & v) const = 0;
 
     virtual Vector Displacement(const Vector & a, const Vector & b) const = 0;
-
-    virtual double Volume() const = 0;
 
  };
 
