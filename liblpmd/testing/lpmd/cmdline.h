@@ -19,7 +19,7 @@ class CommandArguments: public ParamList
 
   void DefineOption(const std::string & longname, const std::string & shortname, const std::string & args);
 
-  void Parse(int argc, char *argv[]);
+  void Parse(int argc, const char ** argv);
   Array<std::string> Arguments() const;
  
  private:

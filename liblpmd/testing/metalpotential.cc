@@ -59,7 +59,7 @@ double MetalPotential::energy(Configuration & conf) { return energycache; }
 
 void MetalPotential::UpdateForces(Configuration & conf)
 {
- const double forcefactor = GlobalSession.GetDouble("forcefactor");
+ const double forcefactor = GlobalSession["forcefactor"];
  Initialize(conf);
  BasicParticleSet & atoms = conf.Atoms();
  BasicCell & cell = conf.Cell();

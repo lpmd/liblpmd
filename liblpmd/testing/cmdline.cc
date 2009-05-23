@@ -48,7 +48,7 @@ void CommandArguments::DefineOption(const std::string & longname, const std::str
  impl.optlist.Append(opt);
 }
 
-void CommandArguments::Parse(int argc, char *argv[])
+void CommandArguments::Parse(int argc, const char ** argv)
 {
  CommandArgumentsImpl & impl = *clpimpl;
  Option curropt;
@@ -72,7 +72,7 @@ void CommandArguments::Parse(int argc, char *argv[])
    }
    if (optfound == false) throw SyntaxError("Unknown command line option, --"+optname);
    optargs = StringSplit(curropt.args);
-   AssignParameter(curropt.longname, "true");
+   (*this)[curropt.longname] = "true";
   }
   else if ((strlen(argv[i]) > 0) && (argv[i][0] == '-'))
   {
@@ -90,7 +90,7 @@ void CommandArguments::Parse(int argc, char *argv[])
    }
    if (optfound == false) throw SyntaxError("Unknown command line option, -"+optname);
    optargs = StringSplit(curropt.args);
-   AssignParameter(curropt.longname, "true");
+   (*this)[curropt.longname] == "true";
   }
   else
   {
@@ -99,7 +99,7 @@ void CommandArguments::Parse(int argc, char *argv[])
    {
     std::string this_arg = optargs[0];
     optargs.Delete(0);
-    AssignParameter(curropt.longname+"-"+this_arg, std::string(argv[i]));
+    (*this)[curropt.longname+"-"+this_arg] = std::string(argv[i]);
    }
    else impl.arglist.Append(std::string(argv[i]));
   }

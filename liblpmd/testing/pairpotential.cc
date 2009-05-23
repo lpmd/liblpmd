@@ -16,7 +16,7 @@ double PairPotential::energy(Configuration & conf) { return energycache; }
 
 void PairPotential::UpdateForces(Configuration & conf)
 {
- const double forcefactor = GlobalSession.GetDouble("forcefactor");
+ const double forcefactor = GlobalSession["forcefactor"];
  Vector ff, acci, accj;
  BasicParticleSet & atoms = conf.Atoms();
  const long int n = atoms.Size();

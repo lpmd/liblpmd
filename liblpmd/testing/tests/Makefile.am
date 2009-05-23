@@ -3,7 +3,7 @@
 #
 
 TESTS = vectortest utiltest steppertest tasktest orthogonalcelltest nonorthogonalcelltest arraytest atomtest fixedsizeparticlesettest \
-        configurationtest simulationtest taghandler manipulations particlesettest cmdline atomselector
+        configurationtest simulationtest taghandler manipulations particlesettest cmdline atomselector controlfile
 
 vectortest_SOURCES = vectortest.unit
 utiltest_SOURCES = utiltest.unit
@@ -21,6 +21,7 @@ manipulations_SOURCES = manipulations.unit
 particlesettest_SOURCES = particlesettest.unit
 cmdline_SOURCES = cmdline.unit
 atomselector_SOURCES = atomselector.unit
+controlfile_SOURCES = controlfile.unit
 #simulationcelltest_SOURCES = simulationcelltest.unit
 
 #

@@ -8,7 +8,7 @@ using namespace lpmd;
 @test Opciones simples
 {
  int argc = 2;
- char * argv[] = { "-x", "-y" };
+ const char * argv[] = { "-x", "-y" };
  CommandArguments cmd;
  cmd.DefineOption("xoption", "x", "");
  cmd.DefineOption("yoption", "y", "");
@@ -23,7 +23,7 @@ using namespace lpmd;
 @test Opciones con valores
 {
  int argc = 3;
- char * argv[] = { "-x", "-z", "hola" };
+ const char * argv[] = { "-x", "-z", "hola" };
  CommandArguments cmd;
  cmd.DefineOption("xoption", "x", "");
  cmd.DefineOption("zoption", "z", "word");
@@ -38,7 +38,7 @@ using namespace lpmd;
 @test Opciones y argumentos no opcionales
 {
  int argc = 5;
- char * argv[] = { "-x", "-z", "hola", "foo", "bar" };
+ const char * argv[] = { "-x", "-z", "hola", "foo", "bar" };
  CommandArguments cmd;
  cmd.DefineOption("xoption", "x", "");
  cmd.DefineOption("zoption", "z", "word");
@@ -57,7 +57,7 @@ using namespace lpmd;
 @test Argumentos no opcionales mezclados con opciones
 {
  int argc = 5;
- char * argv[] = { "-x", "foo", "-z", "hola", "bar" };
+ const char * argv[] = { "-x", "foo", "-z", "hola", "bar" };
  CommandArguments cmd;
  cmd.DefineOption("xoption", "x", "");
  cmd.DefineOption("zoption", "z", "word");

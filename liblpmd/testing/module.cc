@@ -49,8 +49,8 @@ Module::Module(const Module & mod)
  impl->emptycall = false;
  impl->strictkw = mod.impl->strictkw;
  impl->kwstr = mod.impl->kwstr;
- Array<std::string> kwd = mod.Parameters();
- for (long int i=0;i<kwd.Size();++i) AssignParameter(kwd[i], mod.GetString(kwd[i]));
+ Array<Parameter> kwd = mod.Parameters();
+ for (long int i=0;i<kwd.Size();++i) AssignParameter(kwd[i], mod[kwd[i]]);
 }
 
 Module::Module(std::string modulename, bool strictkw)
@@ -77,8 +77,8 @@ Module & Module::operator=(const Module & mod)
   impl->emptycall = false;
   impl->strictkw = mod.impl->strictkw;
   impl->kwstr = mod.impl->kwstr;
-  Array<std::string> kwd = mod.Parameters();
-  for (long int i=0;i<kwd.Size();++i) AssignParameter(kwd[i], mod.GetString(kwd[i]));
+  Array<Parameter> kwd = mod.Parameters();
+  for (long int i=0;i<kwd.Size();++i) AssignParameter(kwd[i], mod[kwd[i]]);
  }
  return (*this);
 }
@@ -87,10 +87,10 @@ void Module::ProcessArguments(std::string line)
 {
  if (!Defined("debug")) DefineKeyword("debug", "stderr");
  // Registra los parametros que ya tengan valores (por omision)
- Array<std::string> kwd = Parameters();
+ Array<Parameter> kwd = Parameters();
  for (long int i=0;i<kwd.Size();++i)
  {
-  impl->defvalues.AssignParameter(kwd[i], GetString(kwd[i]));
+  impl->defvalues[kwd[i]] = (*this)[kwd[i]];
  }
  // Asigna los nuevos valores, dados en line
  std::string tmp;
@@ -149,13 +149,13 @@ void Module::SetParameter(std::string name) { AssignParameter(name, GetNextWord(
 
 void Module::AssignParameter(const std::string & key, std::string value)
 {
- ParamList::AssignParameter(key, value);
+ (*this)[key] = value;
  //
  // Inicializa el modulo segun los parametros asignados
  //
  if (key == "debug")
  { 
-  const std::string d = GetString("debug");
+  const std::string d = (*this)["debug"];
   if (d == "stdout") SetDebugStream(std::cout);
   else if (d == "stderr") SetDebugStream(std::cerr);
   else if (d == "none") SetDebugFile("/dev/null");
@@ -168,10 +168,15 @@ void Module::Show() const { Show(std::cout); }
 void Module::Show(std::ostream & os) const 
 { 
  os << "Module " << impl->name;
- if (Defined("module") && (GetString("module") != Name())) os << " (loaded as \"" << GetString("module") << "\")";
+ if (Defined("module") && ((*this)["module"] != Name())) os << " (loaded as \"" << (*this)["module"] << "\")";
  os << ": " << '\n'; 
- Array<std::string> kwds;
- if (impl->strictkw) kwds = StringSplit(Keywords());
+ Array<Parameter> kwds;
+ if (impl->strictkw) 
+ {
+  // FIXME: Define new operator= in Array<Parameter> 
+  Array<std::string> tmp = StringSplit(Keywords());
+  for (int q=0;q<tmp.Size();++q) kwds.Append(Parameter(tmp[q]));
+ }
  else kwds = Parameters();
  for (long int i=0;i<kwds.Size();++i)
  {
@@ -180,13 +185,13 @@ void Module::Show(std::ostream & os) const
   if (impl->emptycall) 
   { 
    os << "   " << std::setw(20) << (kwds[i]);
-   if (impl->defvalues.Defined(kwds[i])) os << " = " << std::setw(30) << impl->defvalues.GetString(kwds[i]) << '\n';
+   if (impl->defvalues.Defined(kwds[i])) os << " = " << std::setw(30) << impl->defvalues[kwds[i]] << '\n';
    else os << " has no default value\n";
   }
   else
   {
-   os << "   " << std::setw(20) << (kwds[i]) << " = " << std::setw(30) << GetString(kwds[i]);
-   if (impl->defvalues.Defined(kwds[i])) os << " (default: " << impl->defvalues.GetString(kwds[i]) << ")\n";
+   os << "   " << std::setw(20) << (kwds[i]) << " = " << std::setw(30) << (*this)[kwds[i]];
+   if (impl->defvalues.Defined(kwds[i])) os << " (default: " << impl->defvalues[kwds[i]] << ")\n";
    else os << '\n';
   }
  }
@@ -202,7 +207,7 @@ void Module::DefineKeyword(const std::string kw, const std::string defvalue)
 { 
  impl->kwstr += (kw+" "); 
  AssignParameter(kw, defvalue);
- impl->defvalues.AssignParameter(kw, defvalue);
+ impl->defvalues[kw] = defvalue;
 }
 
 void Module::DefineKeyword(const std::string kw) { impl->kwstr += (kw+" "); }

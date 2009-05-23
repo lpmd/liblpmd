@@ -4,130 +4,63 @@
 
 #include <lpmd/controlfile.h>
 #include <lpmd/util.h>
-#include <lpmd/paramlist.h>
 #include <lpmd/error.h>
 
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
 using namespace lpmd;
 
-//
-//
-//
-ControlFile::ControlFile(Map & m) { innermap = &m; }
-
-ControlFile::~ControlFile() { }
-
-void ControlFile::SetMap(Map & m) { innermap = &m; }
-
-Map & ControlFile::GetMap() const { return (*innermap); }
-
-bool ControlFile::Defined(const std::string & key) const { return innermap->Defined(key); }
-
-void ControlFile::AssignParameter(const std::string & key, std::string value) { innermap->AssignParameter(key, value); }
-
-std::string & ControlFile::operator[](const std::string & key) { return (*innermap)[key]; }
-
-const std::string & ControlFile::operator[](const std::string & key) const { return (*innermap)[key]; } 
-
-void ControlFile::Remove(const std::string & key) { innermap->Remove(key); }
-
-Array<std::string> ControlFile::Parameters() const { return innermap->Parameters(); }
-
-void ControlFile::DeclareStatement(const std::string & cmd, const std::string & args) { reservedkw[cmd] = args; }
-
-//
-//
-//
-std::string ControlFile::MatchCommand(Array<std::string> & w)
+class lpmd::ControlFileImpl
 {
- std::string tmp;
- for (std::map<std::string, std::string>::const_iterator it=reservedkw.begin();it != reservedkw.end();++it)
- {
-  std::string key = it->first;
-  Array<std::string> lt = StringSplit(key);
-  bool badmatch = false;
-  for (long int j=0;j<lt.Size();++j)
-  {
-   const std::string & ak = lt[j];
-   const std::string & bk = w[j];
-   if (ak != bk) 
-   {
-    badmatch = true;
-    break;
-   }
-  }
-  if (badmatch == false) 
-  {
-   while (lt.Size() > 0) 
-   {
-    lt.Delete(0);
-    w.Delete(0);
-   }
-   return reservedkw[key];
-  }
- }
- return "";
+ public:
+   std::map<std::string, std::string> reservedkw;
+   std::string filename;
+   Array<std::string> words;
+   Array<std::string> blockheaders;
+   Array<std::string> blockfooters;
+
+   std::string GetNextWord();
+   std::string MatchCommand();
+   ParamList ParseCommandArguments(Map & param, const std::string & cmd, const std::string & validkeywords);
+};
+
+//
+//
+//
+ControlFile::ControlFile() { impl = new ControlFileImpl(); }
+
+ControlFile::~ControlFile() { delete impl; }
+
+void ControlFile::DeclareStatement(const std::string & cmd, const std::string & args) 
+{ 
+ impl->reservedkw[cmd] = args; 
 }
 
-//
-//
-//
-std::string ControlFile::ParseCommandArguments(const std::string & cmd, const std::string & validkeywords)
+void ControlFile::DeclareBlock(const std::string & name, const std::string & terminator)
 {
- long int argcount = 0;
- std::string kvpairs = "";
- const Array<std::string> kvect = StringSplit(validkeywords);
- Map & param = (*this);
- while (words.Size() > 0)
- {
-  std::string arg = words[0]; 
-  words.Delete(0);
-  Array<std::string> alist = StringSplit(arg, '=');
-  if (alist.Size() == 1)
-  {
-   // El argumento actual no es de tipo keyword, se evaluara posicionalmente
-   if (argcount >= kvect.Size()) continue;
-   std::string keyword = kvect[argcount];
-   std::string value = alist[0];
-   param[cmd+"-"+keyword] = value;
-   kvpairs += (keyword + " " + value + " ");
-   argcount++;
-  }
-  else
-  {
-   // El argumento actual es de tipo keyword
-   std::string keyword = alist[0];
-   std::string value = alist[alist.Size()-1];
-   param[cmd+"-"+keyword] = value; 
-   kvpairs += (keyword + " " + value + " ");
-  }
- }
- return kvpairs;
+ impl->blockheaders.Append(name);
+ impl->blockfooters.Append(terminator);
 }
 
-//
-//
-//
-std::string ControlFile::GetNextWord()
-{
- if (words.Size() == 0) throw SyntaxError("reading control file "+filename);
- std::string nextword = words[0];
- words.Delete(0);
- return nextword;
+int ControlFile::OnRegularStatement(const std::string & name, const ParamList & keywords) 
+{ 
+ return 0; 
 }
 
-//
-//
-//
-int ControlFile::OnStatement(const std::string & name, const std::string & keywords, bool regular) { return 0; }
+int ControlFile::OnNonRegularStatement(const std::string & name, const std::string & full_statement) 
+{ 
+ return 1; 
+}
 
-//
-//
-//
-void ControlFile::Read(std::string inpfile, const ParamList & options)
+int ControlFile::OnBlock(const std::string & name, const std::string & full_statement)
+{
+ return 1;
+}
+
+void ControlFile::Read(const std::string & inpfile, const ParamList & options)
 {
  if (inpfile == "-") Read(std::cin, options, "-");
  else
@@ -139,14 +72,54 @@ void ControlFile::Read(std::string inpfile, const ParamList & options)
  }
 }
 
-//
-//
-//
-void ControlFile::Read(std::istream & istr, const ParamList & options, const std::string inpfile)
+std::string AddBlockContent(const std::string & blockname, const std::string & terminator, std::istream & istr, Array<std::string> & tmpwords)
 {
+ std::string inpbuffer = (blockname+"block ");
+ for (int z=1;z<tmpwords.Size();++z) inpbuffer += (tmpwords[z]+" ");
+ while (1)
+ {
+  std::string line;
+  if (istr.eof()) throw SyntaxError("\""+blockname+"\" block was not properly closed with \""+terminator+"\"");
+  getline(istr, line);
+  RemoveUnnecessarySpaces(line);
+  if (line == terminator) break;
+  inpbuffer += (line+" "); 
+ }
+ RemoveUnnecessarySpaces(inpbuffer);
+ inpbuffer += "\n";
+ return inpbuffer;
+}
+
+void ControlFile::Read(std::istream & real_istr, const ParamList & options, const std::string & inpfile)
+{
+ //
+ //
+ //
+ std::string inpbuffer, line;
+ while (!real_istr.eof())
+ {
+  getline(real_istr, line);
+  Array<std::string> tmpwords = StringSplit(line);
+  if (tmpwords.Size() == 0) continue;
+  bool foundblock = false;
+  for (int q=0;q<impl->blockheaders.Size();++q)
+  {
+   if (tmpwords[0] == impl->blockheaders[q])
+   {
+    inpbuffer += AddBlockContent(impl->blockheaders[q], impl->blockfooters[q], real_istr, tmpwords);
+    foundblock = true;
+    break;
+   }
+  }
+  if (!foundblock) inpbuffer += (line+"\n");
+ } 
+ //
+ //
+ //
+ std::istringstream istr(inpbuffer);
  std::string tmp;
  int line_count = 0;
- filename = inpfile;
+ impl->filename = inpfile;
  while(getline(istr, tmp))
  {
   while (tmp[tmp.size()-1] == '\\')
@@ -159,7 +132,7 @@ void ControlFile::Read(std::istream & istr, const ParamList & options, const std
   std::ostringstream strlnum;
   strlnum << line_count;
   // Sustituye las opciones
-  Array<std::string> opts = options.Parameters();
+  Array<Parameter> opts = options.Parameters();
   for (long int j=0;j<opts.Size();++j)
   {
    const std::string & jt = opts[j];
@@ -169,33 +142,119 @@ void ControlFile::Read(std::istream & istr, const ParamList & options, const std
    {
     idx = tmp.find(searchstr, idx);
     if (idx == std::string::npos) break;
-    tmp.replace(idx, searchstr.size(), options.GetString(jt));
-    idx += options.GetString(jt).length();
+    tmp.replace(idx, searchstr.size(), options[jt]);
+    idx += options[jt].length();
    }  
   }
   if (tmp.find("$(", 0) != std::string::npos)
-    throw SyntaxError("Variable(s) undefined in input file \""+filename+"\", line "+ToString(line_count)+"\n  "+tmp);
+    throw SyntaxError("Variable(s) undefined in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
   //
-  words = StringSplit(tmp);
-  if (words.Size() == 0) continue;
-  if (words[0][0] == '#') continue;
-  std::string first_word = words[0];
-  std::string statement_args = MatchCommand(words);
-  if (statement_args == "") words.Delete(0);
-  if (statement_args != "")
+  impl->words = StringSplit(tmp);
+  if (impl->words.Size() == 0) continue;
+  if (impl->words[0][0] == '#') continue;
+  std::string first_word = impl->words[0];
+  std::string statement_args = impl->MatchCommand();
+  if (statement_args == "") impl->words.Delete(0);
+  int blockpos = -1;
+  for (int q=0;q<impl->blockheaders.Size();++q)
   {
-   // Palabra clave de tipo regular, o no valida
-   std::string kvpairs = ParseCommandArguments(first_word, statement_args);
-   int st = OnStatement(first_word, kvpairs, true);
-   if (st != 0) throw SyntaxError("Unexpected error in input file \""+filename+"\", line "+ToString(line_count)+"\n  "+tmp);
+   if (first_word == (impl->blockheaders[q]+"block")) { blockpos = q; break; }
   }
-  else 
+  if (blockpos != -1)
   {
-   int st = OnStatement(first_word, "", false);
-   if (st == 1) throw SyntaxError("Unexpected instruction was found in input file \""+filename+"\", line "+ToString(line_count)+"\n  "+tmp);
+   if (OnBlock(impl->blockheaders[blockpos], tmp) != 0)
+      throw SyntaxError("Invalid content of \""+impl->blockheaders[blockpos]+"\" block, in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
+  }
+  else
+  {
+   if (statement_args != "")
+   {
+    // Palabra clave de tipo regular, o no valida
+    ParamList st_keywords = impl->ParseCommandArguments(*this, first_word, statement_args);
+    if (OnRegularStatement(first_word, st_keywords) != 0)
+       throw SyntaxError("Unexpected error in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
+   }
+   else 
+   {
+    if (OnNonRegularStatement(first_word, tmp) != 0)
+       throw SyntaxError("Unexpected instruction was found in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
+   }
   }
  }
-
 }
 
+//
+// Methods in the private implementation class
+//
+
+std::string ControlFileImpl::GetNextWord()
+{
+ if (words.Size() == 0) throw SyntaxError("reading control file "+filename);
+ std::string nextword = words[0];
+ words.Delete(0);
+ return nextword;
+}
+
+std::string ControlFileImpl::MatchCommand()
+{
+ std::string tmp;
+ for (std::map<std::string, std::string>::const_iterator it=reservedkw.begin();it!=reservedkw.end();++it)
+ {
+  std::string key = it->first;
+  Array<std::string> lt = StringSplit(key);
+  bool badmatch = false;
+  for (long int j=0;j<lt.Size();++j)
+  {
+   const std::string & ak = lt[j];
+   const std::string & bk = words[j];
+   if (ak != bk) 
+   {
+    badmatch = true;
+    break;
+   }
+  }
+  if (badmatch == false) 
+  {
+   while (lt.Size() > 0) 
+   {
+    lt.Delete(0);
+    words.Delete(0);
+   }
+   return reservedkw[key];
+  }
+ }
+ return "";
+}
+
+ParamList ControlFileImpl::ParseCommandArguments(Map & param, const std::string & cmd, const std::string & validkeywords)
+{
+ long int argcount = 0;
+ ParamList kvpairs;
+ const Array<std::string> kvect = StringSplit(validkeywords);
+ while (words.Size() > 0)
+ {
+  std::string arg = words[0]; 
+  words.Delete(0);
+  Array<std::string> alist = StringSplit(arg, '=');
+  if (alist.Size() == 1)
+  {
+   // El argumento actual no es de tipo keyword, se evaluara posicionalmente
+   if (argcount >= kvect.Size()) continue;
+   std::string keyword = kvect[argcount];
+   std::string value = alist[0];
+   param[cmd+"-"+keyword] = value;
+   kvpairs[keyword] = value;
+   argcount++;
+  }
+  else
+  {
+   // El argumento actual es de tipo keyword
+   std::string keyword = alist[0];
+   std::string value = alist[alist.Size()-1];
+   param[cmd+"-"+keyword] = value; 
+   kvpairs[keyword] = value;
+  }
+ }
+ return kvpairs;
+}
 

@@ -20,14 +20,14 @@ nobase_include_HEADERS =  lpmd/atom.h lpmd/array.h lpmd/basicatom.h lpmd/basicce
                           lpmd/particleset.h lpmd/plugin.h lpmd/pluginmanager.h lpmd/potential.h lpmd/pairpotential.h lpmd/session.h \
                           lpmd/configuration.h lpmd/simulation.h lpmd/integrator.h lpmd/onestepintegrator.h lpmd/manipulations.h lpmd/moduleinfo.h \
                           lpmd/systemmixer.h lpmd/systemmodifier.h lpmd/task.h lpmd/taskrunner.h lpmd/timer.h lpmd/simulationbuilder.h \
-                          lpmd/util.h lpmd/vector.h lpmd/value.h lpmd/visualizer.h lpmd/atompair.h lpmd/taghandler.h lpmd/api.h
+                          lpmd/util.h lpmd/vector.h lpmd/value.h lpmd/visualizer.h lpmd/atompair.h lpmd/taghandler.h lpmd/api.h lpmd/parameter.h
 
 noinst_HEADERS = version.h
 
 liblpmd_la_SOURCES = cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc controlfile.cc elements.cc \
                      error.cc module.cc metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc potential.cc pairpotential.cc particleset.cc \
                      session.cc matrix.cc simulation.cc timer.cc integrator.cc systemmodifier.cc onestepintegrator.cc twostepintegrator.cc \
-                     systemmixer.cc visualizer.cc moduleinfo.cc util.cc simulationbuilder.cc atomselector.cc 
+                     systemmixer.cc visualizer.cc moduleinfo.cc util.cc simulationbuilder.cc atomselector.cc
 
 #
 #

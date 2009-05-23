@@ -19,15 +19,13 @@ class ParamList: public Map
 
    bool Defined(const std::string & key) const;
 
-   virtual void AssignParameter(const std::string & key, std::string value);
+   Parameter & operator[](const std::string & key);
 
-   std::string & operator[](const std::string & key);
-
-   const std::string & operator[](const std::string & key) const;   
+   const Parameter & operator[](const std::string & key) const;   
  
    void Remove(const std::string & key);
 
-   Array<std::string> Parameters() const;
+   Array<Parameter> Parameters() const;
 
  private:
    class ParamListImpl * paramlist_impl;
