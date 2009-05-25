@@ -11,6 +11,9 @@
 #define KBOLTZMANN (8.6173422E-05)
 
 #include <lpmd/util.h>
+#include <lpmd/configuration.h>
+#include <lpmd/potential.h>
+#include <lpmd/matrix.h>
 
 namespace lpmd
 {
@@ -29,7 +32,8 @@ namespace lpmd
   return (2.0/3.0)*KineticEnergy(atomcont)/(KBOLTZMANN*double(atomcont.Size()));
  }
 
+ lpmd::Matrix* gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut);
+
 }  // lpmd
 
 #endif
-
