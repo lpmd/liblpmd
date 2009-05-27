@@ -39,6 +39,22 @@ inline void CenterByCenterOfMass(BasicParticleSet & part, BasicCell & cell)
  for (long i=0;i<n;++i) part[i].Position() -= (centerofmass-center);
 }
 
+inline Vector UndoPeriodicity(BasicParticleSet & part, BasicCell & cell)
+{
+ SimulationCell scratch(simcell[0]);
+ Vector ** noperiodic = new Vector*[N];
+ for (int t=0;t<N;++t) noperiodic[t] = new Vector[nat];
+ for (int i=0;i<nat;++i) noperiodic[0][i] = simcell[0].GetAtom(i).Position();
+
+ for (int t=1;t<N;++t)
+  for (int i=0;i<nat;++i)
+  {
+   scratch.SetPosition(0, simcell[t-1].GetAtom(i).Position());
+   scratch.SetPosition(1, simcell[t].GetAtom(i).Position());
+   noperiodic[t][i] = noperiodic[t-1][i] + scratch.VectorDistance(0, 1);
+  }
+}
+
 }
 
 #endif
