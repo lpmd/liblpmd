@@ -247,7 +247,9 @@ class Directory(dict):
                if self[t].targettype == 'headers': realtarget = self[t].sources
                elif hasattr(self[t], 'installname'): realtarget = [ self[t].installname ]
                for rt in realtarget:
-                   mf += ('\t%s %s %s\n' % (self.setup.install, rt, self[t].installpath))
+                  mf += ('\t%s %s %s\n' % (self.setup.install, rt, self[t].installpath))
+               if hasattr(self[t], 'installname') and self[t].installname != t:
+                  mf += ('\t%s %s %s\n' % ('cp -vd', t, self[t].installpath))
                if self[t].targettype == 'library' and self[t].installpath not in ldconfig_libs:
                   ldconfig_libs.append(self[t].installpath)
         for ld in ldconfig_libs: mf += '\tldconfig -n %s\n' % ld
