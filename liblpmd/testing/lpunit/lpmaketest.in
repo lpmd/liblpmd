@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# LPUnit test preprocessor 
+#
 
 import sys, string
 from copy import deepcopy
@@ -137,9 +140,9 @@ class TestSuite:
 
 t = TestSuite()
 ff = sys.stdin
-if sys.argv[1] != '-': ff = file(sys.argv[1], 'r')
+if len(sys.argv) > 1 and sys.argv[1] != '-': ff = file(sys.argv[1], 'r')
 t.ReadFile(ff)
 gg = sys.stdout
-if sys.argv[2] != '-': gg = file(sys.argv[2], 'w')
+if len(sys.argv) > 2 and sys.argv[2] != '-': gg = file(sys.argv[2], 'w')
 t.Render(gg)
 

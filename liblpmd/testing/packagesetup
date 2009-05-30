@@ -13,9 +13,9 @@ language c++
 end
 
 language lpunit
-   compiler = ../lpunit/lpmaketest.py
+   compiler = ../lpunit/lpmaketest
    flags = -I..
-   libraries = ../lpunit/lpunit.a ../liblpmd.so -ldl -lm
+   libraries = ../liblpmd.so ../lpunit/liblpunit.a -ldl -lm
 end
 
 directory .
@@ -68,11 +68,29 @@ end
 
 directory lpunit
 
-   staticlibrary lpunit.a
+   staticlibrary liblpunit.a
      language = c++
      sources = test.cc testsuite.cc
+     headers = lpunit_headers
      flags += -ansi -I..
+     installpath = lib
    end
+
+   headers lpunit_headers
+     sources = test.h testsuite.h macros.h
+     installpath = include/lpunit
+   end
+
+   script lpmaketest
+     sources = lpmaketest.in
+     installpath = bin
+   end
+
+    file lpunit.pc
+       sources = lpunit.pc.in
+       expand = prefix version
+       installpath = lib/pkgconfig
+    end
 
 end
 

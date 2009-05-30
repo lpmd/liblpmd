@@ -7,7 +7,7 @@ from copy import deepcopy
 # Syntax and definitions
 #
 defaultPrefix = '/usr/local'
-defaultInstall = 'install -v -D'
+defaultInstall = 'install'
 
 defaultLanguages = ['c', 'c++', 'python', 'lpunit']
 
@@ -51,6 +51,11 @@ def removequotes(x):
 
 def appendunique(li, item):
     if item not in li: li.append(item)
+
+def uniquelist(li):
+    tmp = []
+    for x in li: appendunique(tmp, x)
+    return tmp
 
 def anyof(seq, func):
     for x in seq:
@@ -237,9 +242,15 @@ class Directory(dict):
            mf += 'subdirs:\n'
            for d in subdirs: mf += ('\tcd %s && $(MAKE)\n' % d)
            mf += '\n'
+           mf += 'install: subdirs-install $(TARGETS)\n'
         else:
            mf += 'all: $(TARGETS)\n\n'
-        mf += 'install: $(TARGETS)\n'
+           mf += 'install: $(TARGETS)\n'
+        pathlist = uniquelist([self[t].installpath for t in self.sortedtargets if hasattr(self[t], 'installpath')])
+        mf += '\n'
+        for p in pathlist:
+            mf += ('\t%s -v -d %s\n' % (self.setup.install, p))
+        mf += '\n'
         ldconfig_libs = []
         for t in self.sortedtargets:
             if hasattr(self[t], 'installpath'):
@@ -247,7 +258,7 @@ class Directory(dict):
                if self[t].targettype == 'headers': realtarget = self[t].sources
                elif hasattr(self[t], 'installname'): realtarget = [ self[t].installname ]
                for rt in realtarget:
-                  mf += ('\t%s %s %s\n' % (self.setup.install, rt, self[t].installpath))
+                  mf += ('\t%s -v -D %s %s\n' % (self.setup.install, rt, self[t].installpath))
                if hasattr(self[t], 'installname') and self[t].installname != t:
                   mf += ('\t%s %s %s\n' % ('cp -vd', t, self[t].installpath))
                if self[t].targettype == 'library' and self[t].installpath not in ldconfig_libs:
@@ -255,6 +266,10 @@ class Directory(dict):
         for ld in ldconfig_libs: mf += '\tldconfig -n %s\n' % ld
         mf += '\n'
         objects = []
+        setuppath = './setup'
+        if self.name != '.':
+           assert not '/' in self.name
+           setuppath = '../setup'
         for t in self.sortedtargets: 
             dependencies = self[t].sources
             if not hasattr(self[t], 'language') or not self[t].language.IsCompiled(): 
@@ -265,9 +280,11 @@ class Directory(dict):
                if hasattr(self[t], 'expand'):
                   varstoexpand = self[t].expand.split()
                   varexpr = ','.join([('%s=%s' % (x, getattr(self.setup, x))) for x in varstoexpand])
-                  mf += ('\tcat %s | ./setup --expand=\"%s\" > %s\n\n' % (' '.join(dependencies), varexpr, t))
+                  mf += ('\tcat %s | %s --expand=\"%s\" > %s\n\n' % (' '.join(dependencies), setuppath, varexpr, t))
                elif self[t].targettype == 'headers': mf += '\n\n'
-               else: mf += ('\tcat %s > %s\n\n' % (' '.join(dependencies), t))
+               else: 
+                  if len(dependencies) == 1 and dependencies[0] == t: mf += '\n\n\n'
+                  else: mf += ('\tcat %s > %s\n\n' % (' '.join(dependencies), t))
             else:
               if self[t].language.IsCompiled(): dependencies = [ObjectFromSource(x) for x in dependencies if self[t].language.IsFileCompilable(x)]
               for s in self[t].sources:
@@ -295,6 +312,9 @@ class Directory(dict):
                      if obj not in objects: objects.append(obj)
         checktargets = [t for t in self.sortedtargets if hasattr(self[t], 'test') and self[t].test]
         if len(subdirs) > 0:
+           # install
+           mf += ('\nsubdirs-install:\n')
+           for d in subdirs: mf += ('\tcd %s && $(MAKE) install\n' % d)
            # check
            if anyof([self.setup.directory[x] for x in subdirs], lambda x: len(x.tests) > 0):
               mf += ('\nsubdirs-check:\n')
