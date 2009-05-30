@@ -4,6 +4,7 @@
 
 #include <lpmd/pluginmanager.h>
 #include <lpmd/util.h>
+#include "config.h"
 
 #include <iostream>
 #include <cstdlib>

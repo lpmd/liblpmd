@@ -1,0 +1,229 @@
+#
+#
+#
+
+name = liblpmd
+fullname = 'LibLPMD'
+version = 2.0.0
+author = 'GNM <gnm@gnm.cl>'
+prefix = /usr/local
+
+language c++
+   flags = -g -O3 -ffast-math -funroll-all-loops
+end
+
+language lpunit
+   compiler = ../lpunit/lpmaketest.py
+   flags = -I..
+   libraries = ../lpunit/lpunit.a ../liblpmd.so -ldl -lm
+end
+
+directory .
+
+    library liblpmd.so
+
+       language = c++
+       flags += -Wall -pedantic -std=gnu++98 -I.
+
+       sources =  cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc \
+                  controlfile.cc elements.cc error.cc module.cc metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc \
+                  potential.cc pairpotential.cc particleset.cc properties.cc session.cc matrix.cc simulation.cc \
+                  timer.cc integrator.cc systemmodifier.cc onestepintegrator.cc twostepintegrator.cc systemmixer.cc \
+                  visualizer.cc moduleinfo.cc util.cc simulationbuilder.cc atomselector.cc
+
+       headers = lpmd_headers
+       version = 2.0.0
+
+       installpath = lib
+    end
+
+    headers lpmd_headers
+
+       sources =  lpmd/atom.h lpmd/array.h lpmd/basicatom.h lpmd/basiccell.h lpmd/basicparticleset.h lpmd/region.h lpmd/selector.h \
+                  lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h lpmd/cellmanager.h lpmd/cellreader.h lpmd/cellwriter.h lpmd/cmdline.h \
+                  lpmd/color.h lpmd/storedvalue.h lpmd/elements.h lpmd/error.h lpmd/properties.h lpmd/orthogonalcell.h lpmd/atomselector.h \
+                  lpmd/nonorthogonalcell.h lpmd/indirectatom.h lpmd/controlfile.h lpmd/property.h lpmd/combinedpotential.h \
+                  lpmd/map.h lpmd/matrix.h lpmd/fixedsizeparticleset.h lpmd/twostepintegrator.h lpmd/simulationhistory.h \
+                  lpmd/stepper.h lpmd/metalpotential.h lpmd/module.h lpmd/paramlist.h lpmd/solver.h lpmd/storedconfiguration.h \
+                  lpmd/particleset.h lpmd/plugin.h lpmd/pluginmanager.h lpmd/potential.h lpmd/pairpotential.h lpmd/session.h \
+                  lpmd/configuration.h lpmd/simulation.h lpmd/integrator.h lpmd/onestepintegrator.h lpmd/manipulations.h lpmd/moduleinfo.h \
+                  lpmd/systemmixer.h lpmd/systemmodifier.h lpmd/task.h lpmd/taskrunner.h lpmd/timer.h lpmd/simulationbuilder.h \
+                  lpmd/util.h lpmd/vector.h lpmd/value.h lpmd/visualizer.h lpmd/atompair.h lpmd/taghandler.h lpmd/api.h lpmd/parameter.h
+
+       installpath = include/lpmd
+    end
+
+    file config.h
+       sources = config.h.in
+       expand = prefix version
+    end
+
+    file liblpmd-2.0.pc
+       sources = liblpmd-2.0.pc.in
+       expand = prefix version
+       installpath = lib/pkgconfig
+    end
+
+end
+
+directory lpunit
+
+   staticlibrary lpunit.a
+     language = c++
+     sources = test.cc testsuite.cc
+     flags += -ansi -I..
+   end
+
+end
+
+directory tests
+
+    binary arraytest
+       test = true
+       language = lpunit
+       sources = arraytest.unit
+    end
+
+    binary atomselector
+       test = true
+       language = lpunit
+       sources = atomselector.unit
+    end
+
+    binary atomtest
+       test = true
+       language = lpunit
+       sources = atomtest.unit
+    end
+
+    binary cmdline
+       test = true
+       language = lpunit
+       sources = cmdline.unit
+    end
+
+    binary configurationtest
+       test = true
+       language = lpunit
+       sources = configurationtest.unit
+    end
+
+    binary controlfile
+       test = true
+       language = lpunit
+       sources = controlfile.unit
+    end
+
+    binary fixedsizeparticlesettest
+       test = true
+       language = lpunit
+       sources = fixedsizeparticlesettest.unit
+    end
+
+#    binary manipulations
+#       test = true
+#       language = lpunit
+#       sources = manipulations.unit
+#    end
+
+    binary nonorthogonalcelltest
+       test = true
+       language = lpunit
+       sources = nonorthogonalcelltest.unit
+    end
+
+    binary orthogonalcelltest
+       test = true
+       language = lpunit
+       sources = orthogonalcelltest.unit
+    end
+
+    binary particlesettest
+       test = true
+       language = lpunit
+       sources = particlesettest.unit
+    end
+
+#    binary simulationcelltest
+#       test = true
+#       language = lpunit
+#       sources = simulationcelltest.unit
+#    end
+
+    binary simulationtest
+       test = true
+       language = lpunit
+       sources = simulationtest.unit
+    end
+
+    binary steppertest
+       test = true
+       language = lpunit
+       sources = steppertest.unit
+    end
+
+    binary taghandler
+       test = true
+       language = lpunit
+       sources = taghandler.unit
+    end
+
+    binary tasktest
+       test = true
+       language = lpunit
+       sources = tasktest.unit
+    end
+
+    binary utiltest
+       test = true
+       language = lpunit
+       sources = utiltest.unit
+    end
+
+    binary vectortest
+       test = true
+       language = lpunit
+       sources = vectortest.unit
+    end
+
+end
+
+directory demos
+
+     binary neighborlist
+        test = true
+        language = c++
+        sources = neighborlist.cc
+        flags += -I..
+        libraries = ../liblpmd.so -ldl -lm
+     end
+
+     binary nopluginmd
+        test = true
+        language = c++
+        sources = nopluginmd.cc
+        flags += -I..
+        libraries = ../liblpmd.so -ldl -lm
+     end
+
+     binary simplemd
+        test = true
+        language = c++
+        sources = simplemd.cc
+        flags += -I..
+        libraries = ../liblpmd.so -ldl -lm
+     end
+end
+
+directory benchmarks
+   
+     binary array
+        test = true
+        language = c++
+        sources = array.cc
+        flags += -I..
+        libraries = ../liblpmd.so -ldl -lm
+     end
+
+end
+

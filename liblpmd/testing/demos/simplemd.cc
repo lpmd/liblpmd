@@ -58,9 +58,9 @@ int main()
  assert(atoms.Size() == NX*NY*NZ*4);
  std::cerr << "-> Running MD with " << atoms.Size() << " atoms\n";
 
- md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
+ //md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
  //md.SetCellManager(pm.LoadPluginAs<CellManager>("lc2", "cutoff 8.5 nx 15 ny 15 nz 15"));
- //md.SetCellManager(pm.LoadPluginAs<CellManager>("linkedcell", "cutoff 8.5 nx 15 ny 15 nz 15"));
+ md.SetCellManager(pm.LoadPluginAs<CellManager>("linkedcell", "cutoff 8.5 nx 14 ny 14 nz 14"));
 
  Potential & pot = pm.LoadPluginAs<Potential>("lennardjones", "sigma 3.41 epsilon 0.0103408 cutoff 8.5");
  Array<Potential &> & potentials = md.Potentials();

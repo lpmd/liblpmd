@@ -136,6 +136,10 @@ class TestSuite:
 #
 
 t = TestSuite()
-t.ReadFile(file(sys.argv[1])) 
-t.Render(file(sys.argv[2], 'w'))
+ff = sys.stdin
+if sys.argv[1] != '-': ff = file(sys.argv[1], 'r')
+t.ReadFile(ff)
+gg = sys.stdout
+if sys.argv[2] != '-': gg = file(sys.argv[2], 'w')
+t.Render(gg)
 
