@@ -15,6 +15,12 @@ class lpmd::ParamListImpl
 
 ParamList::ParamList() { paramlist_impl = new ParamListImpl(); }
 
+ParamList::ParamList(const ParamList & pl)
+{
+ paramlist_impl = new ParamListImpl();
+ paramlist_impl->innermap = pl.paramlist_impl->innermap;
+}
+
 ParamList::~ParamList() { delete paramlist_impl; }
 
 bool ParamList::Defined(const std::string & key) const 
@@ -22,6 +28,12 @@ bool ParamList::Defined(const std::string & key) const
  std::map<std::string, Parameter> & im = paramlist_impl->innermap;
  if (im.count(key) > 0) return true;
  return false;
+}
+
+ParamList & ParamList::operator=(const ParamList & pl)
+{
+ if (&pl != this) { paramlist_impl->innermap = pl.paramlist_impl->innermap; }
+ return (*this);
 }
 
 Parameter & ParamList::operator[](const std::string & key) { return (paramlist_impl->innermap)[key]; }

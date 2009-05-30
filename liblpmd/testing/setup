@@ -280,11 +280,13 @@ class Directory(dict):
                if hasattr(self[t], 'expand'):
                   varstoexpand = self[t].expand.split()
                   varexpr = ','.join([('%s=%s' % (x, getattr(self.setup, x))) for x in varstoexpand])
-                  mf += ('\tcat %s | %s --expand=\"%s\" > %s\n\n' % (' '.join(dependencies), setuppath, varexpr, t))
-               elif self[t].targettype == 'headers': mf += '\n\n'
+                  mf += ('\tcat %s | %s --expand=\"%s\" > %s\n' % (' '.join(dependencies), setuppath, varexpr, t))
+               elif self[t].targettype == 'headers': mf += '\n'
                else: 
-                  if len(dependencies) == 1 and dependencies[0] == t: mf += '\n\n\n'
-                  else: mf += ('\tcat %s > %s\n\n' % (' '.join(dependencies), t))
+                  if len(dependencies) == 1 and dependencies[0] == t: mf += '\n\n'
+                  else: mf += ('\tcat %s > %s\n' % (' '.join(dependencies), t))
+               if self[t].targettype == 'script': mf += ('\tchmod "u+x" %s\n' % t)
+               mf += '\n'
             else:
               if self[t].language.IsCompiled(): dependencies = [ObjectFromSource(x) for x in dependencies if self[t].language.IsFileCompilable(x)]
               for s in self[t].sources:
@@ -303,7 +305,7 @@ class Directory(dict):
                     lapply = self[t].language.Apply(languageLinking[self[t].language.name], self[t], objects=objlist)
                     if lapply != None: mf += ('\t'+lapply+'\n')
                     if hasattr(self[t], 'installname') and self[t].installname != t:
-                       mf += ('\tln -s %s %s\n' % (self[t].installname, t))
+                       mf += ('\trm -f %s\n\tln -s %s %s\n' % (t, self[t].installname, t))
                     mf += '\n'
                  elif self[t].targettype == 'staticlibrary':
                     lapply = self[t].language.Apply(languageStaticLibraryPacking[self[t].language.name], self[t], objects=objlist)

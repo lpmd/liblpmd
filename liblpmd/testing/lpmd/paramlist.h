@@ -15,10 +15,12 @@ class ParamList: public Map
  public:
    //
    ParamList();
+   ParamList(const ParamList & pl);
    virtual ~ParamList();
 
    bool Defined(const std::string & key) const;
 
+   ParamList & operator=(const ParamList & pl);
    Parameter & operator[](const std::string & key);
 
    const Parameter & operator[](const std::string & key) const;   
