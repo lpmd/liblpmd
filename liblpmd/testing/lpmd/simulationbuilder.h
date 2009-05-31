@@ -21,6 +21,7 @@ namespace lpmd
 
     static Simulation & CreateFixedOrthogonal(long int atoms, const BasicAtom & at); 
     static Simulation & CreateGeneric(long int atoms, const BasicAtom & at);
+    static Simulation & CreateGeneric();
   
   private:
    static class SimBuildImpl impl;

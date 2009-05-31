@@ -149,3 +149,10 @@ Simulation & SimulationBuilder::CreateGeneric(long int atoms, const BasicAtom & 
  return (*simp);
 }
 
+Simulation & SimulationBuilder::CreateGeneric()
+{
+ Simulation * simp = new SimulationEngine<ParticleSet, NonOrthogonalCell>();
+ impl.s_array.Append(simp);
+ return (*simp);
+}
+
