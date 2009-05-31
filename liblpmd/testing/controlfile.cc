@@ -24,7 +24,6 @@ class lpmd::ControlFileImpl
 
    std::string GetNextWord();
    std::string MatchCommand();
-   ParamList ParseCommandArguments(Map & param, const std::string & cmd, const std::string & validkeywords);
 };
 
 //
@@ -45,7 +44,7 @@ void ControlFile::DeclareBlock(const std::string & name, const std::string & ter
  impl->blockfooters.Append(terminator);
 }
 
-int ControlFile::OnRegularStatement(const std::string & name, const ParamList & keywords) 
+int ControlFile::OnRegularStatement(const std::string & name, const std::string & keywords) 
 { 
  return 0; 
 }
@@ -170,7 +169,7 @@ void ControlFile::Read(std::istream & real_istr, const ParamList & options, cons
    if (statement_args != "")
    {
     // Palabra clave de tipo regular, o no valida
-    ParamList st_keywords = impl->ParseCommandArguments(*this, first_word, statement_args);
+    std::string st_keywords = ParseCommandArguments(*this, first_word, statement_args);
     if (OnRegularStatement(first_word, st_keywords) != 0)
        throw SyntaxError("Unexpected error in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
    }
@@ -183,6 +182,47 @@ void ControlFile::Read(std::istream & real_istr, const ParamList & options, cons
  }
 }
 
+std::string ControlFile::ParseCommandArguments(Map & param, const std::string & cmd, const std::string & validkeywords)
+{
+ long int argcount = 0;
+ std::string kvpairs;
+ const Array<std::string> kvect = StringSplit(validkeywords);
+ ParamList resolved;
+ for (int q=0;q<kvect.Size();++q) resolved[kvect[q]] = "false";
+ while (impl->words.Size() > 0)
+ {
+  std::string arg = impl->words[0]; 
+  impl->words.Delete(0);
+  Array<std::string> alist = StringSplit(arg, '=');
+  if (alist.Size() == 1)
+  {
+   // El argumento actual no es de tipo keyword, se evaluara posicionalmente
+   if (argcount >= kvect.Size()) continue;
+   std::string keyword = kvect[argcount];
+   std::string value = alist[0];
+   param[cmd+"-"+keyword] = value;
+   kvpairs += (keyword+" "+value+" ");
+   resolved[keyword] = "true";
+   argcount++;
+  }
+  else
+  {
+   // El argumento actual es de tipo keyword
+   std::string keyword = alist[0];
+   RemoveUnnecessarySpaces(keyword);
+   std::string value = alist[alist.Size()-1];
+   param[cmd+"-"+keyword] = value; 
+   kvpairs += (keyword+" "+value+" ");
+   resolved[keyword] = "true";
+  }
+  bool ready = true;
+  for (int q=0;q<kvect.Size();++q) 
+      if (bool(resolved[kvect[q]]) == false) ready = false;
+  if (ready) break;
+ }
+ RemoveUnnecessarySpaces(kvpairs);
+ return kvpairs;
+}
 //
 // Methods in the private implementation class
 //
@@ -224,37 +264,5 @@ std::string ControlFileImpl::MatchCommand()
   }
  }
  return "";
-}
-
-ParamList ControlFileImpl::ParseCommandArguments(Map & param, const std::string & cmd, const std::string & validkeywords)
-{
- long int argcount = 0;
- ParamList kvpairs;
- const Array<std::string> kvect = StringSplit(validkeywords);
- while (words.Size() > 0)
- {
-  std::string arg = words[0]; 
-  words.Delete(0);
-  Array<std::string> alist = StringSplit(arg, '=');
-  if (alist.Size() == 1)
-  {
-   // El argumento actual no es de tipo keyword, se evaluara posicionalmente
-   if (argcount >= kvect.Size()) continue;
-   std::string keyword = kvect[argcount];
-   std::string value = alist[0];
-   param[cmd+"-"+keyword] = value;
-   kvpairs[keyword] = value;
-   argcount++;
-  }
-  else
-  {
-   // El argumento actual es de tipo keyword
-   std::string keyword = alist[0];
-   std::string value = alist[alist.Size()-1];
-   param[cmd+"-"+keyword] = value; 
-   kvpairs[keyword] = value;
-  }
- }
- return kvpairs;
 }
 
