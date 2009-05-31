@@ -10,6 +10,7 @@
 #include <lpmd/plugin.h>
 #include <lpmd/paramlist.h>
 #include <lpmd/error.h>
+#include <lpmd/moduleinfo.h>
 
 namespace lpmd
 {
@@ -33,7 +34,10 @@ class PluginManager
    void LoadPluginFile(std::string path, std::string id, std::string args);
    void LoadPlugin(std::string name, std::string id, std::string args);
    void LoadPlugin(std::string name, std::string args);
+   void LoadPlugin(ModuleInfo info);
    void UnloadPlugin(std::string id);
+  
+   void UpdatePlugin(std::string id, std::string new_args);
 
    template<typename T> T & LoadPluginAs(std::string name, std::string args)
    {

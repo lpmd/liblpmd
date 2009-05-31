@@ -13,7 +13,7 @@ namespace lpmd
 template <typename T> class Value
 {
  public:
-   virtual ~Value();
+   virtual ~Value() { };
 
    virtual void ClearAverage() = 0;
    virtual void AddToAverage() = 0;

@@ -58,12 +58,15 @@ void PluginManager::LoadPlugin(std::string name, std::string id, std::string arg
  if (mm == NULL) throw InvalidRequest("Plugin "+name);
  mm->SetManager(*this);                      // FIXME: Por ahora se hace aqui, deberia ir en un constructor de Module en el nuevo API
  modules[id] = mm;
+ DefineAlias(id, name);
  // Agrega nuevas propiedades a la lista
  Array<std::string> proplist = StringSplit(mm->Provides());
  for (long int i=0;i<proplist.Size();++i) { namedprops[proplist[i]] = mm; }
 }
 
 void PluginManager::LoadPlugin(std::string name, std::string args) { LoadPlugin(name, name, args); }
+
+void PluginManager::LoadPlugin(ModuleInfo info) { LoadPlugin(info.name, info.id, info.args); }
 
 void PluginManager::UnloadPlugin(std::string id)
 {
@@ -76,6 +79,14 @@ void PluginManager::UnloadPlugin(std::string id)
   for (long int i=0;i<proplist.Size();++i) { namedprops.erase(proplist[i]); }
   delete m;
  }
+}
+
+void PluginManager::UpdatePlugin(std::string id, std::string new_args)
+{
+ std::string realname = id;
+ if (aliasdict.Defined(id)) realname = aliasdict[id];
+ UnloadPlugin(id);
+ LoadPlugin(realname, id, new_args);
 }
 
 std::string PluginManager::GetPluginKeywords(std::string name)
