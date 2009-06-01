@@ -10,22 +10,26 @@
 namespace lpmd
 {
 
-template <typename T> class Value
+ class AbstractValue
+ {
+  public:
+   virtual ~AbstractValue();
+   virtual void ClearAverage() = 0;
+   virtual void AddToAverage() = 0;
+   virtual void OutputTo(std::ostream & os) const = 0;
+   virtual void OutputAverageTo(std::ostream & os) const = 0;
+ };
+
+template <typename T> class Value: public AbstractValue
 {
  public:
    virtual ~Value() { };
 
-   virtual void ClearAverage() = 0;
-   virtual void AddToAverage() = 0;
    virtual T & CurrentValue() = 0;
    virtual const T & CurrentValue() const = 0;
-
-   virtual void OutputTo(std::ostream & os) const = 0;
-   virtual void OutputAverageTo(std::ostream & os) const = 0;
 };
 
 } // lpmd
 
 #endif
-
 

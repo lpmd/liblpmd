@@ -48,7 +48,7 @@ class MockCellManager: public CellManager
  StoredConfiguration s;
  MockCellManager cm;
  s.SetCellManager(cm); 
- @equal &cm, &(s.CellManager())
+ @equal &cm, &(s.GetCellManager())
 }
 @end
 

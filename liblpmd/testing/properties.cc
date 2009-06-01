@@ -1,14 +1,19 @@
+/*
+ *
+ *
+ *
+ */
+
 #include <lpmd/properties.h>
 #include <lpmd/matrix.h>
 #include <lpmd/configuration.h>
 #include <lpmd/potential.h>
 #include <lpmd/util.h>
 
-lpmd::Matrix* gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut)
+lpmd::Matrix* lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut)
 {
  lpmd::BasicParticleSet & atoms = con.Atoms();
  lpmd::BasicCell & cell = con.Cell();
- assert(atoms.Size()==0);
 
  double dr = rcut/ double(nb);
  lpmd::Array<int> esp = atoms.Elements();
@@ -120,8 +125,7 @@ lpmd::Matrix* gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb,
  return m;
 }
 
-
-lpmd::Matrix* vacf(lpmd::Configuration & con, lpmd::Potential & pot, double dt)
+lpmd::Matrix* lpmd::vacf(lpmd::Configuration & con, lpmd::Potential & pot, double dt)
 {
  /*
  int N = simcell.size();
@@ -227,3 +231,4 @@ lpmd::Matrix* vacf(lpmd::Configuration & con, lpmd::Potential & pot, double dt)
  lpmd::Matrix *m;
  return m;
 }
+

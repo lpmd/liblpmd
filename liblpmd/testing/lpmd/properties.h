@@ -33,6 +33,7 @@ namespace lpmd
  }
 
  lpmd::Matrix* gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut);
+
  lpmd::Matrix* vacf(lpmd::Configuration & con, lpmd::Potential & pot, double dt);
 
 }  // lpmd

@@ -8,39 +8,34 @@
 #define __LPMD_PROPERTY_H__
 
 #include <lpmd/stepper.h>
+#include <lpmd/configuration.h>
+#include <lpmd/simulationhistory.h>
+#include <lpmd/potential.h>
+
 #include <string>
 
 namespace lpmd
 {
- class Potential; // forward
- class Configuration; // forward
- class SimulationHistory; // forward
-
  template <typename T> class Property
  {
   public:
-    virtual ~Property();
+    virtual ~Property() { };
 
-    virtual void Evaluate(const T & target, Potential & p) = 0;
-
-
+    virtual void Evaluate(T & target, lpmd::Potential & p) = 0;
  };
 
-
- template <> class Property<Configuration>: public Stepper 
- { 
+ class InstantProperty: public lpmd::Property<lpmd::Configuration>, public lpmd::Stepper
+ {
   public:
-    std::string & OutputFile() { return ofile; };
+    virtual ~InstantProperty();
+
+    std::string & OutputFile();
 
   private:
     std::string ofile;
  };
 
- template <> class Property<SimulationHistory> { };
-
- typedef Property<Configuration> InstantProperty;
- typedef Property<SimulationHistory> TemporalProperty;
-
+ typedef lpmd::Property<lpmd::SimulationHistory> TemporalProperty;
 
 }  // lpmd
 
