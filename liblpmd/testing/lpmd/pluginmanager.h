@@ -36,7 +36,8 @@ class PluginManager
    void LoadPlugin(std::string name, std::string args);
    void LoadPlugin(ModuleInfo info);
    void UnloadPlugin(std::string id);
-  
+ 
+   bool IsLoaded(std::string id); 
    void UpdatePlugin(std::string id, std::string new_args);
 
    template<typename T> T & LoadPluginAs(std::string name, std::string args)

@@ -81,6 +81,8 @@ void PluginManager::UnloadPlugin(std::string id)
  }
 }
 
+bool PluginManager::IsLoaded(std::string id) { return (modules.count(id) > 0); }
+
 void PluginManager::UpdatePlugin(std::string id, std::string new_args)
 {
  std::string realname = id;
