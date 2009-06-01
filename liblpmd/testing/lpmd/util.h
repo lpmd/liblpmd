@@ -31,6 +31,8 @@ inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
 
 Array<std::string> ParseThreeVectors(const std::string & str);
 
+long int SimpleHash(const std::string & text);
+
 //
 //Remueve espacios innecesarios de un string
 //

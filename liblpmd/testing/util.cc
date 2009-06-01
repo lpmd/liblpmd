@@ -63,3 +63,16 @@ Array<std::string> lpmd::StringSplit(const std::string & line, char delimiter)
  return words;
 }
 
+long int lpmd::SimpleHash(const std::string & text)
+{
+ uint16_t hash1 = 0xff, hash2 = 0xff;
+ for (int i=0;i<text.size();++i)
+ {
+  hash1 += ((uint8_t)(text[i]));
+  hash2 += hash1;
+ }
+ hash1 = (hash1 & 0xff)+(hash1 >> 8);
+ hash2 = (hash2 & 0xff)+(hash2 >> 8);
+ return (hash1*(0xff)+hash2);
+}
+
