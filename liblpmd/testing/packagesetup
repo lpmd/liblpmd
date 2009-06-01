@@ -23,7 +23,7 @@ directory .
     library liblpmd.so
 
        language = c++
-       flags += -Wall -pedantic -std=gnu++98 -I.
+       flags += -Wall -pedantic -std=gnu++98 -I. -fPIC
 
        sources =  cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc \
                   controlfile.cc elements.cc error.cc module.cc metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc \
