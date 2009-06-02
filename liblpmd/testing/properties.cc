@@ -12,7 +12,7 @@
 #include <lpmd/simulationhistory.h>
 #include <lpmd/storedconfiguration.h>
 
-lpmd::Matrix* lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut)
+void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut, lpmd::Matrix & m)
 {
  lpmd::BasicParticleSet & atoms = con.Atoms();
  lpmd::BasicCell & cell = con.Cell();
@@ -99,35 +99,34 @@ lpmd::Matrix* lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long i
  //
  // Output of g(r)
  //
- lpmd::Matrix *m=NULL;
- m = new lpmd::Matrix(2 + nsp*(nsp+1)/2, nb);
+
+ m = lpmd::Matrix(2 + nsp*(nsp+1)/2, nb);
 
  // Asigna los labels al objeto Matrix para cada columna
- m->SetLabel(0, "r");
- m->SetLabel(nsp*(nsp+1)/2+1, "total g(r)");
+ m.SetLabel(0, "r");
+ m.SetLabel(nsp*(nsp+1)/2+1, "total g(r)");
  j=1;
  for (long int i = 0 ; i < pairs.Size() ; ++i)
  {
-  m->SetLabel(j, pairs[i]+" g(r)");
+  m.SetLabel(j, pairs[i]+" g(r)");
   j++;
  }
  // 
  for(int i=0;i<nb;i++)
  {
-  m->Set(0, i, dr*i);
+  m.Set(0, i, dr*i);
   for(int j=0;j<(int)(nsp*(nsp+1)/2);j++)
   {
-   m->Set(j+1, i, g[i][j]);
+   m.Set(j+1, i, g[i][j]);
   }
-  m->Set(nsp*(nsp+1)/2+1, i, gt[i]);
+  m.Set(nsp*(nsp+1)/2+1, i, gt[i]);
  }
  delete [] gt;
  for (int i=0;i<nb;i++) delete [] g[i];
  delete [] g;
- return m;
 }
 
-lpmd::Matrix* lpmd::vacf(lpmd::SimulationHistory & hist, lpmd::Potential & pot, double dt)
+void lpmd::vacf(lpmd::SimulationHistory & hist, lpmd::Potential & pot, double dt, lpmd::Matrix & m)
 {
  int N = hist.Size(); 
  const Array <int> & species = hist[0].Atoms().Elements();
@@ -209,28 +208,26 @@ lpmd::Matrix* lpmd::vacf(lpmd::SimulationHistory & hist, lpmd::Potential & pot, 
  //
  // Output of vacf
  //
- lpmd::Matrix *m=NULL;
- m = new Matrix(nsp+1, (int)(N-1)/2);
- //const Array<std::string> lst = simcell[0].SpeciesList();
+ 
+ m = Matrix(nsp+1, (int)(N-1)/2);
 
  int k=1;
  for (int i=0;i<species.Size();++i)
  {
-  m->SetLabel(k, ElemSym[species[i]]);
+  m.SetLabel(k, ElemSym[species[i]]);
   k++;
  }
- m->SetLabel(0,"time");
+ m.SetLabel(0,"time");
 
  for(int i=0;i<(int)(N-1)/2;++i)
  {
-  m->Set(0, i, dt*i);
+  m.Set(0, i, dt*i);
   for (int j=0;j<nsp;++j)
   {
-   m->Set(j+1, i, vaf[i][j]);
+   m.Set(j+1, i, vaf[i][j]);
   }
  }
  for(int i=0;i<(int)(N-1)/2;++i) delete [] vaf[i];
  delete [] vaf;
- return m;
 }
 

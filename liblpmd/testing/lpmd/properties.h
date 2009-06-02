@@ -34,9 +34,9 @@ namespace lpmd
   return (2.0/3.0)*KineticEnergy(atomcont)/(KBOLTZMANN*double(atomcont.Size()));
  }
 
- lpmd::Matrix* gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut);
+ void gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut, lpmd::Matrix & m);
 
- lpmd::Matrix* vacf(lpmd::SimulationHistory & sim, lpmd::Potential & pot, double dt);
+ void vacf(lpmd::SimulationHistory & sim, lpmd::Potential & pot, double dt, lpmd::Matrix & m);
 
 }  // lpmd
 
