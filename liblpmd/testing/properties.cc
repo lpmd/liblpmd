@@ -9,6 +9,8 @@
 #include <lpmd/configuration.h>
 #include <lpmd/potential.h>
 #include <lpmd/util.h>
+#include <lpmd/simulationhistory.h>
+#include <lpmd/storedconfiguration.h>
 
 lpmd::Matrix* lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut)
 {
@@ -125,35 +127,36 @@ lpmd::Matrix* lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long i
  return m;
 }
 
-lpmd::Matrix* lpmd::vacf(lpmd::Configuration & con, lpmd::Potential & pot, double dt)
+lpmd::Matrix* lpmd::vacf(lpmd::SimulationHistory & hist, lpmd::Potential & pot, double dt)
 {
- /*
- int N = simcell.size();
- int nsp = simcell[0].NEspec();
- int *sp = simcell[0].Espec();
- int nat = simcell[0].Size();
+ int N = hist.Size(); 
+ const Array <int> & species = hist[0].Atoms().Elements();
+ int nsp = species.Size();
+ int nat = hist[0].Atoms().Size();
 
  double **vaf=new double*[(int)(N-1)/2];
  for(int i=0;i<(int)(N-1)/2;i++) {vaf[i]=new double[nsp];for(int j=0;j<nsp;j++) vaf[i][j]=0.0e0;}
 
  Vector ** velocities = new Vector*[N];
  for (int t=0;t<N;++t)  velocities[t] = new Vector[nat];
- if(simcell[0].MetaData().GetInteger("level")==0)
+ if("level"=="0")
  {
   //
   // Undo periodicity 
   //
-  SimulationCell scratch(simcell[0]);
+  lpmd::ParticleSet part = hist[0].Atoms();
+  lpmd::BasicCell & cell = hist[0].Cell();
+
   Vector ** noperiodic = new Vector*[N];
   for (int t=0;t<N;++t) noperiodic[t] = new Vector[nat];
-  for (int i=0;i<nat;++i) noperiodic[0][i] = simcell[0].GetAtom(i).Position();
+  for (int i=0;i<nat;++i) noperiodic[0][i] = part[i].Position();
 
   for (int t=1;t<N;++t)
    for (int i=0;i<nat;++i)
    {
-    scratch.SetPosition(0, simcell[t-1].GetAtom(i).Position());
-    scratch.SetPosition(1, simcell[t].GetAtom(i).Position());
-    noperiodic[t][i] = noperiodic[t-1][i] + scratch.VectorDistance(0, 1);
+    part[0].Position() = hist[t-1].Atoms()[i].Position();
+    part[1].Position() = hist[t].Atoms()[i].Position();
+    noperiodic[t][i] = noperiodic[t-1][i] + cell.Displacement(part[0].Position(), part[1].Position());
    }
   //
   //Evaluate and set velocities
@@ -167,12 +170,13 @@ lpmd::Matrix* lpmd::vacf(lpmd::Configuration & con, lpmd::Potential & pot, doubl
     velocities[t][i] = vel;
    }
  }
- if(simcell[0].MetaData().GetInteger("level")>=1)
+ if("level"=="1")
  {
   for (int t=0;t<N;++t)
    for (int i=0;i<nat;++i)
    {
-    velocities[t][i] = simcell[t].GetAtom(i).Velocity();
+    ParticleSet tmp = hist[t].Atoms();
+    velocities[t][i] = tmp[i].Velocity();
    }
  }
 
@@ -180,7 +184,7 @@ lpmd::Matrix* lpmd::vacf(lpmd::Configuration & con, lpmd::Potential & pot, doubl
  for(int e1=0;e1<nsp;e1++)	   
  {		 	
   int ne=0;
-  for(int i=0;i<nat;i++) {if(simcell[0].GetAtom(i).Species() == sp[e1]) ne++;}
+  for(int i=0;i<nat;i++) {if(hist[0].Atoms()[i].Z() == species[e1]) ne++;}
   for(int t0=0;t0<(int)(N-1)/2;t0++)
   {
    for(int t=0;t<(int)(N-1)/2;t++)
@@ -189,7 +193,7 @@ lpmd::Matrix* lpmd::vacf(lpmd::Configuration & con, lpmd::Potential & pot, doubl
     {
      Vector v0n = velocities[t0][i];//simcell[t0].GetAtom(i).Velocity();
      Vector v1n = velocities[t0+t][i];//simcell[t0+t].GetAtom(i).Velocity();
-     if(simcell[t0].GetAtom(i).Species() == sp[e1])
+     if(hist[t0].Atoms()[i].Z() == species[e1])
      {
       vaf[t][e1]+=Dot(v0n,v1n)/(ne*(int)(N-1)/2);
      }
@@ -205,14 +209,14 @@ lpmd::Matrix* lpmd::vacf(lpmd::Configuration & con, lpmd::Potential & pot, doubl
  //
  // Output of vacf
  //
- Matrix *m=NULL;
+ lpmd::Matrix *m=NULL;
  m = new Matrix(nsp+1, (int)(N-1)/2);
- const std::list<std::string> lst = simcell[0].SpeciesList();
+ //const Array<std::string> lst = simcell[0].SpeciesList();
 
  int k=1;
- for (std::list<std::string>::const_iterator it=lst.begin();it!=lst.end();++it)
+ for (int i=0;i<species.Size();++i)
  {
-  m->SetLabel(k, (*it));
+  m->SetLabel(k, ElemSym[species[i]]);
   k++;
  }
  m->SetLabel(0,"time");
@@ -227,8 +231,6 @@ lpmd::Matrix* lpmd::vacf(lpmd::Configuration & con, lpmd::Potential & pot, doubl
  }
  for(int i=0;i<(int)(N-1)/2;++i) delete [] vaf[i];
  delete [] vaf;
- return m;*/
- lpmd::Matrix *m;
  return m;
 }
 

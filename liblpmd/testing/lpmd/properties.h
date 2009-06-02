@@ -14,6 +14,8 @@
 #include <lpmd/configuration.h>
 #include <lpmd/potential.h>
 #include <lpmd/matrix.h>
+#include <lpmd/simulationhistory.h>
+#include <lpmd/storedconfiguration.h>
 
 namespace lpmd
 {
@@ -34,7 +36,7 @@ namespace lpmd
 
  lpmd::Matrix* gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut);
 
- lpmd::Matrix* vacf(lpmd::Configuration & con, lpmd::Potential & pot, double dt);
+ lpmd::Matrix* vacf(lpmd::SimulationHistory & sim, lpmd::Potential & pot, double dt);
 
 }  // lpmd
 
