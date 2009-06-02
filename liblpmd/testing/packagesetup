@@ -138,11 +138,11 @@ directory tests
        sources = fixedsizeparticlesettest.unit
     end
 
-#    binary manipulations
-#       test = true
-#       language = lpunit
-#       sources = manipulations.unit
-#    end
+    binary manipulations
+       test = true
+       language = lpunit
+       sources = manipulations.unit
+    end
 
     binary nonorthogonalcelltest
        test = true

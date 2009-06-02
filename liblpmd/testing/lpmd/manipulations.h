@@ -38,7 +38,6 @@ inline void CenterByCenterOfMass(BasicParticleSet & part, BasicCell & cell)
  Vector center = cell.Cartesian(Vector(0.5, 0.5, 0.5));
  for (long i=0;i<n;++i) part[i].Position() -= (centerofmass-center);
 }
-
 /*
 inline Vector UndoPeriodicity(BasicParticleSet & part, BasicCell & cell)
 {

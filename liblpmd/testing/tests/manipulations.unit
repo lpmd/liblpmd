@@ -37,28 +37,18 @@ using namespace lpmd;
 {
  ParticleSet part;
  Cell cell;
- Vector a(0.5,0.5,0.5);
- Vector b(0.75,0.75,0.75);
+ Vector a(5,5,5);
+ Vector b(9,9,9);
  part.Append(Atom("H",a));
- part.Append(Atom("Cu",b));
- cell[0] = e1;
- cell[1] = e2;
- cell[2] = e3;
- Vector cm(0.74610,0.74610,0.74610);
+ part.Append(Atom("He",b));
+ cell[0] = 10*e1;
+ cell[1] = 10*e2;
+ cell[2] = 10*e3;
+ Vector cm(8.19534453558118,8.19534453558118,8.19534453558118);
  CenterByCenterOfMass(part,cell);
- Vector anew = a - cm;
- Vector bnew = b - cm;
+ Vector anew = a - (cm-cell.Cartesian(Vector(0.5,0.5,0.5)));
+ Vector bnew = b - (cm-cell.Cartesian(Vector(0.5,0.5,0.5)));
  @approx (part[0].Position() - anew).Module(), 0.0, 1E-10
  @approx (part[1].Position() - bnew).Module(), 0.0, 1E-10
-}
-@end
-
-@test UndoPeriodicity
-{
- ParticleSet part;
- Cell cell;
- Vector a(0.95,0.95,0.95);
- Vector b(0.05,0.05,0.05);
- @assert false
 }
 @end
