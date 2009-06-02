@@ -37,7 +37,7 @@ lpmd::Matrix* lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long i
   for(int j=i; j<esp.Size() ; ++j)
   {
    std::ostringstream ostr;
-   ostr << esp[i] << "-" << esp[j];
+   ostr << ElemSym[esp[i]]<< "-" << ElemSym[esp[j]];
    pairs.Append(ostr.str());
   }
  }
