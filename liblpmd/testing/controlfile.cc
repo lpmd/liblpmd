@@ -21,6 +21,9 @@ class lpmd::ControlFileImpl
    Array<std::string> words;
    Array<std::string> blockheaders;
    Array<std::string> blockfooters;
+   long int line_count;
+   const ParamList * read_options;
+   std::istream * istr;
 
    std::string GetNextWord();
    std::string MatchCommand();
@@ -89,6 +92,70 @@ std::string AddBlockContent(const std::string & blockname, const std::string & t
  return inpbuffer;
 }
 
+void ControlFile::ReadLine(const std::string & line)
+{
+  std::string tmp = line;
+  const ParamList & options = *(impl->read_options);
+  while (tmp[tmp.size()-1] == '\\')
+  {
+   std::string tmp2;
+   getline(*(impl->istr), tmp2);
+   tmp = tmp.substr(0, tmp.size()-1) + tmp2;
+  }
+  (impl->line_count)++;
+  std::ostringstream strlnum;
+  strlnum << impl->line_count;
+  // Sustituye las opciones
+  Array<Parameter> opts = options.Parameters();
+  for (long int j=0;j<opts.Size();++j)
+  {
+   const std::string & jt = opts[j];
+   std::string searchstr = "$("+(jt)+")";
+   std::string::size_type idx = 0;
+   while (true)
+   {
+    idx = tmp.find(searchstr, idx);
+    if (idx == std::string::npos) break;
+    tmp.replace(idx, searchstr.size(), options[jt]);
+    idx += options[jt].length();
+   }  
+  }
+  if (tmp.find("$(", 0) != std::string::npos)
+    throw SyntaxError("Variable(s) undefined in input file \""+impl->filename+"\", line "+ToString(impl->line_count)+"\n  "+tmp);
+  //
+  impl->words = StringSplit(tmp);
+  if (impl->words.Size() == 0) return;      // was continue
+  if (impl->words[0][0] == '#') return;     // was continue
+  std::string first_word = impl->words[0];
+  std::string statement_args = impl->MatchCommand();
+  if (statement_args == "") impl->words.Delete(0);
+  int blockpos = -1;
+  for (int q=0;q<impl->blockheaders.Size();++q)
+  {
+   if (first_word == (impl->blockheaders[q]+"block")) { blockpos = q; break; }
+  }
+  if (blockpos != -1)
+  {
+   if (OnBlock(impl->blockheaders[blockpos], tmp) != 0)
+      throw SyntaxError("Invalid content of \""+impl->blockheaders[blockpos]+"\" block, in input file \""+impl->filename+"\", line "+ToString(impl->line_count)+"\n  "+tmp);
+  }
+  else
+  {
+   if (statement_args != "")
+   {
+    // Palabra clave de tipo regular, o no valida
+    std::string st_keywords = ParseCommandArguments(*this, first_word, statement_args);
+    if (OnRegularStatement(first_word, st_keywords) != 0)
+       throw SyntaxError("Unexpected error in input file \""+impl->filename+"\", line "+ToString(impl->line_count)+"\n  "+tmp);
+   }
+   else 
+   {
+    if (OnNonRegularStatement(first_word, tmp) != 0)
+       throw SyntaxError("Unexpected instruction was found in input file \""+impl->filename+"\", line "+ToString(impl->line_count)+"\n  "+tmp);
+   }
+  }
+}
+
 void ControlFile::Read(std::istream & real_istr, const ParamList & options, const std::string & inpfile)
 {
  //
@@ -115,71 +182,13 @@ void ControlFile::Read(std::istream & real_istr, const ParamList & options, cons
  //
  //
  //
- std::istringstream istr(inpbuffer);
+ impl->istr = new std::istringstream(inpbuffer);
  std::string tmp;
- int line_count = 0;
+ impl->line_count = 0;
  impl->filename = inpfile;
- while(getline(istr, tmp))
- {
-  while (tmp[tmp.size()-1] == '\\')
-  {
-   std::string tmp2;
-   getline(istr, tmp2);
-   tmp = tmp.substr(0, tmp.size()-1) + tmp2;
-  }
-  line_count++;
-  std::ostringstream strlnum;
-  strlnum << line_count;
-  // Sustituye las opciones
-  Array<Parameter> opts = options.Parameters();
-  for (long int j=0;j<opts.Size();++j)
-  {
-   const std::string & jt = opts[j];
-   std::string searchstr = "$("+(jt)+")";
-   std::string::size_type idx = 0;
-   while (true)
-   {
-    idx = tmp.find(searchstr, idx);
-    if (idx == std::string::npos) break;
-    tmp.replace(idx, searchstr.size(), options[jt]);
-    idx += options[jt].length();
-   }  
-  }
-  if (tmp.find("$(", 0) != std::string::npos)
-    throw SyntaxError("Variable(s) undefined in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
-  //
-  impl->words = StringSplit(tmp);
-  if (impl->words.Size() == 0) continue;
-  if (impl->words[0][0] == '#') continue;
-  std::string first_word = impl->words[0];
-  std::string statement_args = impl->MatchCommand();
-  if (statement_args == "") impl->words.Delete(0);
-  int blockpos = -1;
-  for (int q=0;q<impl->blockheaders.Size();++q)
-  {
-   if (first_word == (impl->blockheaders[q]+"block")) { blockpos = q; break; }
-  }
-  if (blockpos != -1)
-  {
-   if (OnBlock(impl->blockheaders[blockpos], tmp) != 0)
-      throw SyntaxError("Invalid content of \""+impl->blockheaders[blockpos]+"\" block, in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
-  }
-  else
-  {
-   if (statement_args != "")
-   {
-    // Palabra clave de tipo regular, o no valida
-    std::string st_keywords = ParseCommandArguments(*this, first_word, statement_args);
-    if (OnRegularStatement(first_word, st_keywords) != 0)
-       throw SyntaxError("Unexpected error in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
-   }
-   else 
-   {
-    if (OnNonRegularStatement(first_word, tmp) != 0)
-       throw SyntaxError("Unexpected instruction was found in input file \""+impl->filename+"\", line "+ToString(line_count)+"\n  "+tmp);
-   }
-  }
- }
+ impl->read_options = &options;
+ while(getline(*(impl->istr), tmp)) ReadLine(tmp);
+ delete impl->istr;
 }
 
 std::string ControlFile::ParseCommandArguments(Map & param, const std::string & cmd, const std::string & validkeywords)

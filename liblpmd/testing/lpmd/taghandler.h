@@ -92,6 +92,17 @@ namespace lpmd
      catch (std::exception & e) { throw InvalidRequest("Tag "+tag); }
     }
 
+    const std::string GetTag(const T & obj, Tag & tag) const
+    {
+     if (objmapper.count(&obj) == 0) throw InvalidRequest("Tag "+tag);
+     try 
+     {
+      const typename std::map<const T *, ParamList *>::const_iterator & p = objmapper.find(&obj);
+      return ((*p).second)->operator[](tag);
+     }
+     catch (std::exception & e) { throw InvalidRequest("Tag "+tag); }
+    }
+
   private:
     std::map<Tag, ParamList *> namedcontainers;
     std::map<const T *, ParamList *> objmapper;

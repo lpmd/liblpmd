@@ -25,6 +25,7 @@ class ControlFile: public ParamList
 
  protected:
    std::string ParseCommandArguments(Map & param, const std::string & cmd, const std::string & validkeywords);
+   void ReadLine(const std::string & line);
    virtual int OnRegularStatement(const std::string & name, const std::string & keywords);
    virtual int OnNonRegularStatement(const std::string & name, const std::string & full_statement);
    virtual int OnBlock(const std::string & name, const std::string & full_statement);

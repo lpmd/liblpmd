@@ -65,6 +65,12 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   if (! initialized) Initialize();
   integ->Advance(*this, potarray);
   step++;
+  SetTag(*this, Tag("step"), step);
+  SetTag(*this, Tag("temperature"), Temperature(Atoms()));
+  double potenerg = double(Parameter(GetTag(*this, Tag("potential-energy"))));
+  double kinenerg = KineticEnergy(Atoms());
+  SetTag(*this, Tag("kinetic-energy"), kinenerg);
+  SetTag(*this, Tag("total-energy"), potenerg+kinenerg);
  }
  
  inline void DoSteps(long int n) { for (int q=0;q<n;++q) DoStep(); }
@@ -105,6 +111,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   { 
    integ->Initialize(*this, potarray); 
    step = 0;
+   SetTag(*this, Tag("step"), step);
    initialized = true;
   }
 

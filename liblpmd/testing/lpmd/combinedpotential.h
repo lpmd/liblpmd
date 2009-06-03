@@ -37,6 +37,7 @@ class CombinedPotential: public Array<Potential &>, public Potential
     CellManager & cm = conf.GetCellManager();
     cm.UpdateCell(conf);
     for (int p=0;p<Size();++p) (*this)[p].UpdateForces(conf);
+    conf.SetTag(conf, Tag("potential-energy"), energy(conf));
    }
 };
 

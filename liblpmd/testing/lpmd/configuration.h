@@ -9,11 +9,12 @@
 
 #include <lpmd/basicparticleset.h>
 #include <lpmd/basiccell.h>
+#include <lpmd/taghandler.h>
 #include <lpmd/cellmanager.h>
 
 namespace lpmd
 {
- class Configuration
+ class Configuration: public TagHandler<Configuration>
  {
   public:
     Configuration(): cellman(0) { };
