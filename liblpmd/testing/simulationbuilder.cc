@@ -23,6 +23,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
    // This hints SimulationEngine that the number of atoms is variable
    atoms = new AtomContainer();  // maybe ParticleSet, or another type of ParticleSet
    cell = new CellType();
+   SetTag(*this, Tag("step"), step);
   }
 
   SimulationEngine(long int natoms): atoms(0), cell(0), integ(0), velocitiesSet(false), initialized(false), step(0)
@@ -30,6 +31,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
    // This fixes the number of atoms for SimulationEngine
    atoms = new AtomContainer(natoms);  // maybe ParticleSet, or another type of ParticleSet
    cell = new CellType();
+   SetTag(*this, Tag("step"), step);
   }
 
   SimulationEngine(long int natoms, const BasicAtom & t): atoms(0), cell(0), integ(0), velocitiesSet(false), initialized(false), step(0)
@@ -37,6 +39,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
    // This fixes the number of atoms for SimulationEngine
    atoms = new AtomContainer(natoms, t);  // maybe ParticleSet, or another type of ParticleSet
    cell = new CellType();
+   SetTag(*this, Tag("step"), step);
   }
 
   ~SimulationEngine()
