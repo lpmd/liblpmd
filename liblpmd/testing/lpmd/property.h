@@ -9,7 +9,7 @@
 
 #include <lpmd/stepper.h>
 #include <lpmd/configuration.h>
-#include <lpmd/simulationhistory.h>
+#include <lpmd/configurationset.h>
 #include <lpmd/potential.h>
 
 #include <string>
@@ -35,7 +35,7 @@ namespace lpmd
     std::string ofile;
  };
 
- typedef lpmd::Property<lpmd::SimulationHistory> TemporalProperty;
+ typedef lpmd::Property<lpmd::ConfigurationSet> TemporalProperty;
 
 }  // lpmd
 

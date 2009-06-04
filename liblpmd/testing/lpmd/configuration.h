@@ -25,6 +25,8 @@ namespace lpmd
     virtual BasicCell & Cell() = 0;
     virtual const BasicCell & Cell() const = 0;
 
+    void ShowInfo(std::ostream & out);
+
     void SetCellManager(lpmd::CellManager & cm) 
     { 
      cellman = &cm; 

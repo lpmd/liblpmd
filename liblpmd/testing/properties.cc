@@ -9,7 +9,7 @@
 #include <lpmd/configuration.h>
 #include <lpmd/potential.h>
 #include <lpmd/util.h>
-#include <lpmd/simulationhistory.h>
+#include <lpmd/configurationset.h>
 #include <lpmd/storedconfiguration.h>
 
 void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut, lpmd::Matrix & m)
@@ -126,19 +126,21 @@ void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, do
  delete [] g;
 }
 
-void lpmd::vacf(lpmd::SimulationHistory & hist, lpmd::Potential & pot, double dt, lpmd::Matrix & m)
+void lpmd::vacf(lpmd::ConfigurationSet & hist, lpmd::Potential & pot, double dt, lpmd::Matrix & m)
 {
  int N = hist.Size(); 
  const Array <int> & species = hist[0].Atoms().Elements();
  int nsp = species.Size();
  int nat = hist[0].Atoms().Size();
+ int level = int(Parameter(hist[0].GetTag(hist[0], "level")));
 
  double **vaf=new double*[(int)(N-1)/2];
  for(int i=0;i<(int)(N-1)/2;i++) {vaf[i]=new double[nsp];for(int j=0;j<nsp;j++) vaf[i][j]=0.0e0;}
 
  Vector ** velocities = new Vector*[N];
  for (int t=0;t<N;++t)  velocities[t] = new Vector[nat];
- if("level"=="0")
+
+ if (level == 0)
  {
   //
   // Undo periodicity 
@@ -169,7 +171,7 @@ void lpmd::vacf(lpmd::SimulationHistory & hist, lpmd::Potential & pot, double dt
     velocities[t][i] = vel;
    }
  }
- if("level"=="1")
+ if (level == 1)
  {
   for (int t=0;t<N;++t)
    for (int i=0;i<nat;++i)

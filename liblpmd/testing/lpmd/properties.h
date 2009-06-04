@@ -36,7 +36,7 @@ namespace lpmd
 
  void gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut, lpmd::Matrix & m);
 
- void vacf(lpmd::SimulationHistory & sim, lpmd::Potential & pot, double dt, lpmd::Matrix & m);
+ void vacf(lpmd::ConfigurationSet & sim, lpmd::Potential & pot, double dt, lpmd::Matrix & m);
 
 }  // lpmd
 
