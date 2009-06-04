@@ -29,7 +29,7 @@ directory .
                   controlfile.cc elements.cc error.cc module.cc metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc \
                   potential.cc pairpotential.cc particleset.cc properties.cc property.cc session.cc matrix.cc simulation.cc \
                   timer.cc integrator.cc systemmodifier.cc onestepintegrator.cc twostepintegrator.cc systemmixer.cc \
-                  visualizer.cc value.cc moduleinfo.cc util.cc simulationbuilder.cc atomselector.cc
+                  visualizer.cc value.cc moduleinfo.cc util.cc simulationbuilder.cc atomselector.cc systemfilter.cc
 
        headers = lpmd_headers
        version = 2.0.0
@@ -43,9 +43,9 @@ directory .
                   lpmd/cell.h lpmd/cellformat.h lpmd/cellgenerator.h lpmd/cellmanager.h lpmd/cellreader.h lpmd/cellwriter.h lpmd/cmdline.h \
                   lpmd/color.h lpmd/storedvalue.h lpmd/elements.h lpmd/error.h lpmd/properties.h lpmd/orthogonalcell.h lpmd/atomselector.h \
                   lpmd/nonorthogonalcell.h lpmd/indirectatom.h lpmd/controlfile.h lpmd/property.h lpmd/combinedpotential.h \
-                  lpmd/map.h lpmd/matrix.h lpmd/fixedsizeparticleset.h lpmd/twostepintegrator.h lpmd/simulationhistory.h \
+                  lpmd/map.h lpmd/matrix.h lpmd/fixedsizeparticleset.h lpmd/twostepintegrator.h lpmd/simulationhistory.h lpmd/refparticleset.h \
                   lpmd/stepper.h lpmd/metalpotential.h lpmd/module.h lpmd/paramlist.h lpmd/solver.h lpmd/storedconfiguration.h \
-                  lpmd/particleset.h lpmd/plugin.h lpmd/pluginmanager.h lpmd/potential.h lpmd/pairpotential.h lpmd/session.h \
+                  lpmd/particleset.h lpmd/plugin.h lpmd/pluginmanager.h lpmd/potential.h lpmd/pairpotential.h lpmd/session.h lpmd/systemfilter.h \
                   lpmd/configuration.h lpmd/simulation.h lpmd/integrator.h lpmd/onestepintegrator.h lpmd/manipulations.h lpmd/moduleinfo.h \
                   lpmd/systemmixer.h lpmd/systemmodifier.h lpmd/task.h lpmd/taskrunner.h lpmd/timer.h lpmd/simulationbuilder.h \
                   lpmd/util.h lpmd/vector.h lpmd/value.h lpmd/visualizer.h lpmd/atompair.h lpmd/taghandler.h lpmd/api.h lpmd/parameter.h
