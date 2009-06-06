@@ -18,7 +18,8 @@ namespace lpmd
 
      inline bool IsActiveInStep(long i)
      {
-      if ((i < start) || (i > end)) return false;
+      if (i < start) return false;
+      if ((end != -1) && (i > end)) return false;
       if (((i - start) % each) == 0) return true;
       return false;
      }
