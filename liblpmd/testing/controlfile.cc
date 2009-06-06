@@ -165,6 +165,7 @@ void ControlFile::Read(std::istream & real_istr, const ParamList & options, cons
  while (!real_istr.eof())
  {
   getline(real_istr, line);
+  std::cerr << "DEBUG -> Reading control file:\n[" << line << "]\n";
   Array<std::string> tmpwords = StringSplit(line);
   if (tmpwords.Size() == 0) continue;
   bool foundblock = false;
