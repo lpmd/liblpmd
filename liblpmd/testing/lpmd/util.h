@@ -33,6 +33,11 @@ Array<std::string> ParseThreeVectors(const std::string & str);
 
 long int SimpleHash(const std::string & text);
 
+inline bool IsSpace(char x)
+{
+ return (((x == ' ') || (x == '\n')) || ((x == '\t') || (x == '\r')));
+}
+
 //
 //Remueve espacios innecesarios de un string
 //
@@ -49,9 +54,9 @@ inline void RemoveUnnecessarySpaces(std::string & input_string)
   }
  }
  // Remove spaces at start
- while (isspace(input_string[0])) input_string.erase(0,1);
+ while (IsSpace(input_string[0])) input_string.erase(0,1);
  // Remove spaces from end
- while (isspace(input_string[input_string.length() -1]))
+ while (IsSpace(input_string[input_string.length() -1]))
     input_string.erase(input_string.length() -1,1);
  // Remove multiple spaces
  for (std::string::size_type i = 0; ; )
@@ -59,7 +64,7 @@ inline void RemoveUnnecessarySpaces(std::string & input_string)
   i = input_string.find_first_of(' ', i);
   if (i == std::string::npos) break; 
   ++i;
-  while(isspace(input_string[i])) input_string.erase(i,1);	 
+  while(IsSpace(input_string[i])) input_string.erase(i,1);	 
   ++i;	 
  }
 }

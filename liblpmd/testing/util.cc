@@ -40,7 +40,7 @@ Array<std::string> lpmd::StringSplit(const std::string & line, char delimiter)
   std::string::size_type sp = std::string::npos;
   for (std::string::size_type p=0;p<tmpline.size();p++)
   {
-   if (! isspace(tmpline[p])) 
+   if (! IsSpace(tmpline[p])) 
    {
     if (sp == std::string::npos) sp = p;
    }
