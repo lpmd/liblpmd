@@ -208,11 +208,20 @@ using namespace lpmd;
 }
 @end
 
-@test Operador de salida
+@test Operador de salida sencillo
 {
  std::ostringstream os;
  Vector v(1,2,3);
  os << v;
+ @equal os.str(), "1 2 3"
+}
+@end
+
+@test FormattedWrite
+{
+ std::ostringstream os;
+ Vector v(1,2,3);
+ FormattedWrite(os, v);
  @equal os.str(), "< 1, 2, 3 >"
 }
 @end

@@ -162,8 +162,7 @@ inline void FormattedWrite(std::ostream & os, const Vector & v)
 
 inline std::ostream & operator<<(std::ostream & os, const Vector & v)
 {
- FormattedWrite(os, v);
- // os << v[0] << " " << v[1] << " " << v[2];
+ os << v[0] << " " << v[1] << " " << v[2];
  return os;
 }
 
