@@ -29,6 +29,8 @@ class PluginManager
    PluginManager();
    ~PluginManager();
 
+   Array<std::string> Plugins() const;
+
    void AddToPluginPath(std::string pdir);
 
    void LoadPluginFile(std::string path, std::string id, std::string args);
@@ -39,6 +41,12 @@ class PluginManager
  
    bool IsLoaded(std::string id); 
    void UpdatePlugin(std::string id, std::string new_args);
+
+   template<typename T> bool HasType(const std::string & id)
+   {
+    try { T & t = CastModule<T>((*this)[id]); return true; }
+    catch (InvalidOperation & e) { return false; }
+   }
 
    template<typename T> T & LoadPluginAs(std::string name, std::string args)
    {
@@ -53,7 +61,8 @@ class PluginManager
    Module & Provider(const std::string property);
    Array<std::string> NamedProperties();
 
-   Module & operator[](std::string id); 
+   Module & operator[] (std::string id); 
+   const Module & operator[](std::string id) const;
 
  private:
    std::map<std::string, Module *> modules;
@@ -63,6 +72,8 @@ class PluginManager
 };
 
 } // lpmd 
+
+std::ostream & operator<<(std::ostream & os, const lpmd::PluginManager & pm);
 
 #endif
 

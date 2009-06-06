@@ -5,7 +5,7 @@
 #ifndef __LPMD_SIMULATION_H__
 #define __LPMD_SIMULATION_H__
 
-#include <lpmd/configuration.h>
+#include <lpmd/filtrableconfiguration.h>
 #include <lpmd/cell.h>
 #include <lpmd/atom.h>
 #include <lpmd/array.h>
@@ -20,7 +20,7 @@ namespace lpmd
  class Integrator;  // forward
  class CombinedPotential; // forward
 
- class Simulation: public Configuration
+ class Simulation: public FiltrableConfiguration
  {
   public:
     virtual ~Simulation() { }

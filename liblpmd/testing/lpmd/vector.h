@@ -13,6 +13,7 @@
 #include <string.h>
 #include <cstdlib>
 #include <cassert>
+#include <lpmd/error.h>
 
 namespace lpmd
 {
@@ -64,15 +65,17 @@ template <typename T> class GenericVector
      {
       if ((*p == ',') || (*p == '>'))
       {
-       if (k == 3) { } // FIXME: raise error, too many commas
+       char token = (*p);
        (*p) = '\0';
+       if (k == 3) throw SyntaxError("Too many commas, GenericVector("+std::string(str)+")");
        v[k++] = atof(start);
+       if (token == '>') break;
        p++;
        start = p;
       }
       else p++;
      }
-     assert(k == 3);  // change assert to an exception
+     if (k != 3) throw SyntaxError("GenericVector("+std::string(str)+")");
     }
     else
     {
@@ -81,7 +84,7 @@ template <typename T> class GenericVector
      {
       if (isblank(*p) || (*p == '\0'))
       {
-       if (k == 3) { } // FIXME: raise error, too many delimiters
+       if (k == 3) throw SyntaxError("Too many delimiters, GenericVector("+std::string(str)+")");
        (*p) = '\0';
        v[k++] = atof(start);
        p++;
@@ -152,22 +155,17 @@ inline bool operator==(const Vector & a, const Vector & b)
  return true;
 }
 
-inline std::ostream & operator<<(std::ostream & os, const Vector & v)
-{
- os << v[0] << " " << v[1] << " " << v[2];
- return os;
-}
-
 inline void FormattedWrite(std::ostream & os, const Vector & v)
 {
  os << "< " << v[0] << ", " << v[1] << ", " << v[2] << " >";
 }
 
-const Vector e1(1.0, 0.0, 0.0);
-const Vector e2(0.0, 1.0, 0.0);
-const Vector e3(0.0, 0.0, 1.0);
-
-const Vector identity[3] = { e1, e2, e3 };
+inline std::ostream & operator<<(std::ostream & os, const Vector & v)
+{
+ FormattedWrite(os, v);
+ // os << v[0] << " " << v[1] << " " << v[2];
+ return os;
+}
 
 inline Vector RandomVector(double m=1.0)
 {
@@ -206,6 +204,16 @@ inline Vector Cross(const Vector & a, const Vector & b)
 {
  return Vector(a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]);
 }
+
+//
+//
+//
+
+const Vector e1(1.0, 0.0, 0.0);
+const Vector e2(0.0, 1.0, 0.0);
+const Vector e3(0.0, 0.0, 1.0);
+
+const Vector identity[3] = { e1, e2, e3 };
 
 }
 

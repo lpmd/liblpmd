@@ -55,11 +55,11 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   for (long int i=0;i<atoms->Size();++i) (*atoms)[i].Velocity() *= sqrt(temp/ti);
  }
 
- CellType & Cell() { return (*cell); }
- const CellType & Cell() const { return (*cell); }
+ CellType & OriginalCell() { return (*cell); }
+ const CellType & OriginalCell() const { return (*cell); }
 
- AtomContainer & Atoms() { return (*atoms); }
- const AtomContainer & Atoms() const { return (*atoms); }
+ AtomContainer & OriginalAtoms() { return (*atoms); }
+ const AtomContainer & OriginalAtoms() const { return (*atoms); }
 
  CombinedPotential & Potentials() { return potarray; }
  

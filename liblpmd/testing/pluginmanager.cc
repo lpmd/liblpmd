@@ -32,6 +32,14 @@ PluginManager::~PluginManager()
  for (long int i=0;i<kill_list.Size();++i) UnloadPlugin(kill_list[i]);
 }
 
+Array<std::string> PluginManager::Plugins() const
+{
+ Array<std::string> pluginlist;
+ for (std::map<std::string, Module *>::const_iterator it=modules.begin();it!=modules.end();++it)
+     pluginlist.Append((*it).first);
+ return pluginlist;
+}
+
 void PluginManager::AddToPluginPath(std::string pdir) { pluginpath.Append(pdir); }
 
 void PluginManager::LoadPluginFile(std::string path, std::string id, std::string args)
@@ -71,7 +79,7 @@ void PluginManager::LoadPlugin(ModuleInfo info) { LoadPlugin(info.name, info.id,
 void PluginManager::UnloadPlugin(std::string id)
 {
  Module * m = modules[id];
- modules[id] = NULL;
+ modules.erase(id);
  if (m != NULL)
  {
   // Elimina las propiedades de la lista
@@ -93,11 +101,11 @@ void PluginManager::UpdatePlugin(std::string id, std::string new_args)
 
 std::string PluginManager::GetPluginKeywords(std::string name)
 {
- if (aliasdict.Defined(name)) LoadPlugin(aliasdict[name], "dummyargument");
- else LoadPlugin(name, "dummyargument");
- Module * m = modules[name];
+ if (aliasdict.Defined(name)) LoadPlugin(aliasdict[name], "tmp_getpluginkeywords", "dummyargument");
+ else LoadPlugin(name, "tmp_getpluginkeywords", "dummyargument");
+ Module * m = modules["tmp_getpluginkeywords"];
  std::string kw = m->Keywords();
- UnloadPlugin(name);
+ UnloadPlugin("tmp_getpluginkeywords");
  return kw;
 }
 
@@ -122,5 +130,25 @@ Module & PluginManager::operator[](std::string id)
 {
  if (modules.count(id) == 0) throw InvalidRequest("Plugin "+id);
  else return *(modules[id]); 
+}
+
+const Module & PluginManager::operator[](std::string id) const
+{
+ if (modules.count(id) == 0) throw InvalidRequest("Plugin "+id);
+ const std::map<std::string, Module *>::const_iterator & p = modules.find(id);
+ return *((*p).second);
+}
+
+std::ostream & operator<<(std::ostream & os, const lpmd::PluginManager & pm)
+{
+ const Array<std::string> plugins = pm.Plugins();
+ for (int i=0;i<plugins.Size();++i)
+ {
+  std::string pname = plugins[i];
+  os << "Plugin " << pname << " -> ";
+  os << pm[pname].Name() << " loaded.\n";
+  pm[pname].Show(os);
+ }
+ return os;
 }
 

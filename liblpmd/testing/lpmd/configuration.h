@@ -41,6 +41,7 @@ namespace lpmd
      return neighlist;
     }
 
+
   private:
     lpmd::CellManager * cellman;
     NeighborList neighlist;

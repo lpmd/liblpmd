@@ -49,7 +49,7 @@ directory .
                   lpmd/configuration.h lpmd/simulation.h lpmd/integrator.h lpmd/onestepintegrator.h lpmd/manipulations.h lpmd/moduleinfo.h \
                   lpmd/systemmixer.h lpmd/systemmodifier.h lpmd/task.h lpmd/taskrunner.h lpmd/timer.h lpmd/simulationbuilder.h \
                   lpmd/util.h lpmd/vector.h lpmd/value.h lpmd/visualizer.h lpmd/atompair.h lpmd/taghandler.h lpmd/api.h lpmd/parameter.h \
-                  lpmd/configurationset.h 
+                  lpmd/configurationset.h lpmd/filtrableconfiguration.h
 
        installpath = include/lpmd
     end
