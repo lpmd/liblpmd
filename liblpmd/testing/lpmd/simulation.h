@@ -29,6 +29,8 @@ namespace lpmd
 
     virtual CombinedPotential & Potentials() = 0;
 
+    virtual const CombinedPotential & Potentials() const = 0;
+
     virtual void DoStep() = 0;
  
     virtual void DoSteps(long int n) = 0;

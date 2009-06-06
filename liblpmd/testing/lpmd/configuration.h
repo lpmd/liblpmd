@@ -33,7 +33,11 @@ namespace lpmd
      cm.UpdateCell(*this);
     }
 
-    lpmd::CellManager & GetCellManager() { return (*cellman); }
+    lpmd::CellManager & GetCellManager() 
+    {
+     if (cellman == 0) throw MissingComponent("cellmanager");
+     return (*cellman); 
+    }
 
     NeighborList & Neighbors(long int i, bool full, double rcut)
     {

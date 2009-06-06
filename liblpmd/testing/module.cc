@@ -17,7 +17,6 @@ using namespace lpmd;
 class lpmd::ModuleImpl
 {
  public:
-   bool used;
    Array<std::string> words;
    ParamList defvalues;
    std::string name;
@@ -31,7 +30,6 @@ class lpmd::ModuleImpl
    ModuleImpl() 
    {
     name = "unnamed";
-    used = false;
     emptycall = false;
     debugstr = &(std::cerr);
     extdebugstr = false;
@@ -45,7 +43,6 @@ Module::Module(const Module & mod)
 { 
  impl = new ModuleImpl();
  impl->name = mod.Name();
- impl->used = false;
  impl->emptycall = false;
  impl->strictkw = mod.impl->strictkw;
  impl->kwstr = mod.impl->kwstr;
@@ -58,7 +55,6 @@ Module::Module(std::string modulename, bool strictkw)
  impl = new ModuleImpl();
  impl->strictkw = strictkw;
  impl->name = modulename;
- impl->used = false; 
  impl->emptycall = false;
 }
 
@@ -73,7 +69,6 @@ Module & Module::operator=(const Module & mod)
  if (&mod != this)
  {
   impl->name = mod.Name();
-  impl->used = false;
   impl->emptycall = false;
   impl->strictkw = mod.impl->strictkw;
   impl->kwstr = mod.impl->kwstr;
@@ -238,10 +233,6 @@ double Module::GetProperty(const std::string & name)
 }
 
 std::string Module::Name() const { return impl->name; }
-
-bool Module::Used() const { return impl->used; }
-
-void Module::SetUsed() { impl->used = true; }
 
 void Module::SetManager(PluginManager & pm) { impl->manager = &pm; }
 

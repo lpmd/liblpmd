@@ -51,8 +51,9 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  void SetTemperature(double temp) 
  {  
   if (! velocitiesSet) InitVelocities();
-  double ti = Temperature(*atoms);
-  for (long int i=0;i<atoms->Size();++i) (*atoms)[i].Velocity() *= sqrt(temp/ti);
+  BasicParticleSet & atomaccesor = Atoms(); // en vez de (*atoms), para que funcione con ApplyAtomMask
+  double ti = Temperature(atomaccesor);
+  for (long int i=0;i<atomaccesor.Size();++i) atomaccesor[i].Velocity() *= sqrt(temp/ti);
  }
 
  CellType & OriginalCell() { return (*cell); }
@@ -62,6 +63,8 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  const AtomContainer & OriginalAtoms() const { return (*atoms); }
 
  CombinedPotential & Potentials() { return potarray; }
+ 
+ const CombinedPotential & Potentials() const { return potarray; }
  
  void DoStep() 
  {  
@@ -162,6 +165,32 @@ Simulation & SimulationBuilder::CreateGeneric(long int atoms, const BasicAtom & 
 Simulation & SimulationBuilder::CreateGeneric()
 {
  Simulation * simp = new SimulationEngine<ParticleSet, NonOrthogonalCell>();
+ impl.s_array.Append(simp);
+ return (*simp);
+}
+
+Simulation & SimulationBuilder::CloneOptimized(const Simulation & sim)
+{
+ const BasicParticleSet & atoms = sim.Atoms();
+ const BasicCell & cell = sim.Cell();
+ Simulation * simp = 0;
+ if (cell.IsOrthogonal()) 
+ {
+  simp = new SimulationEngine<FixedSizeParticleSet, OrthogonalCell>(atoms.Size(), atoms[0]);
+ }
+ else
+ {
+  simp = new SimulationEngine<FixedSizeParticleSet, NonOrthogonalCell>(atoms.Size(), atoms[0]);
+ }
+
+ std::cerr << "DEBUG original simulation: combinedpotential " << sim.Potentials().Size() << '\n';
+ std::cerr << "DEBUG cloned simulation: combinedpotential " << simp->Potentials().Size() << '\n';
+ // Se copia como FixedSize en caso de que sean realmente muchos atomos...
+ FixedSizeParticleSet & newatoms = reinterpret_cast<FixedSizeParticleSet&>(simp->Atoms());
+
+ BasicCell & newcell = simp->Cell();
+ for (long int i=0;i<atoms.Size();++i) newatoms[i] = atoms[i];
+ for (int q=0;q<3;++q) newcell[q] = cell[q];
  impl.s_array.Append(simp);
  return (*simp);
 }

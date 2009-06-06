@@ -40,8 +40,6 @@ class Module: public ParamList
    virtual void ShowHelp() const;
 
    std::string Name() const;
-   bool Used() const;
-   void SetUsed();
 
    PluginManager & GetManager() const;
 
@@ -65,8 +63,6 @@ class Module: public ParamList
    virtual double GetProperty(const std::string & name);
    virtual void SetParameter(std::string name);
    virtual std::string Keywords() const;
-
-   void (*unloader)(Module *);
 
    // FIXME : Cambiar este metodo por un parametro extra en el constructor
    void SetManager(PluginManager & pm);

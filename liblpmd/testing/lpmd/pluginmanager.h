@@ -58,16 +58,16 @@ class PluginManager
 
    std::string GetPluginKeywords(std::string name);
    bool IsProvided(const std::string property);
-   Module & Provider(const std::string property);
+   Plugin & Provider(const std::string property);
    Array<std::string> NamedProperties();
 
-   Module & operator[] (std::string id); 
-   const Module & operator[](std::string id) const;
+   Plugin & operator[] (std::string id); 
+   const Plugin & operator[](std::string id) const;
 
  private:
-   std::map<std::string, Module *> modules;
+   std::map<std::string, Plugin *> modules;
    Array<std::string> pluginpath;
-   std::map<std::string, Module *> namedprops;
+   std::map<std::string, Plugin *> namedprops;
    ParamList aliasdict;
 };
 

@@ -17,7 +17,7 @@ using namespace lpmd;
 //
 // Dynamic loading of modules
 //
-Module * lpmd::LoadPluginModule(std::string path, std::string args)
+Plugin * lpmd::PluginLoader(std::string path, std::string args)
 {
  struct stat sst;
  if (stat(path.c_str(), &sst) == -1) return NULL;      // could not 'stat' the plugin file... 
@@ -45,7 +45,7 @@ Module * lpmd::LoadPluginModule(std::string path, std::string args)
   std::cerr << dlerror() << '\n';
   exit(1);
  }
- Module * tmp = create_module(args);
+ Plugin * tmp = create_module(args);
  tmp->unloader = destroy_module;
  tmp->AssignParameter("fullpath", path);
  return tmp;
@@ -63,4 +63,35 @@ template<class TYPE> TYPE function_cast(void * symbol)
  cast.symbol = symbol;
  return cast.function;
 }
+
+//
+//
+//
+Plugin::Plugin(const std::string & pluginname, const std::string & pluginversion): Module(pluginname), used(false)
+{ 
+ AssignParameter("apirequired", "2.0");
+ AssignParameter("version", pluginversion);
+}
+
+Plugin::Plugin(const std::string & pluginname, const std::string & pluginversion, const std::string & bugreport): Module(pluginname), used(false)
+{ 
+ AssignParameter("apirequired", "2.0");
+ AssignParameter("version", pluginversion);
+ AssignParameter("bugreport", bugreport);
+}
+
+Plugin::Plugin(const Plugin & mod): Module(mod), used(mod.used) { } 
+
+Plugin::~Plugin() { }
+
+bool Plugin::Used() const { return used; }
+
+void Plugin::SetUsed() { used = true; }
+
+bool Plugin::AutoTest() 
+{ 
+ throw PluginError(Name(), "Autotest not implemented.");
+}
+
+void Plugin::CheckConsistency() { }
 
