@@ -17,15 +17,13 @@ namespace lpmd
  class FixedSizeParticleSet: public BasicParticleSet
  {
   public: 
-    FixedSizeParticleSet(long int n): nl(n)
-    {
-     AllocateMemory(n);
-    }
+    FixedSizeParticleSet(long int n): nl(n), iter(0) { AllocateMemory(n); }
 
-    FixedSizeParticleSet(long int n, const BasicAtom & at): nl(n)
+    FixedSizeParticleSet(long int n, const BasicAtom & at): nl(n), iter(0)
     {
      AllocateMemory(n);
      for (long int i=0;i<n;++i) (*this)[i] = at;
+     iter = nl;
     }
 
     void AllocateMemory(long int n)
@@ -53,7 +51,7 @@ namespace lpmd
  
     inline const BasicAtom & operator[](long int i) const { return atomarray[i]; }
  
-    inline long int Size() const { return nl; }
+    inline long int Size() const { return iter; }
  
     inline long int Find(const BasicAtom & t)
     {
@@ -95,13 +93,23 @@ namespace lpmd
     return cm/mass;
    }
 
-   // FIXME: Implementa la parte Mutable de BasicParticleSet con metodos vacios
-   void Append(const BasicAtom & x) { throw NotImplemented("Append() to a FixedSizeParticleSet"); }
-   void Clear() { throw NotImplemented("Clear() a FixedSizeParticleSet"); }
-   void Delete(long int i) { throw NotImplemented("Delete() elements from a FixedSizeParticleSet"); }
+   void Append(const BasicAtom & x) 
+   { 
+    if (iter < nl) (*this)[iter++] = x;
+    else throw InvalidOperation("Appending over the maximum size of a FixedSizeParticleSet");
+   }
+
+   void Clear() { iter = 0; }
+
+   void Delete(long int i) 
+   { 
+    for (long int j=i+1;j<nl+1;++j) (*this)[j-1] = (*this)[j];
+    nl--;
+    iter = nl;
+   }
 
  private:
-   long int nl;
+   long int nl, iter;
    IndirectAtom * atomarray;
    double * storepos, * storevel, * storeacc;
    Vector * posarray, * velarray, * accarray;

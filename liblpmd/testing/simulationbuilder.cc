@@ -183,8 +183,6 @@ Simulation & SimulationBuilder::CloneOptimized(const Simulation & sim)
   simp = new SimulationEngine<FixedSizeParticleSet, NonOrthogonalCell>(atoms.Size(), atoms[0]);
  }
 
- std::cerr << "DEBUG original simulation: combinedpotential " << sim.Potentials().Size() << '\n';
- std::cerr << "DEBUG cloned simulation: combinedpotential " << simp->Potentials().Size() << '\n';
  // Se copia como FixedSize en caso de que sean realmente muchos atomos...
  FixedSizeParticleSet & newatoms = reinterpret_cast<FixedSizeParticleSet&>(simp->Atoms());
 

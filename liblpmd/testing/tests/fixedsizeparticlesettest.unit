@@ -4,6 +4,7 @@
 
 #include <lpmd/fixedsizeparticleset.h>
 #include <lpmd/vector.h>
+#include <lpmd/atom.h>
 
 using namespace lpmd;
 
@@ -12,7 +13,18 @@ using namespace lpmd;
 @test Constructor con numero de atomos
 {
  FixedSizeParticleSet ps(100);
+ @equal ps.Size(), 0
+ for (int i=0;i<100;++i) ps.Append(Atom("Cu"));
  @equal ps.Size(), 100
+ try
+ {
+  ps.Append(Atom("Cu"));
+  @fail
+ }
+ catch (Error & e)
+ {
+  @pass
+ }
 }
 @end
 
