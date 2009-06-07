@@ -35,7 +35,11 @@ namespace lpmd
     std::string ofile;
  };
 
- typedef lpmd::Property<lpmd::ConfigurationSet> TemporalProperty;
+ class TemporalProperty: public lpmd::Property<lpmd::ConfigurationSet>
+ {
+  public:
+    virtual ~TemporalProperty();
+ };
 
 }  // lpmd
 

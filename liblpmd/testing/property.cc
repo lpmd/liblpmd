@@ -12,3 +12,9 @@ InstantProperty::~InstantProperty() { }
 
 std::string & InstantProperty::OutputFile() { return ofile; }
 
+//
+//
+//
+
+TemporalProperty::~TemporalProperty() { }
+

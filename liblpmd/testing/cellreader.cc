@@ -7,6 +7,7 @@
 #include <lpmd/storedconfiguration.h>
 
 #include <fstream>
+#include <memory>
 
 using namespace lpmd;
 
@@ -25,11 +26,16 @@ void CellReader::Read(const std::string & filename, Configuration & conf) const
 // sc.NumEspec();
 }
 
-void CellReader::ReadMany(const std::string & filename, SimulationHistory & hist) const
+void CellReader::ReadMany(const std::string & filename, SimulationHistory & hist, bool skipheader) const
 {
  std::ifstream is(filename.c_str());
  if (! is.good()) throw FileNotFound(filename);
- ReadHeader(is);
+ ReadMany(is, hist, skipheader);
+}
+
+void CellReader::ReadMany(std::istream & inputstream, SimulationHistory & hist, bool skipheader) const
+{
+ if (!skipheader) ReadHeader(inputstream);
  StoredConfiguration sconf;
  if (hist.Size() > 0) 
  {
@@ -39,11 +45,12 @@ void CellReader::ReadMany(const std::string & filename, SimulationHistory & hist
  while (1)
  {
   sconf.Atoms().Clear();
-  if (ReadCell(is, sconf))
+  if (ReadCell(inputstream, sconf))
   {
    #warning "Corregir sc.NumEspec() y sc.AssignIndex()"
    //sc.NumEspec();
    //sc.AssignIndex();
+   
    hist.Append(sconf);
   }
   else break;

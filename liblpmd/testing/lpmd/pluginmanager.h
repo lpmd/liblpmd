@@ -44,7 +44,7 @@ class PluginManager
 
    template<typename T> bool HasType(const std::string & id)
    {
-    try { T & t = CastModule<T>((*this)[id]); return true; }
+    try { T & t = CastModule<T>((*this)[id]); return (&t != 0); }
     catch (InvalidOperation & e) { return false; }
    }
 

@@ -18,6 +18,8 @@ namespace lpmd
    virtual void AddToAverage() = 0;
    virtual void OutputTo(std::ostream & os) const = 0;
    virtual void OutputAverageTo(std::ostream & os) const = 0;
+
+   void OutputToFile(const std::string & filename) const;
  };
 
 template <typename T> class Value: public AbstractValue
