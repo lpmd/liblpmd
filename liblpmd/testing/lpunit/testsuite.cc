@@ -76,12 +76,12 @@ int TestSuite::PerformAllTests()
  std::cout << "\n-> " << impl->description << ": ";
  if (cfailed > 0)
  {
-  printf("*** %d of %d tests (%.3f %%) \e[31mFAILED\e[0m ***\n", cfailed, n, 100.0*float(cfailed)/n);
+  printf("*** %d of %lu tests (%.3f %%) \e[31mFAILED\e[0m ***\n", cfailed, n, 100.0*float(cfailed)/n);
   return 1; // some test(s) failed
  }
  else 
  {
-  printf("!!! All %d tests \e[32mPASSED\e[0m !!!\n", n);
+  printf("!!! All %lu tests \e[32mPASSED\e[0m !!!\n", n);
   return 0;  // all tests OK!
  }
 }

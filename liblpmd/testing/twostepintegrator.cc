@@ -8,7 +8,7 @@
 
 using namespace lpmd;
 
-// FIXME: desactivados los AtomType
+#warning desactivados los AtomType
 void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
 {
  p.UpdateForces(sim);
@@ -23,7 +23,7 @@ void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
  */
  for (long int i=0;i<atoms.Size();++i) 
  { 
-  const Atom & at = atoms[i];
+  //const Atom & at = atoms[i];
   //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
   //else AdvancePosition(sc, i);
   AdvancePosition(sim, i);
@@ -38,7 +38,7 @@ void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
  */
  for (long int i=0;i<atoms.Size();++i) 
  { 
-  const Atom & at = atoms[i];
+  //const Atom & at = atoms[i];
   //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
   //else AdvanceVelocity(sc, i);
   AdvanceVelocity(sim, i);
