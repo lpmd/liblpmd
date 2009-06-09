@@ -12,6 +12,7 @@
 #include <cstdlib>
 
 #include <lpmd/array.h>
+#include <lpmd/vector.h>
 
 namespace lpmd
 {
@@ -28,6 +29,11 @@ inline void ShowWarning(const std::string who, const std::string text)
 }
 
 inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
+
+inline double Angle(const lpmd::Vector a, const lpmd::Vector b)
+{
+ return acos(Dot(a,b)/ (a.Module()*b.Module()));
+}
 
 Array<std::string> ParseThreeVectors(const std::string & str);
 

@@ -96,4 +96,15 @@ using namespace lpmd;
 }
 @end
 
-
+@test Angle
+{
+ lpmd::Vector a = 2*e1;
+ lpmd::Vector b = 2*e2;
+ double ang = Angle(a,b);
+ @approx ang, M_PI/2.0, 1E-10
+ lpmd::Vector c(10,0,0);
+ lpmd::Vector d(5,5,0);
+ ang = Angle(c,d);
+ @approx ang, M_PI/4.0, 1E-10
+}
+@end
