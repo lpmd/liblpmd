@@ -45,6 +45,23 @@ namespace lpmd
      return neighlist;
     }
 
+    inline double MinimumPairDistance()
+    {
+     BasicParticleSet & atoms = Atoms();
+     double min=1.0e5;
+     for(int i=0;i<atoms.Size();++i)
+     {
+      for(int j=i;j<atoms.Size();++j)
+      {
+       if(i!=j)
+       {
+	double dist = Vector(atoms[j].Position()-atoms[i].Position()).Module();
+	if (dist<min) min = dist;
+       }
+      }
+     }
+     return min;
+    }
 
   private:
     lpmd::CellManager * cellman;
