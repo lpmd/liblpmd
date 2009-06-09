@@ -62,3 +62,9 @@ class MockCellManager: public CellManager
 }
 @end
 
+@test Test de MinimumPairDistance
+{
+ @assert false
+}
+@end
+
