@@ -8,40 +8,61 @@
 
 using namespace lpmd;
 
-#warning desactivados los AtomType
 void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
 {
  p.UpdateForces(sim);
  BasicParticleSet & atoms = sim.Atoms();
  const Vector aczero(0.0, 0.0, 0.0);
- /*
- for (long int i=0;i<sc.Size();++i) 
+ 
+ // Setea a cero las aceleraciones de los atomos con fixedvel
+ if (atoms.HaveAny(Tag("fixedvel"))) 
  {
-  const Atom & at = sc[i];
-  if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
+  for (long int i=0;i<atoms.Size();++i)
+  {
+   const Atom & at = atoms[i];
+   if (atoms.Have(at, Tag("fixedvel"))) atoms[i].Acceleration() = aczero;
+  }
  }
- */
- for (long int i=0;i<atoms.Size();++i) 
- { 
-  //const Atom & at = atoms[i];
-  //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
-  //else AdvancePosition(sc, i);
-  AdvancePosition(sim, i);
+
+ if (atoms.HaveAny(Tag("fixedpos")))
+ {
+  for (long int i=0;i<atoms.Size();++i)
+  {
+   const Atom & at = atoms[i];
+   if (atoms.Have(at, Tag("fixedpos"))) continue;
+   else AdvancePosition(sim, i);
+  }
  }
+ else
+ {
+  for (long int i=0;i<atoms.Size();++i) AdvancePosition(sim, i);
+ }
+
  p.UpdateForces(sim);
- /*
- for (long int i=0;i<sc.Size();++i) 
+
+ // Setea a cero las aceleraciones de los atomos con fixedvel
+ if (atoms.HaveAny(Tag("fixedvel"))) 
  {
-  const Atom & at = sc[i];
-  if (at.IsTypeSet() && at.Type().GetBool("fixedvel")) sc.SetAcceleration(i, aczero);
+  for (long int i=0;i<atoms.Size();++i)
+  {
+   const Atom & at = atoms[i];
+   if (atoms.Have(at, Tag("fixedvel"))) atoms[i].Acceleration() = aczero;
+  }
  }
- */
- for (long int i=0;i<atoms.Size();++i) 
- { 
-  //const Atom & at = atoms[i];
-  //if (at.IsTypeSet() && at.Type().GetBool("fixedpos")) continue;
-  //else AdvanceVelocity(sc, i);
-  AdvanceVelocity(sim, i);
+
+ if (atoms.HaveAny(Tag("fixedpos")))
+ {
+  for (long int i=0;i<atoms.Size();++i)
+  {
+   const Atom & at = atoms[i];
+   if (atoms.Have(at, Tag("fixedpos"))) continue;
+   else AdvanceVelocity(sim, i);
+  }
  }
+ else
+ {
+  for (long int i=0;i<atoms.Size();++i) AdvanceVelocity(sim, i);
+ }
+
 }
 
