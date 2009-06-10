@@ -25,7 +25,7 @@ directory .
        language = c++
        flags += -Wall -pedantic -std=gnu++98 -I. -fPIC
 
-       sources =  cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc \
+       sources =  cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc colorhandler.cc \
                   controlfile.cc configuration.cc elements.cc error.cc module.cc metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc \
                   potential.cc pairpotential.cc particleset.cc properties.cc property.cc session.cc matrix.cc simulation.cc \
                   timer.cc integrator.cc systemmodifier.cc onestepintegrator.cc twostepintegrator.cc systemmixer.cc \
@@ -49,7 +49,7 @@ directory .
                   lpmd/configuration.h lpmd/simulation.h lpmd/integrator.h lpmd/onestepintegrator.h lpmd/manipulations.h lpmd/moduleinfo.h \
                   lpmd/systemmixer.h lpmd/systemmodifier.h lpmd/task.h lpmd/taskrunner.h lpmd/timer.h lpmd/simulationbuilder.h \
                   lpmd/util.h lpmd/vector.h lpmd/value.h lpmd/visualizer.h lpmd/atompair.h lpmd/taghandler.h lpmd/api.h lpmd/parameter.h \
-                  lpmd/configurationset.h lpmd/filtrableconfiguration.h
+                  lpmd/configurationset.h lpmd/filtrableconfiguration.h lpmd/colorhandler.h 
 
        installpath = include/lpmd
     end
@@ -119,6 +119,12 @@ directory tests
        test = true
        language = lpunit
        sources = cmdline.unit
+    end
+
+    binary colorhandler
+       test = true
+       language = lpunit
+       sources = colorhandler.unit
     end
 
     binary configurationtest

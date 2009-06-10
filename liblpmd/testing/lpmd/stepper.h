@@ -13,7 +13,7 @@ namespace lpmd
  class Stepper
  {
   public:
-     Stepper(): start(0), end(-1), each(-1) { }
+     Stepper(): start(0), end(-1), each(1) { }
      Stepper(long int s, long int e, long int d=1): start(s), end(e), each(d) { };
 
      inline bool IsActiveInStep(long i)

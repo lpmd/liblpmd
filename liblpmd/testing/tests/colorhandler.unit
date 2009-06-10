@@ -1,0 +1,35 @@
+
+#include <lpmd/colorhandler.h>
+#include <lpmd/atom.h>
+
+using namespace lpmd;
+
+@testsuite Tests de ColorHandler
+
+@test Test de HaveColor 
+{
+ Atom at("Cu");
+ @assert !ColorHandler::HaveColor(at)
+ ColorHandler::ColorOfAtom(at) = Color(1.0, 1.0, 1.0);
+ @assert ColorHandler::HaveColor(at)
+}
+@end
+
+@test Seteo y lectura de color
+{
+ Atom at("Zr");
+ ColorHandler::ColorOfAtom(at) = Color(0.2, 0.7, 0.5);
+ const Color & col = ColorHandler::ColorOfAtom(at);
+ @approx col[0], 0.2, 1.0E-10
+ @approx col[1], 0.7, 1.0E-10
+ @approx col[2], 0.5, 1.0E-10
+
+ @approx col.Red(), 0.2, 1.0E-10
+ @approx col.Green(), 0.7, 1.0E-10
+ @approx col.Blue(), 0.5, 1.0E-10
+
+ ColorHandler::ColorOfAtom(at).Green() = 0.1;
+ @approx col.Green(), 0.1, 1.0E-10
+}
+@end
+
