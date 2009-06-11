@@ -25,8 +25,10 @@ namespace lpmd
     inline const double & Red() const { return (*this)[0]; }
     inline const double & Green() const { return (*this)[1]; }
     inline const double & Blue() const { return (*this)[2]; }
+
  };
 
+    Color ColorFromScalar(const double & color);
 
 } // lpmd
 

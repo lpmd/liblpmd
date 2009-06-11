@@ -25,11 +25,12 @@ directory .
        language = c++
        flags += -Wall -pedantic -std=gnu++98 -I. -fPIC
 
-       sources =  cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc colorhandler.cc \
-                  controlfile.cc configuration.cc elements.cc error.cc module.cc metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc \
-                  potential.cc pairpotential.cc particleset.cc properties.cc property.cc session.cc matrix.cc simulation.cc \
-                  timer.cc integrator.cc systemmodifier.cc onestepintegrator.cc twostepintegrator.cc systemmixer.cc \
-                  visualizer.cc value.cc moduleinfo.cc util.cc simulationbuilder.cc atomselector.cc systemfilter.cc simulationhistory.cc
+       sources =  cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc \
+		  color.cc colorhandler.cc controlfile.cc configuration.cc elements.cc error.cc module.cc \
+		  metalpotential.cc paramlist.cc plugin.cc pluginmanager.cc potential.cc pairpotential.cc particleset.cc \
+		  properties.cc property.cc session.cc matrix.cc simulation.cc timer.cc integrator.cc systemmodifier.cc \
+		  onestepintegrator.cc twostepintegrator.cc systemmixer.cc visualizer.cc value.cc moduleinfo.cc util.cc \
+		  simulationbuilder.cc atomselector.cc systemfilter.cc simulationhistory.cc
 
        headers = lpmd_headers
        version = 2.0.0
