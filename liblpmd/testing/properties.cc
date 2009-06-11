@@ -32,7 +32,6 @@ void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, do
   for(int j=0;j<(int)(nsp*(nsp+1)/2);j++) g[i][j]=0.0e0;
  }
  int s=0;
-#warning "Construye speciesPairs aquí, ¿no es metodo de la API? ¿o si?."
  lpmd::Array<std::string> pairs;
  for(int i=0; i<esp.Size() ; ++i)
  {
