@@ -17,15 +17,15 @@ namespace lpmd
  class StoredConfiguration: public Configuration
  {
   public:
-    StoredConfiguration() { }
+    StoredConfiguration(): Configuration() { }
 
-    StoredConfiguration(BasicParticleSet & at, BasicCell & cl)
+    StoredConfiguration(BasicParticleSet & at, BasicCell & cl): Configuration()
     {
      atoms = at;
      cell = cl;
     }
 
-    StoredConfiguration(const Configuration & conf)
+    StoredConfiguration(const Configuration & conf): Configuration()
     {
      atoms = conf.Atoms();
      cell = conf.Cell();

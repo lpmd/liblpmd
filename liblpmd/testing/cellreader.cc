@@ -22,8 +22,6 @@ void CellReader::Read(const std::string & filename, Configuration & conf) const
  if (! is.good()) throw FileNotFound(filename);
  ReadHeader(is);
  if (! ReadCell(is, conf)) throw SyntaxError("Invalid input in file \""+filename+"\"");
- #warning "Corregir sc.NumEspec()"
-// sc.NumEspec();
 }
 
 void CellReader::ReadMany(const std::string & filename, SimulationHistory & hist, bool skipheader) const
@@ -45,14 +43,7 @@ void CellReader::ReadMany(std::istream & inputstream, SimulationHistory & hist, 
  while (1)
  {
   sconf.Atoms().Clear();
-  if (ReadCell(inputstream, sconf))
-  {
-   #warning "Corregir sc.NumEspec() y sc.AssignIndex()"
-   //sc.NumEspec();
-   //sc.AssignIndex();
-   
-   hist.Append(sconf);
-  }
+  if (ReadCell(inputstream, sconf)) hist.Append(sconf);
   else break;
  }
 }

@@ -3,8 +3,8 @@
 //
 
 #include <lpmd/metalpotential.h>
-#include <lpmd/simulation.h>
 #include <lpmd/atompair.h>
+#include <lpmd/configuration.h>
 #include <lpmd/session.h>
 
 using namespace lpmd;
@@ -13,108 +13,87 @@ MetalPotential::MetalPotential() { rho=NULL; }
 
 MetalPotential::MetalPotential(const MetalPotential & mp) { rho = NULL; }
 
-MetalPotential::~MetalPotential() { if (rho!=NULL) { delete [] rho; rho=NULL; } }
+MetalPotential::~MetalPotential() {if(rho!=NULL){delete [] rho; rho=NULL;} }
 
 void MetalPotential::Initialize(Configuration & conf)
 {
- Potential::Initialize(conf);
  BasicParticleSet & atoms = conf.Atoms();
- BasicCell & cell = conf.Cell();
- const long int n = atoms.Size();
+ long int n = atoms.Size();
+ double rhoi = 0.0e0;
  //Almacena densidad en variable rho de la clase metalpotential.
  delete [] rho;
  rho = new double[n];
- for(long int i=0;i<n;i++) rho[i]=0.0e0;
+ for(long i=0;i<n;i++) rho[i]=0.0e0;
  //Setea las densidades locales de cada atomo.
- double partdens = atoms.Size()/cell.Volume(); // was sc.ParticleDensity();
- double drhoi = deltarhoi(partdens);
- for (long int i=0;i<n;++i)
+ for (long i=0;i<n;++i)
  {
-  const Atom & at = atoms[i];
-  double rhoi=0.0e0;
-  NeighborList & nlist = conf.Neighbors(i, true, GetCutoff());
+  rhoi=0.0e0;
+  NeighborList & nlist = conf.Neighbors(i, true, 2*GetCutoff());
   for (long int k=0;k<nlist.Size();++k)
   {
    const AtomPair & nn = nlist[k];
-   if (AppliesTo(at.Z(), nn.j->Z()) && nn.r < GetCutoff()) rhoi += rhoij(nn.r);
+   if (AppliesTo(atoms[i].Z(), nn.j->Z())) rhoi += rhoij(nn.r);
   }
-  rho[i] = rhoi + drhoi;
+  rho[i]=rhoi;
  }
 }
 
-void MetalPotential::VirialEvaluate(Configuration & conf)
-{
-// double vc = 0.0;
- BasicParticleSet & atoms = conf.Atoms();
- const long int n = atoms.Size();
- double mrho = 0.0;
- for (long i=0;i<n;++i) mrho+=rho[i];
- mrho/=double(n);
-#warning "COMENTADO VIRIAL EN METALPOTENTIAL"
-// vc = VirialCorrection(sc.ParticleDensity(),n,mrho);
-// sc.AddToVirial(vc);
-}
+void MetalPotential::VirialEvaluate(Configuration & conf) { }
 
 double MetalPotential::energy(Configuration & conf) { return energycache; }
 
 void MetalPotential::UpdateForces(Configuration & conf)
 {
- const double forcefactor = GlobalSession["forcefactor"];
- Initialize(conf);
+ const double forcefactor = double(GlobalSession["forcefactor"]);
  BasicParticleSet & atoms = conf.Atoms();
- BasicCell & cell = conf.Cell();
+ const long n = atoms.Size();
+ //Generamos las densidades locales de cada atomo.
+ Initialize(conf);
  double tmpvir = 0.0;
  energycache = 0.0;
- const long int n = atoms.Size();
  double stress[3][3];
- for (long i=0;i<n;++i)
+ Vector pf,acci,accj,mb;
+ long i;
+
+ // FIXME: Construct an "index table" so we don't have to depend on Atom::Index()
+ std::map<BasicAtom *, long int> indices;
+ for (long int i=0;i<atoms.Size();++i) indices[&atoms[i]] = i;
+ //
+
+ for (i=0;i<n;++i)
  {
-  const Atom & at = atoms[i];
   NeighborList & nlist = conf.Neighbors(i, false, GetCutoff());
-  //Ahora continuamos el calculo.
   for (long int k=0;k<nlist.Size();++k)
   {
    const AtomPair & nn = nlist[k];
-   if (AppliesTo(at.Z(), nn.j->Z())) 
+   if (AppliesTo(atoms[i].Z(), nn.j->Z()))
    {
-    Vector pf, acci, accj, mb;
+    energycache += pairEnergy(nn.r);
     pf = PairForce(nn.rij);
-    assert(nn.j_index != -1);
-    mb = ManyBodies(nn.rij, rho[i], rho[nn.j_index]);
-    acci = at.Acceleration();
-    accj = nn.j->Acceleration(); 
-    atoms[i].Acceleration() = acci + (pf+mb)*(forcefactor/at.Mass());
-    nn.j->Acceleration() = accj - (pf+mb)*(forcefactor/nn.j->Mass());
-    energycache += pairEnergy(nn.r); // energia
-    tmpvir -= Dot(nn.rij, pf+mb);  // virial de pares
-    //Asignacion de stress, un for adicional pequeno, 
-    //sera mas lento?
-    for (int k=0;k<3;k++)
+    mb = ManyBodies(nn.rij,rho[i],rho[indices[nn.j]]);
+    atoms[i].Acceleration() += ((pf+mb)*(forcefactor/atoms[i].Mass()));
+    nn.j->Acceleration() -= ((pf+mb)*(forcefactor/nn.j->Mass()));
+    tmpvir -= Dot(nn.rij, pf+mb);
+    //FIXME : Corregir - Aclarar signo del stress
+    for (int q=0;q<3;q++)
     {
-     stress[0][k] += (nn.rij)[0]*(pf+mb)[k];
-     stress[1][k] += (nn.rij)[1]*(pf+mb)[k];
-     stress[2][k] += (nn.rij)[2]*(pf+mb)[k];
+     stress[0][q] += -(nn.rij)[0]*(pf+mb)[q];
+     stress[1][q] += -(nn.rij)[1]*(pf+mb)[q];
+     stress[2][q] += -(nn.rij)[2]*(pf+mb)[q];
     }
    }
   }
  }
- //Anade correccion a la energia de pares.
- energycache += deltaU1(atoms.Size()/cell.Volume(), n);
- // calcula la Energia de Muchos Cuerpos.
- for (long i=0;i<n;++i) energycache += F(rho[i]);
- // Asigna virial
- // sc.AddToVirial(tmpvir);
- // Evalua el termino del virial, para asignar correccion a sc.
-#warning "COMENTADO VIRIAL EN METALPOTENTIAL"
- /*
- VirialEvaluate(sc);
- for (int i=0;i<3;i++)
- {
-  sc.StressTensor(0,i) = stress[0][i];
-  sc.StressTensor(1,i) = stress[1][i];
-  sc.StressTensor(2,i) = stress[2][i];
- }
- */
+ //Calcula de la Energia de Muchos Cuerpos.
+ for (i=0;i<n;++i) {energycache += F(rho[i]);}
+
+ // Virial 
+ VirialEvaluate(conf);
+ double & config_virial = conf.Virial();
+ config_virial += tmpvir;
+ Matrix & config_stress = conf.StressTensor();
+ for (int p=0;p<3;p++)
+   for (int q=0;q<3;q++) config_stress.Set(q, p, config_stress.Get(q, p)+stress[q][p]);
 }
 
 double MetalPotential::VirialContribution(const double &r, const double & rhoi, const double & rhoj) const { return 0.0; }

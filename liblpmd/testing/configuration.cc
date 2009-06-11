@@ -8,6 +8,20 @@
 
 using namespace lpmd;
 
+double Configuration::MinimumPairDistance() const
+{
+ const BasicParticleSet & atoms = Atoms();
+ const BasicCell & cell = Cell();
+ double min=1.0e5;
+ for(long i=0;i<atoms.Size()-1;++i)
+  for(long j=i+1;j<atoms.Size();++j)
+  {
+   double dist = cell.Displacement(atoms[j].Position(), atoms[i].Position()).Module();
+   if (dist < min) min = dist;
+  }
+ return min;
+}
+
 void Configuration::ShowInfo(std::ostream & out)
 {
  Vector pos, cm(0.0, 0.0, 0.0);

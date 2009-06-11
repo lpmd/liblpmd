@@ -32,11 +32,11 @@ class MetalPotential: public Potential
   
   virtual double F(const double & rho) const = 0;
 
-  virtual double deltarhoi(const double & rhobar) const = 0;
+  virtual double deltarhoi(const double & rhobar) const { return 0.0; }
 
-  virtual double deltaU1(const double & rhobar, const int & N) const = 0;
+  virtual double deltaU1(const double & rhobar, const int & N) const { return 0.0; }
 
-  virtual double deltaU2(const double & rhobar, const int & N, const double & rhoi) const = 0;
+  virtual double deltaU2(const double & rhobar, const int & N, const double & rhoi) const { return 0.0; }
 
   virtual Vector PairForce(const Vector & r) const = 0;
 

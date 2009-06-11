@@ -21,6 +21,7 @@ void Integrator::UseOldConfig(Configuration & conf)
  if (oldconfig == 0)
  {
   oldconfig = new StoredConfiguration(conf);
+  oldconfig->SetCellManager(conf.GetCellManager());
   GoBack(*oldconfig);
  }
 }
