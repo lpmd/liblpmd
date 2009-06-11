@@ -18,33 +18,32 @@ double PairPotential::energy(Configuration & conf) { return energycache; }
 void PairPotential::UpdateForces(Configuration & conf)
 {
  const double forcefactor = GlobalSession["forcefactor"];
- Vector ff, acci, accj;
+ Vector ff;
  BasicParticleSet & atoms = conf.Atoms();
  const long int n = atoms.Size();
  energycache = 0.0;
- double tmpvir = 0.0;
+ double tmpvir = 0.0,etmp=0.0e0;
  double stress[3][3];
  for (int i=0;i<3;i++)
  {
   for (int j=0;j<3;j++) stress[i][j]=0.0e0;
  }
- for (long i=0;i<n;++i)    // was i<n
+ long i,k;
+#ifdef _OPENMP
+#pragma omp parallel for private ( i,k,ff ) reduction ( + : etmp, tmpvir )
+#endif
+ for (i=0;i<n;++i)
  {
   NeighborList & nlist = conf.Neighbors(i, false, GetCutoff());
-  for (long int k=0;k<nlist.Size();++k)
+  for (k=0;k<nlist.Size();++k)
   {
    const AtomPair & nn = nlist[k];
    if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r < GetCutoff()) 
    {
-    energycache += pairEnergy(nn.r);
+    etmp += pairEnergy(nn.r);
     ff = pairForce(nn.rij);
     atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
     nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());
-    tmpvir -= Dot(nn.rij, ff); // virial de pares
-    //if (ff.Module() > 10.0) throw HorrendousForce(ff.Module());
-
-    //Asignacion de stress, un for adicional pequeno, 
-    //sera mas lento? - El signo parec provenir de la fuerza, ojo con eso
     for (int k=0;k<3;k++)
     {
      stress[0][k] += -(nn.rij)[0]*ff[k];
@@ -54,6 +53,7 @@ void PairPotential::UpdateForces(Configuration & conf)
    }
   }
  }
+ energycache += etmp;
  double & config_virial = conf.Virial();
  config_virial += tmpvir;
  Matrix & config_stress = conf.StressTensor();
