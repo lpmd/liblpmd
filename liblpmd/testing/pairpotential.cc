@@ -5,6 +5,7 @@
 #include <lpmd/session.h>
 #include <lpmd/pairpotential.h>
 #include <lpmd/atompair.h>
+#include <lpmd/matrix.h>
 
 using namespace lpmd;
 
@@ -53,16 +54,10 @@ void PairPotential::UpdateForces(Configuration & conf)
    }
   }
  }
- #warning "comentado AddToVirial y StressTensor"
- // sc.AddToVirial(tmpvir);
- /*
- for (int i=0;i<3;i++)
- {
-  sc.StressTensor(0,i) = stress[0][i];
-  sc.StressTensor(1,i) = stress[1][i];
-  sc.StressTensor(2,i) = stress[2][i];
- }
- */
+ double & config_virial = conf.Virial();
+ config_virial += tmpvir;
+ Matrix & config_stress = conf.StressTensor();
+ for (int p=0;p<3;p++)
+   for (int q=0;q<3;q++) config_stress.Set(q, p, config_stress.Get(q, p)+stress[q][p]);
 }
-
 

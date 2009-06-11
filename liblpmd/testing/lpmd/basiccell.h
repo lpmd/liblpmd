@@ -41,5 +41,14 @@ namespace lpmd
 
 } // lpmd
 
+inline bool operator==(const lpmd::BasicCell & cell_a, const lpmd::BasicCell & cell_b)
+{
+ for (int q=0;q<3;++q)
+     if ((cell_a[q]-cell_b[q]).Module() >= 1.0E-08) return false;
+ return true;
+}
+
+inline bool operator!=(const lpmd::BasicCell & cell_a, const lpmd::BasicCell & cell_b) { return !(operator==(cell_a, cell_b)); }
+
 #endif
 

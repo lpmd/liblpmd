@@ -32,7 +32,7 @@ Color & ColorHandler::ColorOfAtom(const BasicAtom & at)
  catch(Error & e) { throw RuntimeError("Atom has no color"); }
 }
 
-Color ColorHandler::GetSpcColor(const BasicAtom & at)
+Color ColorHandler::DefaultColor(const BasicAtom & at)
 {
  const lpmd::Vector DefCol(0,0.8,0.8);
  lpmd::Vector ans;

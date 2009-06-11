@@ -16,7 +16,7 @@ namespace lpmd
   public:
     static bool HaveColor(const BasicAtom & at); 
     static Color & ColorOfAtom(const BasicAtom & at);
-    static Color GetSpcColor(const BasicAtom & at);
+    static Color DefaultColor(const BasicAtom & at);
 
   private:
     ColorHandler();  // private constructor

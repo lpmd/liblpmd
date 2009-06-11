@@ -40,6 +40,9 @@ namespace lpmd
     virtual void SetIntegrator(lpmd::Integrator & itg) = 0;
 
     virtual lpmd::Integrator & Integrator() = 0;
+
+    virtual void RescalePositions(const BasicCell & old_cell) = 0;
+
  };
 
 } // lpmd

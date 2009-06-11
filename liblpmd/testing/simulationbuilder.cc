@@ -12,6 +12,7 @@
 #include <lpmd/combinedpotential.h>
 #include <lpmd/integrator.h>
 #include <lpmd/properties.h>
+#include <lpmd/session.h>
 
 using namespace lpmd;
 
@@ -65,18 +66,49 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  CombinedPotential & Potentials() { return potarray; }
  
  const CombinedPotential & Potentials() const { return potarray; }
- 
- void DoStep() 
- {  
-  if (! initialized) Initialize();
-  integ->Advance(*this, potarray);
-  step++;
+
+ void SetSimulationTags()
+ {
+  const double pressfactor = double(GlobalSession["pressfactor"]);
+  const double v = Cell().Volume();
+  const Vector P = Momentum(Atoms());
   SetTag(*this, Tag("step"), step);
   SetTag(*this, Tag("temperature"), Temperature(Atoms()));
+  SetTag(*this, Tag("volume"), v);
+  SetTag(*this, Tag("volume-per-atom"), v/double(Atoms().Size()));
+  SetTag(*this, Tag("cell-a"), Cell()[0].Module());
+  SetTag(*this, Tag("cell-b"), Cell()[1].Module());
+  SetTag(*this, Tag("cell-c"), Cell()[2].Module());
+  SetTag(*this, Tag("particle-density"), double(Atoms().Size())/v);
+  SetTag(*this, Tag("density"), Density(Atoms(), Cell()));
+  SetTag(*this, Tag("momentum"), P.Module());
+  SetTag(*this, Tag("px"), P[0]);
+  SetTag(*this, Tag("py"), P[1]);
+  SetTag(*this, Tag("pz"), P[2]);
   double potenerg = double(Parameter(GetTag(*this, Tag("potential-energy"))));
   double kinenerg = KineticEnergy(Atoms());
   SetTag(*this, Tag("kinetic-energy"), kinenerg);
   SetTag(*this, Tag("total-energy"), potenerg+kinenerg);
+  const Matrix & stress = StressTensor();
+  SetTag(*this, Tag("virial-pressure"), (pressfactor/v)*(1.0/3.0)*Virial());
+  SetTag(*this, Tag("kinetic-pressure"), (pressfactor/v)*(2.0/3.0)*kinenerg);
+  SetTag(*this, Tag("pressure"), (pressfactor/v)*((2.0/3.0)*kinenerg+(1.0/3.0)*Virial()));
+
+  char component_letter[3] = {'x', 'y', 'z'};
+  for (int p=0;p<3;++p)
+   for (int q=0;q<3;++q)
+   {
+    std::string label = "s"+component_letter[q]+component_letter[p];
+    SetTag(*this, Tag(label), (pressfactor/v)*stress.Get(q, p));
+   }
+ }
+ 
+ void DoStep()
+ {  
+  if (! initialized) Initialize();
+  integ->Advance(*this, potarray);
+  step++;
+  SetSimulationTags();
  }
  
  inline void DoSteps(long int n) { for (int q=0;q<n;++q) DoStep(); }
@@ -89,6 +121,14 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  { 
   if (integ == 0) throw MissingComponent("integrator");
   return (*integ); 
+ }
+
+ void RescalePositions(const BasicCell & old_cell)
+ {
+  BasicParticleSet & t_atoms = Atoms();
+  BasicCell & t_cell = Cell();
+  for (long int i=0;i<t_atoms.Size();++i)
+      t_atoms[i].Position() = t_cell.Cartesian(old_cell.Fractional(t_atoms[i].Position()));
  }
  
  private:
