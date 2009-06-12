@@ -44,17 +44,17 @@ void Configuration::ShowInfo(std::ostream & out)
   if (pos[2] > zmax) zmax = pos[2];
  }
  cm = cm / tmass;
- out << "-> Number of atoms        : " << atoms.Size() << " atoms\n";
+ out << " Number of atoms        : " << atoms.Size() << " atoms\n";
  for (int q=0;q<3;++q) 
- out << "-> Cell vector [" << q << "]        : " << cell[q] << '\n';
- out << "-> Cell Volume            : " << cell.Volume() << '\n'; 
- out << "-> Center of Mass         : " << cm << '\n'; 
- out << "-> X coordinate           : [ " << xmin << " , " << xmax << " ] (width: " << xmax-xmin << ")\n";
- out << "-> Y coordinate           : [ " << ymin << " , " << ymax << " ] (width: " << ymax-ymin << ")\n";
- out << "-> Z coordinate           : [ " << zmin << " , " << zmax << " ] (width: " << zmax-zmin << ")\n";
- out << "-> X displacement from CM : [ " << xmin-cm[0] << " , " << xmax-cm[0] << " ]\n";
- out << "-> Y displacement from CM : [ " << ymin-cm[1] << " , " << ymax-cm[1] << " ]\n";
- out << "-> Z displacement from CM : [ " << zmin-cm[2] << " , " << zmax-cm[2] << " ]\n";
+ out << " Cell vector [" << q << "]        : " << cell[q] << '\n';
+ out << " Cell Volume            : " << cell.Volume() << '\n'; 
+ out << " Center of Mass         : " << cm << '\n'; 
+ out << " X coordinate           : [ " << xmin << " , " << xmax << " ] (width: " << xmax-xmin << ")\n";
+ out << " Y coordinate           : [ " << ymin << " , " << ymax << " ] (width: " << ymax-ymin << ")\n";
+ out << " Z coordinate           : [ " << zmin << " , " << zmax << " ] (width: " << zmax-zmin << ")\n";
+ out << " X displacement from CM : [ " << xmin-cm[0] << " , " << xmax-cm[0] << " ]\n";
+ out << " Y displacement from CM : [ " << ymin-cm[1] << " , " << ymax-cm[1] << " ]\n";
+ out << " Z displacement from CM : [ " << zmin-cm[2] << " , " << zmax-cm[2] << " ]\n";
  out << '\n';
 }
 

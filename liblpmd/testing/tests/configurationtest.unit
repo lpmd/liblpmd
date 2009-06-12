@@ -64,7 +64,55 @@ class MockCellManager: public CellManager
 
 @test Test de MinimumPairDistance
 {
- @assert false
+ StoredConfiguration s;
+ BasicParticleSet & atoms = s.Atoms();
+ BasicCell & cell = s.Cell(); 
+ cell[0] = 15.0*e1;
+ cell[1] = 15.0*e2;
+ cell[2] = 15.0*e3;
+ atoms.Append(Atom("Cu")); 
+ atoms.Append(Atom("Zr")); 
+ atoms.Append(Atom("Cu")); 
+ atoms[0].Position() = Vector(7.0, 7.0, 7.0);
+ atoms[1].Position() = Vector(7.5, 7.0, 7.0);
+ atoms[2].Position() = Vector(8.0, 6.0, 5.0);
+ @approx s.MinimumPairDistance(), 0.5, 1.0E-10
+}
+@end
+
+@test Test de MinimumPairDistance con atomos chocando
+{
+ StoredConfiguration s;
+ BasicParticleSet & atoms = s.Atoms();
+ BasicCell & cell = s.Cell(); 
+ cell[0] = 15.0*e1;
+ cell[1] = 15.0*e2;
+ cell[2] = 15.0*e3;
+ atoms.Append(Atom("Cu")); 
+ atoms.Append(Atom("Zr")); 
+ atoms.Append(Atom("Cu")); 
+ atoms[0].Position() = Vector(7.0, 7.0, 7.0);
+ atoms[1].Position() = Vector(7.0, 7.0, 7.0);
+ atoms[2].Position() = Vector(8.0, 6.0, 5.0);
+ @approx s.MinimumPairDistance(), 0.0, 1.0E-10
+}
+@end
+
+@test Test de MinimumPairDistance con condiciones periodicas
+{
+ StoredConfiguration s;
+ BasicParticleSet & atoms = s.Atoms();
+ BasicCell & cell = s.Cell(); 
+ cell[0] = 15.0*e1;
+ cell[1] = 15.0*e2;
+ cell[2] = 15.0*e3;
+ atoms.Append(Atom("Cu")); 
+ atoms.Append(Atom("Zr")); 
+ atoms.Append(Atom("Cu")); 
+ atoms[0].Position() = Vector(0.0, 0.0, 0.0);
+ atoms[1].Position() = Vector(14.95, 15.0, 15.0);
+ atoms[2].Position() = Vector(14.0, 14.0, 14.0);
+ @approx s.MinimumPairDistance(), 0.05, 1.0E-10
 }
 @end
 
