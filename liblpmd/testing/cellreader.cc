@@ -43,7 +43,12 @@ void CellReader::ReadMany(std::istream & inputstream, SimulationHistory & hist, 
  while (1)
  {
   sconf.Atoms().Clear();
-  if (ReadCell(inputstream, sconf)) hist.Append(sconf);
+  if (ReadCell(inputstream, sconf))
+  {
+   hist.Append(sconf);
+   if (sconf.Have(sconf, Tag("level"))) 
+      hist[hist.Size()-1].SetTag(hist[hist.Size()-1], Tag("level"), sconf.GetTag(sconf, Tag("level")));
+  }
   else break;
  }
 }

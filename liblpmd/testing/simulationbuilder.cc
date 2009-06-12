@@ -105,6 +105,9 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  
  void DoStep()
  {  
+  Virial() = 0.0;
+  for (int p=0;p<3;++p)
+    for (int q=0;q<3;++q) StressTensor().Set(q, p, 0.0);
   if (! initialized) Initialize();
   integ->Advance(*this, potarray);
   step++;

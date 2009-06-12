@@ -9,6 +9,7 @@
 
 #include <lpmd/potential.h>
 #include <lpmd/array.h>
+#include <lpmd/error.h>
 
 namespace lpmd
 {
@@ -42,6 +43,16 @@ class CombinedPotential: public Array<Potential &>, public Potential
     for (int p=0;p<Size();++p) (*this)[p].UpdateForces(conf);
     conf.SetTag(conf, Tag("potential-energy"), energy(conf));
    }
+
+   const Potential & PotentialForElements(int s1, int s2) const
+   {
+    for (int p=0;p<Size();++p)
+    {
+     if ((*this)[p].AppliesTo(s1, s2)) return (*this)[p];
+    }
+    throw RuntimeError("No potential assigned to atomic numbers "+ToString<int>(s1)+" and "+ToString<int>(s2));
+   }
+
 };
 
 }
