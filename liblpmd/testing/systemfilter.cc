@@ -7,7 +7,7 @@
 
 using namespace lpmd;
 
-SystemFilter::SystemFilter() { }
+SystemFilter::SystemFilter(): inverted(false) { }
 
 SystemFilter::~SystemFilter() { }
 
@@ -15,8 +15,11 @@ void SystemFilter::Apply(Simulation & sim)
 { 
  BasicParticleSet & atoms = sim.Atoms();
  Selector<BasicParticleSet> & selector = CreateSelector();
- ParticleSet filtered(selector.SelectFrom(atoms));
+ ParticleSet * filtered = 0;
+ if (!inverted) filtered = new ParticleSet(selector.SelectFrom(atoms));
+ else filtered = new ParticleSet(selector.InverseSelectFrom(atoms));
  atoms.Clear();
- for (long int i=0;i<filtered.Size();++i) atoms.Append(filtered[i]);
+ for (long int i=0;i<filtered->Size();++i) atoms.Append((*filtered)[i]);
+ delete filtered;
 }
 

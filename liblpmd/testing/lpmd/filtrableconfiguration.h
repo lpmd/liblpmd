@@ -15,20 +15,29 @@ namespace lpmd
  class FiltrableConfiguration: public Configuration
  {
   public:
-    FiltrableConfiguration(): innerselect(0) { }
+    FiltrableConfiguration(): innerselect(0), selector_inverted(false) { }
     virtual ~FiltrableConfiguration() { }
 
-    inline void ApplyAtomMask(Selector<BasicParticleSet> & selector) { innerselect = &selector; }
+    inline void ApplyAtomMask(Selector<BasicParticleSet> & selector, bool inverted=false) 
+    { 
+     innerselect = &selector; 
+     selector_inverted = inverted;
+    }
+
     inline void RemoveAtomMask() { innerselect = 0; }
 
     inline BasicParticleSet & Atoms()
     {
-     return ((innerselect == 0) ? OriginalAtoms() : const_cast<BasicParticleSet&>(innerselect->SelectFrom(OriginalAtoms())));
+     if (selector_inverted) 
+        return ((innerselect == 0) ? OriginalAtoms() : const_cast<BasicParticleSet&>(innerselect->InverseSelectFrom(OriginalAtoms())));
+     else return ((innerselect == 0) ? OriginalAtoms() : const_cast<BasicParticleSet&>(innerselect->SelectFrom(OriginalAtoms())));
     }
 
     inline const BasicParticleSet & Atoms() const 
     { 
-     return ((innerselect == 0) ? OriginalAtoms() : innerselect->SelectFrom(OriginalAtoms()));
+     if (selector_inverted) 
+        return ((innerselect == 0) ? OriginalAtoms() : innerselect->InverseSelectFrom(OriginalAtoms()));
+     else return ((innerselect == 0) ? OriginalAtoms() : innerselect->SelectFrom(OriginalAtoms()));
     }
 
     inline BasicCell & Cell() { return OriginalCell(); }
@@ -41,6 +50,7 @@ namespace lpmd
 
   private:
     Selector<BasicParticleSet> * innerselect;
+    bool selector_inverted;
  };
 
 }  // lpmd

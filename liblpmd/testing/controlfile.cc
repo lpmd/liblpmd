@@ -156,6 +156,12 @@ void ControlFile::ReadLine(const std::string & line)
   }
 }
 
+void RemoveComments(std::string & line)
+{
+ std::size_t pos = line.find_first_of('#');
+ if (pos != std::string::npos) line = line.substr(0, pos);
+}
+
 void ControlFile::Read(std::istream & real_istr, const ParamList & options, const std::string & inpfile)
 {
  //
@@ -187,7 +193,11 @@ void ControlFile::Read(std::istream & real_istr, const ParamList & options, cons
  impl->line_count = 0;
  impl->filename = inpfile;
  impl->read_options = &options;
- while(getline(*(impl->istr), tmp)) ReadLine(tmp);
+ while(getline(*(impl->istr), tmp)) 
+ {
+  RemoveComments(tmp);
+  ReadLine(tmp);
+ }
  delete impl->istr;
 }
 

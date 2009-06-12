@@ -157,7 +157,7 @@ inline bool operator==(const Vector & a, const Vector & b)
 
 inline void FormattedWrite(std::ostream & os, const Vector & v)
 {
- os << "< " << v[0] << ", " << v[1] << ", " << v[2] << " >";
+ os << "<" << v[0] << "," << v[1] << "," << v[2] << ">";
 }
 
 inline std::ostream & operator<<(std::ostream & os, const Vector & v)

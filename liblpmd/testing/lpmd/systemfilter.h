@@ -19,6 +19,8 @@ namespace lpmd
 
    void Apply(Simulation & sim);
    virtual Selector<BasicParticleSet> & CreateSelector() = 0;
+
+   bool inverted;
  };
 
 } // lpmd 

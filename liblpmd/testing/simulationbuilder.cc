@@ -227,7 +227,13 @@ Simulation & SimulationBuilder::CloneOptimized(const Simulation & sim)
  FixedSizeParticleSet & newatoms = reinterpret_cast<FixedSizeParticleSet&>(simp->Atoms());
 
  BasicCell & newcell = simp->Cell();
- for (long int i=0;i<atoms.Size();++i) newatoms[i] = atoms[i];
+ for (long int i=0;i<atoms.Size();++i) 
+ {
+  newatoms[i] = atoms[i];
+  const BasicAtom & basic_i = atoms[i];
+  const BasicAtom & real_i = newatoms[i];
+  if (ColorHandler::HaveColor(basic_i)) ColorHandler::ColorOfAtom(real_i) = ColorHandler::ColorOfAtom(basic_i);
+ }
  for (int q=0;q<3;++q) newcell[q] = cell[q];
  impl.s_array.Append(simp);
  return (*simp);
