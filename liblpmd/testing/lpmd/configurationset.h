@@ -15,6 +15,7 @@ namespace lpmd
  class ConfigurationSet
  {
   public:
+    virtual ~ConfigurationSet() { }
     virtual Configuration & operator[](long int i) = 0;
 
     virtual const Configuration & operator[](long int i) const = 0;

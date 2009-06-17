@@ -131,7 +131,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   BasicParticleSet & t_atoms = Atoms();
   BasicCell & t_cell = Cell();
   for (long int i=0;i<t_atoms.Size();++i)
-      t_atoms[i].Position() = t_cell.Cartesian(old_cell.Fractional(t_atoms[i].Position()));
+      t_atoms[i].Position() = t_cell.FittedInside(t_cell.Cartesian(old_cell.Fractional(t_atoms[i].Position())));
  }
  
  private:
