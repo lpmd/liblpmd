@@ -154,6 +154,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
     double mass = (*atoms)[i].Mass();
     (*atoms)[i].Velocity() -= (totalp/mass);
    }
+   velocitiesSet = true;
   }
 
   void Initialize() 
