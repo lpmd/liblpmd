@@ -6,7 +6,7 @@
 
 using namespace lpmd;
 
-Color ColorFromScalar(const double & x)
+Color lpmd::ColorFromScalar(const double & x)
 {
  double R,G,B,A=0.5;
  if      (0<=x && x<=A){ R=1.0-x/A; G=x/A; B=0; }
