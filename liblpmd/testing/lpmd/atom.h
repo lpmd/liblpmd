@@ -47,6 +47,8 @@ class Atom: public BasicAtom
   Atom(const int zeta): BasicAtom(zeta, &iv[0], &iv[1], &iv[2]) { }
 
   Atom(const std::string a, const Vector & pos): BasicAtom(ElemNum(a), &iv[0], &iv[1], &iv[2]) { iv[0] = pos; }
+  
+  Atom(const int zeta, const Vector & pos): BasicAtom(zeta, &iv[0], &iv[1], &iv[2]) { iv[0] = pos; }
 
   Atom(const std::string a, const Vector & pos, const Vector & vel): BasicAtom(ElemNum(a), &iv[0], &iv[1], &iv[2])
   {
@@ -54,7 +56,20 @@ class Atom: public BasicAtom
    iv[1] = vel;
   }
  
+  Atom(const int zeta, const Vector & pos, const Vector & vel): BasicAtom(zeta, &iv[0], &iv[1], &iv[2])
+  {
+   iv[0] = pos;
+   iv[1] = vel;
+  }
+
   Atom(const std::string elem, const Vector & pos, const Vector & vel, const Vector & ace): BasicAtom(ElemNum(elem), &iv[0], &iv[1], &iv[2])
+  {
+   iv[0] = pos;
+   iv[1] = vel;
+   iv[2] = ace;
+  }
+  
+  Atom(const int zeta, const Vector & pos, const Vector & vel, const Vector & ace): BasicAtom(zeta, &iv[0], &iv[1], &iv[2])
   {
    iv[0] = pos;
    iv[1] = vel;
