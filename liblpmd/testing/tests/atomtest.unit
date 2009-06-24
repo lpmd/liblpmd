@@ -54,6 +54,22 @@ using namespace lpmd;
  @approx (at3.Position()-pos).Module(), 0.0, 1.0E-10
  @approx (at3.Velocity()-vel).Module(), 0.0, 1.0E-10
  @approx (at3.Acceleration()-acc).Module(), 0.0, 1.0E-10
+ 
+ Atom at4(2, pos);
+ @equal at4.Z(), 2
+ @equal at4.Symbol(), "He"
+ @approx (at4.Position()-pos).Module(), 0.0, 1.0E-10
+ Atom at5(3, pos, vel);
+ @equal at5.Z(), 3
+ @equal at5.Symbol(), "Li"
+ @approx (at5.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at5.Velocity()-vel).Module(), 0.0, 1.0E-10
+ Atom at6(4, pos, vel, acc);
+ @equal at6.Z(), 4
+ @equal at6.Symbol(), "Be"
+ @approx (at6.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at6.Velocity()-vel).Module(), 0.0, 1.0E-10
+ @approx (at6.Acceleration()-acc).Module(), 0.0, 1.0E-10
 }
 @end
 
