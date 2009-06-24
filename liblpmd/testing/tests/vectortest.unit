@@ -222,7 +222,7 @@ using namespace lpmd;
  std::ostringstream os;
  Vector v(1,2,3);
  FormattedWrite(os, v);
- @equal os.str(), "< 1, 2, 3 >"
+ @equal os.str(), "<1,2,3>"
 }
 @end
 
