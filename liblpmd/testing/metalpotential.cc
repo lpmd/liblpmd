@@ -73,7 +73,7 @@ void MetalPotential::UpdateForces(Configuration & conf)
     mb = ManyBodies(nn.rij,rho[i],rho[indices[nn.j]]);
     atoms[i].Acceleration() += ((pf+mb)*(forcefactor/atoms[i].Mass()));
     nn.j->Acceleration() -= ((pf+mb)*(forcefactor/nn.j->Mass()));
-    tmpvir += Dot(nn.rij, pf+mb);
+    tmpvir -= Dot(nn.rij, pf+mb);
     //FIXME : Corregir - Aclarar signo del stress
     for (int q=0;q<3;q++)
     {

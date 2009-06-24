@@ -44,7 +44,7 @@ void PairPotential::UpdateForces(Configuration & conf)
     ff = pairForce(nn.rij);
     atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
     nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());
-    tmpvir += Dot(nn.rij, ff);
+    tmpvir -= Dot(nn.rij, ff);
     for (int k=0;k<3;k++)
     {
      stress[0][k] += -(nn.rij)[0]*ff[k];
