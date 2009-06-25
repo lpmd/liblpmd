@@ -17,18 +17,18 @@ class lpmd::ColorHandlerImpl
  public:
    ColorHandlerImpl() { }
 
-   std::map<const BasicAtom *, Color> colormap;
+   std::map<unsigned long int, Color> colormap;
 };
 
 lpmd::ColorHandlerImpl ColorHandler::impl = ColorHandlerImpl();
 
 ColorHandler::ColorHandler() { }
 
-bool ColorHandler::HaveColor(const BasicAtom & at) { return (impl.colormap.count(&at) > 0); }
+bool ColorHandler::HaveColor(const BasicAtom & at) { return (impl.colormap.count(at.ID()) > 0); }
 
 Color & ColorHandler::ColorOfAtom(const BasicAtom & at)
 {
- try { return impl.colormap[&at]; }
+ try { return impl.colormap[at.ID()]; }
  catch(Error & e) { throw RuntimeError("Atom has no color"); }
 }
 

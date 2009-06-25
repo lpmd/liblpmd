@@ -13,15 +13,22 @@
 namespace lpmd
 {
 
+ extern unsigned long int LastAtomID;
+
 class BasicAtom
 {
  public:
-  BasicAtom(int z0, Vector * ip, Vector * iv, Vector * ia): z(z0), ipos(ip), ivel(iv), iacc(ia), mass(ElemMass[z]), charge(0.0) { }
+  BasicAtom(int z0, Vector * ip, Vector * iv, Vector * ia): z(z0), ipos(ip), ivel(iv), iacc(ia), mass(ElemMass[z]), charge(0.0), id(LastAtomID++) { }
+
+  BasicAtom(int z0, Vector * ip, Vector * iv, Vector * ia, unsigned long int _id): z(z0), ipos(ip), ivel(iv), iacc(ia), mass(ElemMass[z]), charge(0.0), id(_id) { }
+
   virtual ~BasicAtom() { }
 
   inline int Z() const { return z; }
 
   inline std::string Symbol() const { return ElemSym[Z()]; }
+
+  inline unsigned long int ID() const { return id; }
 
   inline const Vector & Position() const { return *ipos; }
 
@@ -52,6 +59,7 @@ class BasicAtom
     Position() = at.Position(); 
     Velocity() = at.Velocity(); 
     Acceleration() = at.Acceleration(); 
+    id = at.ID();
    }
    return (*this);
   }
@@ -61,6 +69,7 @@ class BasicAtom
   Vector * ipos, * ivel, * iacc;
   double mass;
   double charge;
+  unsigned long int id;
 };
 
 inline bool operator==(const BasicAtom & a, const BasicAtom & b)

@@ -234,9 +234,9 @@ Simulation & SimulationBuilder::CloneOptimized(const Simulation & sim)
  for (long int i=0;i<atoms.Size();++i) 
  {
   newatoms[i] = atoms[i];
-  const BasicAtom & basic_i = atoms[i];
-  const BasicAtom & real_i = newatoms[i];
-  if (ColorHandler::HaveColor(basic_i)) ColorHandler::ColorOfAtom(real_i) = ColorHandler::ColorOfAtom(basic_i);
+  //const BasicAtom & basic_i = atoms[i];
+  //const BasicAtom & real_i = newatoms[i];
+  //if (ColorHandler::HaveColor(basic_i)) ColorHandler::ColorOfAtom(real_i) = ColorHandler::ColorOfAtom(basic_i);
  }
  for (int q=0;q<3;++q) newcell[q] = cell[q];
  impl.s_array.Append(simp);
