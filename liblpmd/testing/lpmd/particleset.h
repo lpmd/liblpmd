@@ -17,9 +17,15 @@ namespace lpmd
   public:
    ParticleSet(): Array<Atom>() { }
 
-   ParticleSet(long int s): Array<Atom>(s) { }
+   ParticleSet(long int s): Array<Atom>(s) 
+   { 
+    for (long int i=0;i<s;++i) (*this)[i].RenewID();
+   }
 
-   ParticleSet(long int s, const BasicAtom & at): Array<Atom>(s, at) { }
+   ParticleSet(long int s, const BasicAtom & at): Array<Atom>(s, at) 
+   { 
+    for (long int i=0;i<s;++i) (*this)[i].RenewID();
+   }
 
    ParticleSet(const AtomArray & arr): Array<Atom>(arr.Size())
    {

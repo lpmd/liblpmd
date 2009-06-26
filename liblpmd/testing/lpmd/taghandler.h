@@ -33,7 +33,7 @@ namespace lpmd
      {
       namedcontainers[container_tag] = new ParamList();
      }
-     objmapper[&obj] = namedcontainers[container_tag]; 
+     objmapper[obj.ID()] = namedcontainers[container_tag]; 
     }
 
     Map & GetTagGroup(Tag & container_tag) 
@@ -44,10 +44,10 @@ namespace lpmd
 
     bool Have(const T & obj, Tag & tag)
     { 
-     if (objmapper.count(&obj) == 0) return false;
+     if (objmapper.count(obj.ID()) == 0) return false;
      try 
      { 
-      const ParamList & pl = *(objmapper[&obj]);
+      const ParamList & pl = *(objmapper[obj.ID()]);
       return pl.Defined(tag);
      } 
      catch (std::exception & e) { return false; }
@@ -55,10 +55,10 @@ namespace lpmd
 
     bool Have(const T & obj, Tag & tag) const
     { 
-     if (objmapper.count(&obj) == 0) return false;
+     if (objmapper.count(obj.ID()) == 0) return false;
      try 
      { 
-      const typename std::map<const T *, ParamList *>::const_iterator & p = objmapper.find(&obj);
+      const typename std::map<unsigned long int, ParamList *>::const_iterator & p = objmapper.find(obj.ID());
       const ParamList & pl = *((*p).second);
       return pl.Defined(tag);
      } 
@@ -76,28 +76,28 @@ namespace lpmd
 
     template <typename Z> void SetTag(const T & obj, Tag & tag, const Z & value)
     {
-     if (objmapper.count(&obj) == 0) 
+     if (objmapper.count(obj.ID()) == 0) 
      {
       ParamList * pl = new ParamList();
-      objmapper[&obj] = pl;
+      objmapper[obj.ID()] = pl;
       namedcontainers[ToString<long int>(long(&obj))] = pl;
      }
-     (*objmapper[&obj])[tag] = ToString<Z>(value);
+     (*objmapper[obj.ID()])[tag] = ToString<Z>(value);
     }
 
     const std::string GetTag(const T & obj, Tag & tag)
     {
-     if (objmapper.count(&obj) == 0) throw InvalidRequest("Tag "+tag);
-     try { return objmapper[&obj]->operator[](tag); }
+     if (objmapper.count(obj.ID()) == 0) throw InvalidRequest("Tag "+tag);
+     try { return objmapper[obj.ID()]->operator[](tag); }
      catch (std::exception & e) { throw InvalidRequest("Tag "+tag); }
     }
 
     const std::string GetTag(const T & obj, Tag & tag) const
     {
-     if (objmapper.count(&obj) == 0) throw InvalidRequest("Tag "+tag);
+     if (objmapper.count(obj.ID()) == 0) throw InvalidRequest("Tag "+tag);
      try 
      {
-      const typename std::map<const T *, ParamList *>::const_iterator & p = objmapper.find(&obj);
+      const typename std::map<unsigned long int, ParamList *>::const_iterator & p = objmapper.find(obj.ID());
       return ((*p).second)->operator[](tag);
      }
      catch (std::exception & e) { throw InvalidRequest("Tag "+tag); }
@@ -105,7 +105,7 @@ namespace lpmd
 
   private:
     std::map<Tag, ParamList *> namedcontainers;
-    std::map<const T *, ParamList *> objmapper;
+    std::map<unsigned long int, ParamList *> objmapper;
  };
 
 }  // lpmd

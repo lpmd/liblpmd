@@ -26,6 +26,7 @@ namespace lpmd
     virtual BasicCell & Cell() = 0;
     virtual const BasicCell & Cell() const = 0;
 
+    inline unsigned long int ID() const { return (unsigned long int)(this); }
     void ShowInfo(std::ostream & out);
 
     double & Virial() { return virial; }

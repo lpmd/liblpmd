@@ -64,6 +64,8 @@ class BasicAtom
    return (*this);
   }
 
+  inline void RenewID() { id = LastAtomID++; }
+
  protected:
   int z;
   Vector * ipos, * ivel, * iacc;

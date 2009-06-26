@@ -44,7 +44,13 @@ class TagAtomSelector: public Selector<BasicParticleSet>
    { 
     innerps.Clear();
     for (long int i=0;i<ps.Size();++i) 
-      if (ps.Have(ps[i], tsel)) innerps.Append(ps[i]);
+    {  
+     if (ps.Have(ps[i], tsel))
+     {
+      innerps.Append(ps[i]);
+      assert(ps.Have(innerps[innerps.Size()-1], tsel));
+     }
+    }
     return innerps;
    }
 

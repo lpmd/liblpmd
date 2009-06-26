@@ -17,12 +17,20 @@ namespace lpmd
  class FixedSizeParticleSet: public BasicParticleSet
  {
   public: 
-    FixedSizeParticleSet(long int n): nl(n), iter(0) { AllocateMemory(n); }
+    FixedSizeParticleSet(long int n): nl(n), iter(0) 
+    { 
+     AllocateMemory(n); 
+     for (long int i=0;i<n;++i) (*this)[i].RenewID();
+    }
 
     FixedSizeParticleSet(long int n, const BasicAtom & at): nl(n), iter(0)
     {
      AllocateMemory(n);
-     for (long int i=0;i<n;++i) (*this)[i] = at;
+     for (long int i=0;i<n;++i)
+     {
+      (*this)[i] = at;
+      (*this)[i].RenewID();
+     }
      iter = nl;
     }
 
