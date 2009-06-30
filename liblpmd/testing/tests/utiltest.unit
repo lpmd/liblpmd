@@ -44,6 +44,18 @@ using namespace lpmd;
  {
   @equal int(atof(vec[i].c_str())), i+1
  }
+ Array<std::string> vec2 = StringSplit("1 2 3 4 5 6 7 8 9 10");
+ @equal vec2.Size(), 10
+ for(int i=0;i<10;++i) 
+ {
+  @equal int(atof(vec2[i].c_str())), i+1
+ }
+ Array<std::string> vec3 = StringSplit("1,2,3,4,5,6,7,8,9,10",',');
+ @equal vec3.Size(), 10
+ for(int i=0;i<10;++i) 
+ {
+  @equal int(atof(vec3[i].c_str())), i+1
+ }
 }
 @end
 
