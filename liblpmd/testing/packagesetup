@@ -20,7 +20,7 @@ end
 
 directory .
 
-    library liblpmd.so
+    library liblpmd
 
        language = c++
        flags += -Wall -pedantic -std=gnu++98 -I. -fPIC
@@ -70,7 +70,7 @@ end
 
 directory lpunit
 
-   staticlibrary liblpunit.a
+   staticlibrary liblpunit
      language = c++
      sources = test.cc testsuite.cc
      headers = lpunit_headers
