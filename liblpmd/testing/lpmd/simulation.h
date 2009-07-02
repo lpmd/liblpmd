@@ -25,7 +25,7 @@ namespace lpmd
   public:
     virtual ~Simulation() { }
 
-    virtual void SetTemperature(double temp) = 0;
+    virtual void SetTemperature(double temp, bool tag) = 0;
 
     virtual CombinedPotential & Potentials() = 0;
 

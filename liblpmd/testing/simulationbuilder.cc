@@ -49,12 +49,24 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
    delete cell;
   }
 
- void SetTemperature(double temp) 
+ void SetTemperature(double temp, bool tag) 
  {  
   if (! velocitiesSet) InitVelocities();
   BasicParticleSet & atomaccesor = Atoms(); // en vez de (*atoms), para que funcione con ApplyAtomMask
-  double ti = Temperature(atomaccesor);
-  for (long int i=0;i<atomaccesor.Size();++i) atomaccesor[i].Velocity() *= sqrt(temp/ti);
+  double ti = Temperature(atomaccesor, tag);
+
+  if(tag==false)
+  {
+   for (long int i=0;i<atomaccesor.Size();++i) atomaccesor[i].Velocity() *= sqrt(temp/ti);
+  }
+  else
+  {
+   for (long int i=0;i<atomaccesor.Size();++i)
+   {
+    if (atomaccesor.Have(atomaccesor[i], Tag("fixedvel")) || atomaccesor.Have(atomaccesor[i], Tag("fixedpos"))) continue;
+    else atomaccesor[i].Velocity() *= sqrt(temp/ti);
+   }
+  }
  }
 
  CellType & OriginalCell() { return (*cell); }
@@ -71,9 +83,9 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  {
   const double pressfactor = double(GlobalSession["pressfactor"]);
   const double v = Cell().Volume();
-  const Vector P = Momentum(Atoms());
+  const Vector P = Momentum(Atoms(),(HaveAny(Tag("fixedvel")) || HaveAny(Tag("fixedpos"))));
   SetTag(*this, Tag("step"), step);
-  SetTag(*this, Tag("temperature"), Temperature(Atoms()));
+  SetTag(*this, Tag("temperature"), Temperature(Atoms(),(HaveAny(Tag("fixedvel")) || HaveAny(Tag("fixedpos")))));
   SetTag(*this, Tag("volume"), v);
   SetTag(*this, Tag("volume-per-atom"), v/double(Atoms().Size()));
   SetTag(*this, Tag("cell-a"), Cell()[0].Module());
@@ -86,7 +98,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   SetTag(*this, Tag("py"), P[1]);
   SetTag(*this, Tag("pz"), P[2]);
   double potenerg = double(Parameter(GetTag(*this, Tag("potential-energy"))));
-  double kinenerg = KineticEnergy(Atoms());
+  double kinenerg = KineticEnergy(Atoms(),(HaveAny(Tag("fixedvel")) || HaveAny(Tag("fixedpos"))));
   SetTag(*this, Tag("kinetic-energy"), kinenerg);
   SetTag(*this, Tag("total-energy"), potenerg+kinenerg);
   const Matrix & stress = StressTensor();

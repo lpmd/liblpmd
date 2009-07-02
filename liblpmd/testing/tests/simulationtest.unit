@@ -54,11 +54,11 @@ class MockIntegrator: public Integrator
 @test Seteo y calculo de temperatura
 {
  Simulation & s = SimulationBuilder::CreateGeneric(108, Atom("Cu"));
- s.SetTemperature(300.0);
  BasicParticleSet & atoms = s.Atoms();
- @approx Temperature(atoms), 300.0, 1.0E-10
- s.SetTemperature(150.0);
- @approx Temperature(atoms), 150.0, 1.0E-10 
+ s.SetTemperature(300.0,(atoms.HaveAny(Tag("fixedvel")) || atoms.HaveAny(Tag("fixedpos"))));
+ @approx Temperature(atoms,(atoms.HaveAny(Tag("fixedvel")) || atoms.HaveAny(Tag("fixedpos")))), 300.0, 1.0E-10
+ s.SetTemperature(150.0,(atoms.HaveAny(Tag("fixedvel")) || atoms.HaveAny(Tag("fixedpos"))));
+ @approx Temperature(atoms,(atoms.HaveAny(Tag("fixedvel")) || atoms.HaveAny(Tag("fixedpos")))), 150.0, 1.0E-10 
 }
 @end
 

@@ -125,7 +125,7 @@ int main()
 
  GenerateFCC(atoms, cell);
  
- md.SetTemperature(168.0);
+ md.SetTemperature(168.0, (atoms.HaveAny(Tag("fixedvel")) || atoms.HaveAny(Tag("fixedpos")) ));
 
  TestDoStep(atoms, cell, DT);
 

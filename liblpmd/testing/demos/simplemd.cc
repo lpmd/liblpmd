@@ -68,7 +68,7 @@ int main()
  pot.SetValidSpecies(18, 18);
  potentials.Append(pot);
 
- md.SetTemperature(168.0);
+ md.SetTemperature(168.0, ( atoms.HaveAny(Tag("fixedvel"))||atoms.HaveAny(Tag("fixedpos")) ));
  md.SetIntegrator(pm.LoadPluginAs<Integrator>(INTEGRATOR, "dt 1.0"));
 
  for (int i=0;i<atoms.Size();++i) atoms[i].Acceleration() = Vector(0.0, 0.0, 0.0);
