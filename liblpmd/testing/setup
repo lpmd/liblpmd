@@ -479,7 +479,7 @@ class SetupHandler:
            librarySemiNamePattern = '%(name)s.%(major)d.%(extension)s'
            libraryExtensions = ['a', 'dylib']
            librarySharedFlags = ' -fno-common '
-           librarySharedLinkerFlags = ' -Wl,-undefined -Wl,dynamic_lookup -install_name %(output)s -compatibility_version %(major)d -current_version %(major)d.%(minor)d -Wl,-single_module'
+           librarySharedLinkerFlags = ' -dynamiclib -Wl,-undefined -Wl,dynamic_lookup -install_name %(output)s -compatibility_version %(major)d -current_version %(major)d.%(minor)d -Wl,-single_module'
            moduleSharedFlags = ' -fno-common -bundle '
            moduleSharedLinkerFlags = '-fno-common -Wl,-undefined -Wl,dynamic_lookup -bundle '
            languageLinking = { 'c++': '%(linker)s -o %(target)s %(object)s %(linkflags)s',
