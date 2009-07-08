@@ -3,6 +3,7 @@
 //
 
 #include <lpmd/plugin.h>
+#include <lpmd/session.h>
 
 #include <dlfcn.h>
 #include <sys/types.h>
@@ -21,6 +22,7 @@ Plugin * lpmd::PluginLoader(std::string path, std::string args)
 {
  struct stat sst;
  if (stat(path.c_str(), &sst) == -1) return NULL;      // could not 'stat' the plugin file... 
+ std::cerr << "-> Plugin file found at " << path << '\n';
  void * mymodule = dlopen(path.c_str(), RTLD_LAZY);
  if (!mymodule) 
  {
