@@ -30,6 +30,7 @@ void PairPotential::UpdateForces(Configuration & conf)
  }
  long i,k,l;
  AtomPair nn;
+ double cutoff=GetCutoff();
 #ifdef _OPENMP
 #pragma omp parallel \
  private ( i,nn,k,l ) \
@@ -39,16 +40,17 @@ void PairPotential::UpdateForces(Configuration & conf)
 #ifdef _OPENMP
 #pragma omp for
 #endif
+
  for (i=0;i<n;++i)
  {
   NeighborList nlist;
-  conf.GetCellManager().BuildNeighborList(conf, i, nlist, false, GetCutoff());
+  conf.GetCellManager().BuildNeighborList(conf, i, nlist, false, cutoff);
   for (k=0;k<nlist.Size();++k)
   {
    nn = nlist[k];
-   if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r < GetCutoff()) 
+   if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r2 < cutoff*cutoff) 
    {
-    etmp += pairEnergy(nn.r);
+    etmp += pairEnergy(sqrt(nn.r2));
     ff = pairForce(nn.rij);
     atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
     nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());

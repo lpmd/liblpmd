@@ -93,7 +93,7 @@ int main()
   {
    for (int k=0;k<nlist.Size();++k) 
    {
-    assert(fabs(nlist[k].r-4.03501) < 0.0001);
+    assert(fabs(sqrt(nlist[k].r2)-4.03501) < 0.0001);
     assert(nlist[k].i != nlist[k].j);
     pairs.Append(Pair(nlist[k].i, nlist[k].j));
    }
@@ -107,7 +107,7 @@ int main()
   NeighborList & nlist = md.Neighbors(i, false, RCUT);
   for (int k=0;k<nlist.Size();++k) 
   {
-   assert(fabs(nlist[k].r-4.03501) < 0.0001);
+   assert(fabs(sqrt(nlist[k].r2)-4.03501) < 0.0001);
    assert(nlist[k].i != nlist[k].j);
    pairs2.Append(Pair(nlist[k].i, nlist[k].j));
   }

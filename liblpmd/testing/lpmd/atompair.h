@@ -20,9 +20,9 @@ namespace lpmd
     long int i_index;
     long int j_index;
     Vector rij;         // Distancia vectorial del atomo i al atomo j
-    double r;           // Modulo de rij (precalculado para optimizacion)
+    double r2;          // SquareModule() de rij.
 
-  AtomPair(): i(0), j(0), rij(0.0, 0.0, 0.0), r(0.0) { }
+  AtomPair(): i(0), j(0), rij(0.0, 0.0, 0.0), r2(0.0) { }
 
   AtomPair(const AtomPair & nn) 
   {
@@ -31,7 +31,7 @@ namespace lpmd
    i_index = nn.i_index;
    j_index = nn.j_index;
    rij = nn.rij;
-   r = nn.r;
+   r2 = nn.r2;
   } 
 
   AtomPair & operator=(const AtomPair & nn)
@@ -43,7 +43,7 @@ namespace lpmd
     i_index = nn.i_index;
     j_index = nn.j_index;
     rij = nn.rij;
-    r = nn.r;
+    r2 = nn.r2;
    }
    return (*this);
   }

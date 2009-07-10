@@ -62,10 +62,10 @@ void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, do
       const lpmd::AtomPair & nn = nlist[k];
       if(nn.j->Symbol()==loa[1])
       {
-       if(nn.r*nn.r<=rcut*rcut)
+       if(nn.r2<=rcut*rcut)
        {
-	int ig=(long)floor(nn.r/dr);
-	g[ig][s]=g[ig][s]+(cell.Volume())/(4.0e0*M_PI*nn.r*nn.r*dr*ne1*ne2);
+	int ig=(long)floor(sqrt(nn.r2)/dr);
+	g[ig][s]=g[ig][s]+(cell.Volume())/(4.0e0*M_PI*nn.r2*dr*ne1*ne2);
        }
       }
      }

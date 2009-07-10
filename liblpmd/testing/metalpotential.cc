@@ -32,7 +32,7 @@ void MetalPotential::Initialize(Configuration & conf)
   for (long int k=0;k<nlist.Size();++k)
   {
    const AtomPair & nn = nlist[k];
-   if (AppliesTo(atoms[i].Z(), nn.j->Z())) rhoi += rhoij(nn.r);
+   if (AppliesTo(atoms[i].Z(), nn.j->Z())) rhoi += rhoij(sqrt(nn.r2));
   }
   rho[i]=rhoi;
  }
@@ -49,33 +49,42 @@ void MetalPotential::UpdateForces(Configuration & conf)
  const long n = atoms.Size();
  //Generamos las densidades locales de cada atomo.
  Initialize(conf);
- double tmpvir = 0.0;
  energycache = 0.0;
  double stress[3][3];
  Vector pf,acci,accj,mb;
- long i;
 
  // FIXME: Construct an "index table" so we don't have to depend on Atom::Index()
  std::map<BasicAtom *, long int> indices;
  for (long int i=0;i<atoms.Size();++i) indices[&atoms[i]] = i;
  //
+ long i=0,q=0,k=0;
+ double tmpvir=0.0e0, etmp=0.0e0, cutoff=GetCutoff();
+ AtomPair nn;
+#ifdef _OPENMP
+#pragma omp parallel \
+  private ( i,nn,q,k ) \
+  reduction ( + : etmp, tmpvir )
+#endif
 
+#ifdef _OPENMP
+#pragma omp for
+#endif
  for (i=0;i<n;++i)
  {
-  NeighborList & nlist = conf.Neighbors(i, false, GetCutoff());
-  for (long int k=0;k<nlist.Size();++k)
+  NeighborList nlist; 
+  conf.GetCellManager().BuildNeighborList(conf, i, nlist, false, cutoff);
+  for (k=0;k<nlist.Size();++k)
   {
-   const AtomPair & nn = nlist[k];
+   nn = nlist[k];
    if (AppliesTo(atoms[i].Z(), nn.j->Z()))
    {
-    energycache += pairEnergy(nn.r);
+    etmp += pairEnergy(sqrt(nn.r2));
     pf = PairForce(nn.rij);
     mb = ManyBodies(nn.rij,rho[i],rho[indices[nn.j]]);
     atoms[i].Acceleration() += ((pf+mb)*(forcefactor/atoms[i].Mass()));
     nn.j->Acceleration() -= ((pf+mb)*(forcefactor/nn.j->Mass()));
     tmpvir -= Dot(nn.rij, pf+mb);
-    //FIXME : Corregir - Aclarar signo del stress
-    for (int q=0;q<3;q++)
+    for (q=0;q<3;q++)
     {
      stress[0][q] += -(nn.rij)[0]*(pf+mb)[q];
      stress[1][q] += -(nn.rij)[1]*(pf+mb)[q];
@@ -85,8 +94,18 @@ void MetalPotential::UpdateForces(Configuration & conf)
   }
  }
  //Calcula de la Energia de Muchos Cuerpos.
- for (i=0;i<n;++i) {energycache += F(rho[i]);}
+ double etmp2=0.0e0;
 
+#ifdef _OPENMP
+#pragma omp parallel for private (i) reduction ( + : etmp2 )
+#endif
+ for (i=0;i<n;++i) 
+ {
+  etmp2 += F(rho[i]);
+ }
+
+ energycache += etmp;
+ energycache += etmp2;
  // Virial 
  VirialEvaluate(conf);
  double & config_virial = conf.Virial();
