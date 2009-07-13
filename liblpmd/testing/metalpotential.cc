@@ -28,8 +28,9 @@ void MetalPotential::Initialize(Configuration & conf)
  //Setea las densidades locales de cada atomo.
  long int i=0,k=0;
  double cutoff = GetCutoff();
+ AtomPair nn;
 #ifdef _OPENMP
-#pragma omp parallel for private ( i, k, rhoi )
+#pragma omp parallel for private ( i, k, rhoi, nn )
 #endif
  for (i=0;i<n;++i)
  {
@@ -38,7 +39,7 @@ void MetalPotential::Initialize(Configuration & conf)
   conf.GetCellManager().BuildNeighborList(conf, i, nlist, true, cutoff);
   for (k=0;k<nlist.Size();++k)
   {
-   const AtomPair & nn = nlist[k];
+   nn = nlist[k];
    if (AppliesTo(atoms[i].Z(), nn.j->Z())) rhoi += rhoij(sqrt(nn.r2));
   }
   rho[i]=rhoi;
@@ -69,7 +70,7 @@ void MetalPotential::UpdateForces(Configuration & conf)
  AtomPair nn;
 #ifdef _OPENMP
 #pragma omp parallel \
-  private ( i,nn,q,k ) \
+  private ( i,nn,q,k,pf,mb ) \
   reduction ( + : etmp, tmpvir )
 #endif
 
