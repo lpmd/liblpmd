@@ -24,7 +24,6 @@ void PairPotential::UpdateForces(Configuration & conf)
  BasicParticleSet & atoms = conf.Atoms();
  const long int n = atoms.Size();
  energycache = 0.0;
- //double tmpvir = 0.0e0,etmp=0.0e0;
  double stress[3][3];
  for (int i=0;i<3;++i)
  {
@@ -40,8 +39,10 @@ void PairPotential::UpdateForces(Configuration & conf)
 #pragma omp parallel private (tid)
 #endif
  {
+#ifdef _OPENMP
   nthreads = omp_get_num_threads();
   tid = omp_get_thread_num();
+#endif
   for (long i = tid; i < n; i = i + nthreads )
   {
    NeighborList nlist;
@@ -66,9 +67,7 @@ void PairPotential::UpdateForces(Configuration & conf)
    }
   }
  }
- //energycache += etmp;
  double & config_virial = conf.Virial();
- //config_virial += tmpvir;
  for (int i=0 ; i < nthreads ; ++i ) {energycache += etmp[i];config_virial += tmpvir[i];}
  Matrix & config_stress = conf.StressTensor();
  for (int p=0;p<3;p++)
