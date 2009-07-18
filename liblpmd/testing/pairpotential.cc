@@ -6,6 +6,9 @@
 #include <lpmd/pairpotential.h>
 #include <lpmd/atompair.h>
 #include <lpmd/matrix.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 using namespace lpmd;
 
@@ -18,55 +21,55 @@ double PairPotential::energy(Configuration & conf) { return energycache; }
 void PairPotential::UpdateForces(Configuration & conf)
 {
  const double forcefactor = GlobalSession["forcefactor"];
- Vector ff;
  BasicParticleSet & atoms = conf.Atoms();
  const long int n = atoms.Size();
  energycache = 0.0;
- double tmpvir = 0.0e0,etmp=0.0e0;
+ //double tmpvir = 0.0e0,etmp=0.0e0;
  double stress[3][3];
  for (int i=0;i<3;++i)
  {
   for (int j=0;j<3;++j) stress[i][j]=0.0e0;
  }
- long i,k,l;
- AtomPair nn;
  double cutoff=GetCutoff();
-#ifdef _OPENMP
-#pragma omp parallel \
- private ( i,nn,k,l ) \
- reduction ( + : etmp, tmpvir )
-#endif
+
+#define MAX_THREADS 32
+ double etmp[MAX_THREADS]={0.0},tmpvir[MAX_THREADS]={0.0};
+ int tid=0,nthreads=1;
 
 #ifdef _OPENMP
-#pragma omp for
+#pragma omp parallel private (tid)
 #endif
-
- for (i=0;i<n;++i)
  {
-  NeighborList nlist;
-  conf.GetCellManager().BuildNeighborList(conf, i, nlist, false, cutoff);
-  for (k=0;k<nlist.Size();++k)
+  nthreads = omp_get_num_threads();
+  tid = omp_get_thread_num();
+  for (long i = tid; i < n; i = i + nthreads )
   {
-   nn = nlist[k];
-   if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r2 < cutoff*cutoff) 
+   NeighborList nlist;
+   conf.GetCellManager().BuildNeighborList(conf, i, nlist, false, cutoff);
+   for (long k=0;k<nlist.Size();++k)
    {
-    etmp += pairEnergy(sqrt(nn.r2));
-    ff = pairForce(nn.rij);
-    atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
-    nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());
-    tmpvir -= Dot(nn.rij, ff);
-    for (l=0;l<3;++l)
+    AtomPair nn = nlist[k];
+    if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r2 < cutoff*cutoff) 
     {
-     stress[0][l] += -(nn.rij)[0]*ff[l];
-     stress[1][l] += -(nn.rij)[1]*ff[l];
-     stress[2][l] += -(nn.rij)[2]*ff[l];
+     etmp[tid] += pairEnergy(sqrt(nn.r2));
+     Vector ff = pairForce(nn.rij);
+     atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
+     nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());
+     tmpvir[tid] -= Dot(nn.rij, ff);
+     for (int l=0;l<3;++l)
+     {
+      stress[0][l] += -(nn.rij)[0]*ff[l];
+      stress[1][l] += -(nn.rij)[1]*ff[l];
+      stress[2][l] += -(nn.rij)[2]*ff[l];
+     }
     }
    }
   }
  }
- energycache += etmp;
+ //energycache += etmp;
  double & config_virial = conf.Virial();
- config_virial += tmpvir;
+ //config_virial += tmpvir;
+ for (int i=0 ; i < nthreads ; ++i ) {energycache += etmp[i];config_virial += tmpvir[i];}
  Matrix & config_stress = conf.StressTensor();
  for (int p=0;p<3;p++)
    for (int q=0;q<3;q++) config_stress.Set(q, p, config_stress.Get(q, p)+stress[q][p]);
