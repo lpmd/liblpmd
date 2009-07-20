@@ -83,9 +83,9 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  {
   const double pressfactor = double(GlobalSession["pressfactor"]);
   const double v = Cell().Volume();
-  const Vector P = Momentum(Atoms(),(HaveAny(Tag("fixedvel")) || HaveAny(Tag("fixedpos"))));
+  const Vector P = Momentum(Atoms(),(Atoms().HaveAny(Tag("fixedvel")) || Atoms().HaveAny(Tag("fixedpos"))));
   SetTag(*this, Tag("step"), step);
-  SetTag(*this, Tag("temperature"), Temperature(Atoms(),(HaveAny(Tag("fixedvel")) || HaveAny(Tag("fixedpos")))));
+  SetTag(*this, Tag("temperature"), Temperature(Atoms(),(Atoms().HaveAny(Tag("fixedvel")) || Atoms().HaveAny(Tag("fixedpos")))));
   SetTag(*this, Tag("volume"), v);
   SetTag(*this, Tag("volume-per-atom"), v/double(Atoms().Size()));
   SetTag(*this, Tag("cell-a"), Cell()[0].Module());
@@ -98,7 +98,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   SetTag(*this, Tag("py"), P[1]);
   SetTag(*this, Tag("pz"), P[2]);
   double potenerg = double(Parameter(GetTag(*this, Tag("potential-energy"))));
-  double kinenerg = KineticEnergy(Atoms(),(HaveAny(Tag("fixedvel")) || HaveAny(Tag("fixedpos"))));
+  double kinenerg = KineticEnergy(Atoms(),(Atoms().HaveAny(Tag("fixedvel")) || Atoms().HaveAny(Tag("fixedpos"))));
   SetTag(*this, Tag("kinetic-energy"), kinenerg);
   SetTag(*this, Tag("total-energy"), potenerg+kinenerg);
   const Matrix & stress = StressTensor();
