@@ -74,6 +74,22 @@ namespace lpmd
      return false;
     }
 
+    void RemoveTags(const T & obj)
+    {
+     if (objmapper.count(obj.ID()) != 0) { delete objmapper[obj.ID()]; objmapper.erase(obj.ID()); }
+    }
+
+    void SetTag(const T & obj, Tag & tag, const std::string & value)
+    {
+     if (objmapper.count(obj.ID()) == 0) 
+     {
+      ParamList * pl = new ParamList();
+      objmapper[obj.ID()] = pl;
+      namedcontainers[ToString<long int>(long(&obj))] = pl;
+     }
+     (*objmapper[obj.ID()])[tag] = value;
+    }
+
     template <typename Z> void SetTag(const T & obj, Tag & tag, const Z & value)
     {
      if (objmapper.count(obj.ID()) == 0) 
