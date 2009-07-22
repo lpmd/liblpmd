@@ -76,7 +76,17 @@ namespace lpmd
 
     void RemoveTags(const T & obj)
     {
-     if (objmapper.count(obj.ID()) != 0) { delete objmapper[obj.ID()]; objmapper.erase(obj.ID()); }
+     if (objmapper.count(obj.ID()) != 0)
+     {
+      std::string todelete = "";
+      for (typename std::map<Tag, ParamList *>::const_iterator it=namedcontainers.begin();it!=namedcontainers.end();++it)
+      {
+       if (it->second == objmapper[obj.ID()]) { todelete = it->first; break; }
+      }
+      if (todelete != "") namedcontainers.erase(todelete);
+      delete objmapper[obj.ID()];
+      objmapper.erase(obj.ID());
+     }
     }
 
     void SetTag(const T & obj, Tag & tag, const std::string & value)
