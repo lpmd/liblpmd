@@ -170,6 +170,12 @@ directory tests
        sources = particlesettest.unit
     end
 
+    binary propertiestest
+       test = true
+       language = lpunit
+       sources = propertiestest.unit
+    end
+
 #    binary simulationcelltest
 #       test = true
 #       language = lpunit
@@ -222,6 +228,14 @@ directory demos
         sources = neighborlist.cc
         flags += -I..
         libraries = ../liblpmd.so -ldl -lm
+     end
+
+     binary linkedcell
+        test = true
+	language = c++
+	sources = linkedcell.cc
+	flags += -I..
+	libraries = ../liblpmd.so -ldl -lm
      end
 
      binary nopluginmd
