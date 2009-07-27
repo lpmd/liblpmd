@@ -79,7 +79,7 @@ int main()
  CheckAllInside(atoms, cell);
 
  //md.SetCellManager(pm.LoadPluginAs<CellManager>("minimumimage", "cutoff 8.5"));
- md.SetCellManager(pm.LoadPluginAs<CellManager>("linkedcell", "cutoff 8.5 nx 6 ny 6 nz 6"));
+ md.SetCellManager(pm.LoadPluginAs<CellManager>("linkedcell", "cutoff 8.5 nx 1 ny 1 nz 1"));
 
  Array<Pair> pairs;
  for (long int i=0;i<atoms.Size();++i)
@@ -120,7 +120,7 @@ int main()
 // std::cerr << "DEBUG " << pairs.Size() << " " << pairs2.Size() << '\n';
 // assert(pairs.Size() == pairs2.Size());
 
- std::cerr << "NeighborList passed OK!\n";
+ std::cerr << "LinkedCell Plugin passed OK!\n";
 
  return 0;
 }
