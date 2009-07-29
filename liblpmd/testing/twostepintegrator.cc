@@ -22,7 +22,7 @@ void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
  {
   GlobalSession.DebugStream() << "-> Considering the fixedvel flag on some atoms\n";
 #ifdef _OPENMP
-#pragma omp parallel for private ( i, at )
+#pragma omp for nowait private ( i, at )
 #endif
   for (i=0;i<atoms.Size();++i)
   {
@@ -35,7 +35,7 @@ void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
  {
   GlobalSession.DebugStream() << "-> Considering the fixedpos flag on some atoms\n";
 #ifdef _OPENMP
-#pragma omp parallel for private ( i, at )
+#pragma omp for nowait private ( i, at )
 #endif
   for (i=0;i<atoms.Size();++i)
   {
@@ -47,7 +47,7 @@ void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
  else
  {
 #ifdef _OPENMP
-#pragma omp parallel for private ( i, at )
+#pragma omp for nowait private ( i, at )
 #endif
   for (i=0;i<atoms.Size();++i) AdvancePosition(sim, i);
  }
@@ -59,7 +59,7 @@ void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
  {
   GlobalSession.DebugStream() << "-> Considering the fixedvel flag on some atoms\n";
 #ifdef _OPENMP
-#pragma omp parallel for private ( i, at )
+#pragma omp for nowait private ( i, at )
 #endif
   for (i=0;i<atoms.Size();++i)
   {
@@ -72,7 +72,7 @@ void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
  {
   GlobalSession.DebugStream() << "-> Considering the fixedpos flag on some atoms\n";
 #ifdef _OPENMP
-#pragma omp parallel for private ( i, at )
+#pragma omp for nowait private ( i, at )
 #endif
   for (i=0;i<atoms.Size();++i)
   {
@@ -84,7 +84,7 @@ void TwoStepIntegrator::Advance(Simulation & sim, Potential & p)
  else
  {
 #ifdef _OPENMP
-#pragma omp parallel for private ( i, at )
+#pragma omp for nowait private ( i, at )
 #endif
   for (i=0;i<atoms.Size();++i) AdvanceVelocity(sim, i);
  }
