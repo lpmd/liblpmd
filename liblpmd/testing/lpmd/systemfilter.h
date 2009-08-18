@@ -21,6 +21,7 @@ namespace lpmd
    virtual Selector<BasicParticleSet> & CreateSelector() = 0;
 
    bool inverted;
+   std::string except;
  };
 
 } // lpmd 
