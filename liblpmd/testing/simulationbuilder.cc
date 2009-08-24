@@ -107,11 +107,13 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   SetTag(*this, Tag("pressure"), (pressfactor/v)*((2.0/3.0)*kinenerg+(1.0/3.0)*Virial()));
 
   char component_letter[3] = {'x', 'y', 'z'};
+  char label_buf[4] = {'s', NULL, NULL, NULL};
   for (int p=0;p<3;++p)
    for (int q=0;q<3;++q)
    {
-    std::string label = "s"+component_letter[q]+component_letter[p];
-    SetTag(*this, Tag(label), (pressfactor/v)*stress.Get(q, p));
+    label_buf[1] = component_letter[q];
+    label_buf[2] = component_letter[p];
+    SetTag(*this, Tag(std::string(label_buf)), (pressfactor/v)*stress.Get(q, p));
    }
  }
  
