@@ -61,11 +61,11 @@ void CommandArguments::Parse(int argc, const char ** argv)
    // Opcion larga 
    std::string optname(&argv[i][2]);
    bool optfound = false;
-   for (int i=0;i<impl.optlist.Size();++i)
+   for (int j=0;j<impl.optlist.Size();++j)
    {
-    if (optname == impl.optlist[i].longname)
+    if (optname == impl.optlist[j].longname)
     {
-     curropt = impl.optlist[i];
+     curropt = impl.optlist[j];
      optfound = true;
      break;
     }
@@ -79,11 +79,11 @@ void CommandArguments::Parse(int argc, const char ** argv)
    // Opcion corta
    std::string optname(&argv[i][1]);
    bool optfound = false;
-   for (int i=0;i<impl.optlist.Size();++i)
+   for (int j=0;j<impl.optlist.Size();++j)
    {
-    if (optname == impl.optlist[i].shortname)
+    if (optname == impl.optlist[j].shortname)
     {
-     curropt = impl.optlist[i];
+     curropt = impl.optlist[j];
      optfound = true;
      break;
     }

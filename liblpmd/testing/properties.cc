@@ -47,16 +47,16 @@ void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, do
  {
   lpmd::Array<std::string> loa = lpmd::SplitSpeciesPair(pairs[i]); // lista de atomos
   int ne1=0,ne2=0;
-  for(int m=0;m<N;m++)
+  for(int a=0;a<N;a++)
   {
-   if(atoms[m].Symbol()==loa[0]) ne1++;
-   if(atoms[m].Symbol()==loa[1]) ne2++;				     }
+   if(atoms[a].Symbol()==loa[0]) ne1++;
+   if(atoms[a].Symbol()==loa[1]) ne2++;				     }
 
-   for(int i=0;i<N;++i)
+   for(int j=0;j<N;++j)
    {
-    if(atoms[i].Symbol()==loa[0])
+    if(atoms[j].Symbol()==loa[0])
     {
-     lpmd::NeighborList & nlist = con.Neighbors(i,true,rcut);
+     lpmd::NeighborList & nlist = con.Neighbors(j,true,rcut);
      for(long int k=0; k<nlist.Size() ; ++k)
      {
       const lpmd::AtomPair & nn = nlist[k];
@@ -81,17 +81,17 @@ void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, do
   int e1 = ElemNum(loa[0]);
   int e2 = ElemNum(loa[1]);
   int ne1=0,ne2=0;
-  for(int m=0;m<N;m++)
+  for(int a=0;a<N;a++)
   {
-   if(atoms[m].Symbol()==loa[0]) ne1++;
-   if(atoms[m].Symbol()==loa[1]) ne2++;
+   if(atoms[a].Symbol()==loa[0]) ne1++;
+   if(atoms[a].Symbol()==loa[1]) ne2++;
   }
   double ce1 = (double)ne1/(double)N;
   double ce2 = (double)ne2/(double)N;
-  for(int i=0;i<nb;i++)
+  for(int k=0;k<nb;k++)
   {
-   if(e1==e2) gt[i] = gt[i]+ce1*ce2*g[i][j];
-   else {gt[i]=gt[i]+2*ce1*ce2*g[i][j];}
+   if(e1==e2) gt[k] = gt[k]+ce1*ce2*g[k][j];
+   else {gt[k]=gt[k]+2*ce1*ce2*g[k][j];}
   }
   j++;
  }
@@ -114,7 +114,7 @@ void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, do
  for(int i=0;i<nb;i++)
  {
   m.Set(0, i, dr*i);
-  for(int j=0;j<(int)(nsp*(nsp+1)/2);j++)
+  for(j=0;j<(int)(nsp*(nsp+1)/2);j++)
   {
    m.Set(j+1, i, g[i][j]);
   }
