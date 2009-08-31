@@ -17,7 +17,7 @@ headerExtensions = { 'c': ['h'] , 'c++': ['h', 'hpp'], 'lpunit': ['h', 'hpp'] }
 
 languageCompilation = { 'c++': '%(compiler)s %(compilerflags)s -c %(source)s -o %(object)s',
                         'c': '%(compiler)s %(compilerflags)s -c %(source)s -o %(object)s',
-                        'lpunit': '%(compiler)s %(source)s - | icc %(compilerflags)s -x c++ -c -o %(object)s -' }
+                        'lpunit': '%(compiler)s %(source)s - | g++ %(compilerflags)s -x c++ -c -o %(object)s -' }
 
 languageStaticLibraryPacking  = { 'c++': 'ar rcs %(target)s %(object)s',
                                   'c': 'ar rcs %(target)s %(object)s',
@@ -495,8 +495,8 @@ class SetupHandler:
         if not hasattr(self, 'platform'): self.CheckPlatform()
         if self.platform == 'linux':
            sys.stdout.write('* Detected Linux platform\n\n') 
-           defaultCompiler = { 'c++': 'icc', 'c': 'gcc', 'lpunit': 'lpmaketest' }
-           defaultLinker = { 'c++': 'icc', 'c': 'gcc', 'lpunit': 'icc' }
+           defaultCompiler = { 'c++': 'g++', 'c': 'gcc', 'lpunit': 'lpmaketest' }
+           defaultLinker = { 'c++': 'g++', 'c': 'gcc', 'lpunit': 'g++' }
            libraryNamePattern = '%(name)s.%(extension)s.%(major)d.%(minor)d.%(revision)d'
            librarySemiNamePattern = '%(name)s.%(extension)s.%(major)d'
            libraryExtensions = ['a', 'so']
@@ -511,8 +511,8 @@ class SetupHandler:
            openmpLibraries = { 'c++': '-lgomp', 'c': '-lgomp' }
         elif self.platform == 'darwin':
            sys.stdout.write('* Detected Mac OS X platform\n\n')
-           defaultCompiler = { 'c++': 'icc', 'c': 'gcc', 'lpunit': 'lpmaketest' }
-           defaultLinker = { 'c++': 'icc', 'c': 'gcc', 'lpunit': 'icc' }
+           defaultCompiler = { 'c++': 'g++', 'c': 'gcc', 'lpunit': 'lpmaketest' }
+           defaultLinker = { 'c++': 'g++', 'c': 'gcc', 'lpunit': 'g++' }
            libraryNamePattern = '%(name)s.%(major)d.%(minor)d.%(revision)d.%(extension)s'
            librarySemiNamePattern = '%(name)s.%(major)d.%(extension)s'
            libraryExtensions = ['a', 'dylib']

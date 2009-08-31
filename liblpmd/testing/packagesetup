@@ -9,7 +9,7 @@ author = 'GNM <gnm@gnm.cl>'
 prefix = /usr/local
 
 language c++
-   flags = -g -O3 -funroll-all-loops -openmp -wd383,981,869 -vec-report0 
+   flags = -g -O3 -ffast-math -funroll-all-loops 
 end
 
 language lpunit
@@ -23,7 +23,7 @@ directory .
     library liblpmd
 
        language = c++
-       flags += -Wall -std=gnu++98 -I. -fPIC
+       flags += -Wall -pedantic -std=gnu++98 -I. -fPIC
 
        sources = atom.cc cell.cc cellgenerator.cc cellreader.cc cellwriter.cc cellformat.cc cellmanager.cc cmdline.cc \
 		  color.cc colorhandler.cc controlfile.cc configuration.cc elements.cc error.cc module.cc \
