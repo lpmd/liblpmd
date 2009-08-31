@@ -29,7 +29,7 @@ bool ColorHandler::HaveColor(const BasicAtom & at) { return (impl.colormap.count
 Color & ColorHandler::ColorOfAtom(const BasicAtom & at)
 {
  try { return impl.colormap[at.ID()]; }
- catch(Error & e) { throw RuntimeError("Atom has no color"); }
+ catch(Error &) { throw RuntimeError("Atom has no color"); }
 }
 
 Color ColorHandler::DefaultColor(const BasicAtom & at)

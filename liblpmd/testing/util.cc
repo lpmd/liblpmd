@@ -10,6 +10,8 @@
 
 #include <lpmd/util.h>
 
+#pragma warning (disable: 2259)
+
 using namespace lpmd;
 
 Array<std::string> lpmd::ParseThreeVectors(const std::string & str)

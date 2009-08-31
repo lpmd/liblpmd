@@ -10,5 +10,5 @@ SystemModifier::SystemModifier() { }
 
 SystemModifier::~SystemModifier() { }
 
-void SystemModifier::Apply(Simulation & sim) { }
+void SystemModifier::Apply(Simulation & sim) { assert(&sim != 0); }//icc 869
 

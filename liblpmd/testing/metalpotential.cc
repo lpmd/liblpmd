@@ -12,17 +12,18 @@ using namespace lpmd;
 
 MetalPotential::MetalPotential() { rho=NULL;invrho=NULL; }
 
-MetalPotential::MetalPotential(const MetalPotential & mp) { rho = NULL; invrho = NULL; }
+MetalPotential::MetalPotential(const MetalPotential & mp) { assert(&mp != 0); rho = NULL; invrho = NULL; }//icc 869
 
 MetalPotential::~MetalPotential() {if(rho!=NULL){delete [] rho; rho=NULL;}; if(invrho!=NULL){delete [] invrho; invrho=NULL;} }
 
 void MetalPotential::Initialize(Configuration & conf)
 {
+ assert(&conf != 0); //icc 869
 }
 
-void MetalPotential::VirialEvaluate(Configuration & conf) { }
+void MetalPotential::VirialEvaluate(Configuration & conf) { assert(&conf != 0); }//icc 869
 
-double MetalPotential::energy(Configuration & conf) { return energycache; }
+double MetalPotential::energy(Configuration & conf) { assert(&conf != 0); return energycache; }//icc 869
 
 void MetalPotential::UpdateForces(Configuration & conf)
 {
@@ -103,7 +104,19 @@ void MetalPotential::UpdateForces(Configuration & conf)
    for (int q=0;q<3;q++) config_stress.Set(q, p, config_stress.Get(q, p)+stress[q][p]);
 }
 
-double MetalPotential::VirialContribution(const double &r, const double & rhoi, const double & rhoj) const { return 0.0; }
+double MetalPotential::VirialContribution(const double &r, const double & rhoi, const double & rhoj) const 
+{ 
+ assert(&r != 0); //icc 869
+ assert(&rhoi != 0); //icc 869
+ assert(&rhoj != 0); //icc 869
+ return 0.0;
+}
 
-double MetalPotential::VirialCorrection(const double & rhobar, const int & N, const double & rhoi) const { return 0.0; }
+double MetalPotential::VirialCorrection(const double & rhobar, const int & N, const double & rhoi) const 
+{
+ assert(&rhobar != 0); //icc 869
+ assert(&N != 0); //icc 869
+ assert(&rhoi != 0);  //icc 869
+ return 0.0; 
+}
 

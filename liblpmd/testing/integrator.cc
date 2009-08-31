@@ -28,7 +28,7 @@ void Integrator::UseOldConfig(Configuration & conf)
 
 Configuration & Integrator::OldConfig() const { return *(oldconfig); }
 
-void Integrator::Initialize(Simulation & sim, Potential & p) { }
+void Integrator::Initialize(Simulation & sim, Potential & p) { assert(&sim != 0); assert(&p != 0); }//icc 869
 
 void Integrator::GoBack(Configuration & conf)
 {

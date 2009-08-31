@@ -14,7 +14,7 @@ Potential::Potential() { rcutoff = HUGE_VAL; }
 
 Potential::~Potential() { }
 
-void Potential::Initialize(Configuration & conf) { energycache = 0; }
+void Potential::Initialize(Configuration & conf) { assert(&conf != 0); energycache = 0; }//icc 869
 
 void Potential::SetValidSpecies(int s1, int s2) { spc_sum = s1+s2; }
 

@@ -16,7 +16,7 @@ PairPotential::PairPotential() { }
 
 PairPotential::~PairPotential() { }
 
-double PairPotential::energy(Configuration & conf) { return energycache; }
+double PairPotential::energy(Configuration & conf) { assert(&conf != 0); return energycache; }//icc 869
 
 void PairPotential::UpdateForces(Configuration & conf)
 {

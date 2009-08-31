@@ -14,6 +14,7 @@
 
 void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, double rcut, lpmd::Matrix & m)
 {
+ assert(&pot != 0); // icc 869
  lpmd::BasicParticleSet & atoms = con.Atoms();
  lpmd::BasicCell & cell = con.Cell();
 
@@ -127,6 +128,7 @@ void lpmd::gdr(lpmd::Configuration & con, lpmd::Potential & pot, long int nb, do
 
 void lpmd::vacf(lpmd::ConfigurationSet & hist, lpmd::Potential & pot, double dt, lpmd::Matrix & m)
 {
+ assert(&pot != 0); // icc 869
  int N = hist.Size(); 
  const Array <int> & species = hist[0].Atoms().Elements();
  int nsp = species.Size();

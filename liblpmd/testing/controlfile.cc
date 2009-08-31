@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cassert>
 
 using namespace lpmd;
 
@@ -49,16 +50,22 @@ void ControlFile::DeclareBlock(const std::string & name, const std::string & ter
 
 int ControlFile::OnRegularStatement(const std::string & name, const std::string & keywords) 
 { 
+ assert(name == name);
+ assert(keywords == keywords);
  return 0; 
 }
 
 int ControlFile::OnNonRegularStatement(const std::string & name, const std::string & full_statement) 
 { 
+ assert (&name != 0); //icc 869
+ assert (&full_statement != 0); //icc 869
  return 1; 
 }
 
 int ControlFile::OnBlock(const std::string & name, const std::string & full_statement)
 {
+ assert (&name != 0); //icc 869
+ assert (&full_statement != 0); //icc 869
  return 1;
 }
 
@@ -74,7 +81,7 @@ void ControlFile::Read(const std::string & inpfile, const ParamList & options)
  }
 }
 
-std::string AddBlockContent(const std::string & blockname, const std::string & terminator, std::istream & istr, Array<std::string> & tmpwords)
+inline std::string AddBlockContent(const std::string & blockname, const std::string & terminator, std::istream & istr, Array<std::string> & tmpwords)
 {
  std::string inpbuffer = (blockname+"block ");
  for (int z=1;z<tmpwords.Size();++z) inpbuffer += (tmpwords[z]+" ");
@@ -156,7 +163,7 @@ void ControlFile::ReadLine(const std::string & line)
   }
 }
 
-void RemoveComments(std::string & line)
+inline void RemoveComments(std::string & line)
 {
  std::size_t pos = line.find_first_of('#');
  if (pos != std::string::npos) line = line.substr(0, pos);
