@@ -50,28 +50,30 @@ inline bool IsSpace(char x)
 inline void RemoveUnnecessarySpaces(std::string & input_string)
 {
  // Replace tabs by spaces.
+ if (input_string.length() == 0) return;
  for (std::string::size_type i = 0; ; )
- {	
-  i = input_string.find_first_of('\t', i); 
-  if (i == std::string::npos) break;      
-  else 
+ {
+  i = input_string.find_first_of('\t', i);
+  if (i == std::string::npos) break;
+  else
   {
-   input_string.replace(i,1," ");	 
+   input_string.replace(i,1," ");
   }
  }
  // Remove spaces at start
- while (IsSpace(input_string[0])) input_string.erase(0,1);
+ while ((input_string.length() > 0) && IsSpace(input_string[0])) input_string.erase(0,1);
  // Remove spaces from end
- while (IsSpace(input_string[input_string.length() -1]))
+ while ((input_string.length() > 0) && IsSpace(input_string[input_string.length() -1]))
     input_string.erase(input_string.length() -1,1);
+ if (input_string.length() == 0) return;
  // Remove multiple spaces
  for (std::string::size_type i = 0; ; )
- {	
+ {
   i = input_string.find_first_of(' ', i);
-  if (i == std::string::npos) break; 
+  if (i == std::string::npos) break;
   ++i;
-  while(IsSpace(input_string[i])) input_string.erase(i,1);	 
-  ++i;	 
+  while((input_string.length() > 0) && IsSpace(input_string[i])) input_string.erase(i,1);
+  ++i;
  }
 }
 

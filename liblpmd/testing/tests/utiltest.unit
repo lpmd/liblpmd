@@ -19,6 +19,9 @@ using namespace lpmd;
  tmp ="      a       b       c       ";
  RemoveUnnecessarySpaces(tmp);
  @equal tmp, "a b c"
+ tmp = "";
+ RemoveUnnecessarySpaces(tmp);
+ @equal tmp, ""
 }
 @end
 
