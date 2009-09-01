@@ -4,6 +4,8 @@
  *
  */
 
+#include <fstream>
+
 #include <lpmd/simulationbuilder.h>
 #include <lpmd/nonorthogonalcell.h>
 #include <lpmd/orthogonalcell.h>
@@ -132,6 +134,12 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
 
  long int CurrentStep() const { return step; }
 
+ void AdjustCurrentStep(long int s)
+ {
+  step = s;
+  SetTag(*this, Tag("step"), step);
+ }
+
  void SetIntegrator(lpmd::Integrator & itg) { integ = &itg; }
 
  lpmd::Integrator & Integrator() 
@@ -173,10 +181,114 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
 
   void Initialize() 
   { 
+   initial_step = int(Parameter(GetTag(*this, Tag("step"))));
    integ->Initialize(*this, potarray); 
-   step = 0;
+   step = initial_step;
    SetTag(*this, Tag("step"), step);
    initialized = true;
+  }
+
+  void Dump(const std::string & path) const
+  {
+   const BasicCell & cell = Cell();
+   const BasicParticleSet & atoms = Atoms();
+   std::ofstream f(path.c_str());
+   f << step << '\n';
+   for (int i=0;i<3;++i)
+   {
+    for (int q=0;q<3;++q) f << cell[i][q] << " ";
+    f << '\n';
+   } 
+   f << atoms.Size() << '\n';
+   for (long int i=0;i<atoms.Size();++i)
+   {
+    const Vector & pos = atoms[i].Position();
+    const Vector & vel = atoms[i].Velocity();
+    const Vector & acc = atoms[i].Acceleration();
+    f << atoms[i].Z() << " ";
+    for (int q=0;q<3;++q) f << pos[q] << " ";
+    for (int q=0;q<3;++q) f << vel[q] << " ";
+    for (int q=0;q<3;++q) f << acc[q] << " ";
+    f << '\n';
+   }
+   // 
+   for (long int i=0;i<atoms.Size();++i)
+   {
+    f << std::boolalpha << ColorHandler::HaveColor(atoms[i]) << " ";
+    if (ColorHandler::HaveColor(atoms[i]))
+    {
+     const Color & color = ColorHandler::ColorOfAtom(atoms[i]);
+     for (int q=0;q<3;++q) f << color[q] << " ";
+    }
+    f << '\n';
+   } 
+   // 
+   for (long int i=0;i<atoms.Size();++i)
+   {
+    const Array<Parameter> ap = atoms.GetTags(atoms[i]);
+    f << ap.Size() << " ";
+    for (int q=0;q<ap.Size();++q)
+        f << ap[q] << " " << atoms.GetTag(atoms[i], Tag(ap[q])) << " ";
+    f << '\n';
+   } 
+   f.close();
+  }
+
+  void Restore(const std::string & path)
+  {
+   BasicCell & cell = Cell();
+   BasicParticleSet & atoms = Atoms();
+   std::ifstream f(path.c_str());
+   f >> initial_step;
+   SetTag(*this, Tag("step"), initial_step);
+   for (int i=0;i<3;++i)
+   {
+    for (int q=0;q<3;++q) f >> cell[i][q];
+   } 
+   long int natoms;
+   f >> natoms;
+   atoms.Clear();
+   for (long int i=0;i<natoms;++i)
+   {
+    int z;
+    f >> z;
+    atoms.Append(Atom(z));
+    Vector & pos = atoms[i].Position();
+    Vector & vel = atoms[i].Velocity();
+    Vector & acc = atoms[i].Acceleration();
+    for (int q=0;q<3;++q) f >> pos[q];
+    for (int q=0;q<3;++q) f >> vel[q];
+    for (int q=0;q<3;++q) f >> acc[q];
+   }
+   // 
+   std::string key, value;
+   for (long int i=0;i<natoms;++i)
+   {
+    f >> key;
+    bool have_color = (key == "true");
+    if (have_color) 
+    {
+     Color color;
+     for (int q=0;q<3;++q) f >> color[q];
+     ColorHandler::ColorOfAtom(atoms[i]) = color;
+    }
+   }
+   // 
+   for (long int i=0;i<natoms;++i)
+   {
+    long int tag_number;
+    f >> tag_number;
+    for (int q=0;q<tag_number;++q)
+    {
+     f >> key;
+     f >> value;
+     atoms.SetTag(atoms[i], Tag(key), value);
+    }
+   }
+   f.close();
+   velocitiesSet = true;
+   initialized = false;
+   step = initial_step;
   }
 
   AtomContainer * atoms;
@@ -185,7 +297,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   lpmd::Integrator * integ;
   bool velocitiesSet;
   bool initialized;
-  long int step;
+  long int step, initial_step;
 };
 
 //
@@ -241,6 +353,8 @@ Simulation & SimulationBuilder::CloneOptimized(const Simulation & sim)
   simp = new SimulationEngine<FixedSizeParticleSet, NonOrthogonalCell>(atoms.Size(), atoms[0]);
  }
 
+ simp->AdjustCurrentStep(int(Parameter(sim.GetTag(sim, Tag("step")))));
+
  // Se copia como FixedSize en caso de que sean realmente muchos atomos...
  FixedSizeParticleSet & newatoms = reinterpret_cast<FixedSizeParticleSet&>(simp->Atoms());
 
@@ -251,6 +365,11 @@ Simulation & SimulationBuilder::CloneOptimized(const Simulation & sim)
   //const BasicAtom & basic_i = atoms[i];
   //const BasicAtom & real_i = newatoms[i];
   //if (ColorHandler::HaveColor(basic_i)) ColorHandler::ColorOfAtom(real_i) = ColorHandler::ColorOfAtom(basic_i);
+
+  // restaura los tags
+  const Array<Parameter> ap = atoms.GetTags(atoms[i]);
+  for (int q=0;q<ap.Size();++q)
+       newatoms.SetTag(newatoms[i], Tag(ap[q]), atoms.GetTag(atoms[i], Tag(ap[q])));
  }
  for (int q=0;q<3;++q) newcell[q] = cell[q];
  impl.s_array.Append(simp);

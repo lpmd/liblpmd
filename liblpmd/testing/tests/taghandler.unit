@@ -40,6 +40,21 @@ using namespace lpmd;
 }
 @end
 
+@test GetTags
+{
+ TagHandler<BasicAtom> h;
+ Atom at("Cu");
+ h.SetTag(at, Tag("nuevotag"), true);
+ h.SetTag(at, Tag("foo"), false);
+ h.SetTag(at, Tag("bar"), 42);
+ Array<Parameter> p = h.GetTags(at);
+ @equal p.Size(), 3 
+ @assert p.Contains(Parameter("nuevotag"))
+ @assert p.Contains(Parameter("foo"))
+ @assert p.Contains(Parameter("bar"))
+}
+@end
+
 @test Seteo explicito de un contenedor especifico de tags
 {
  TagHandler<BasicAtom> h;

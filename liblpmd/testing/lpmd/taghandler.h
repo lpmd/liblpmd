@@ -129,9 +129,16 @@ namespace lpmd
      catch (std::exception & e) { throw InvalidRequest("Tag "+tag); }
     }
 
+    Array<Parameter> GetTags(const T & obj) const 
+    {
+     Array<Parameter> tmp;
+     if (objmapper.count(obj.ID()) == 0) return tmp; 
+     return objmapper[obj.ID()]->Parameters();
+    }
+
   private:
     std::map<Tag, ParamList *> namedcontainers;
-    std::map<unsigned long int, ParamList *> objmapper;
+    mutable std::map<unsigned long int, ParamList *> objmapper;
  };
 
 }  // lpmd

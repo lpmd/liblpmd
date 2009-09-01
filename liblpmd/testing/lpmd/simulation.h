@@ -37,12 +37,17 @@ namespace lpmd
 
     virtual long int CurrentStep() const = 0;
 
+    virtual void AdjustCurrentStep(long int s) = 0;
+
     virtual void SetIntegrator(lpmd::Integrator & itg) = 0;
 
     virtual lpmd::Integrator & Integrator() = 0;
 
     virtual void RescalePositions(const BasicCell & old_cell) = 0;
 
+    // 
+    virtual void Dump(const std::string & path) const = 0;
+    virtual void Restore(const std::string & path) = 0;
  };
 
 } // lpmd
