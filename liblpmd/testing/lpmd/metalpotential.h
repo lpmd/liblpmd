@@ -7,10 +7,10 @@
 
 #include <lpmd/vector.h>
 #include <lpmd/potential.h>
+#include <lpmd/atompair.h>
 
 namespace lpmd
 {
-
 class MetalPotential: public Potential
 {
  public:
@@ -18,6 +18,10 @@ class MetalPotential: public Potential
   MetalPotential(const MetalPotential & mp);
 
   virtual ~MetalPotential();
+
+  MetalPotential & operator=(const MetalPotential & m);
+
+  MetalPotential & operator=(const Potential & m);
 
   void Initialize(Configuration & conf);
 
@@ -48,6 +52,7 @@ class MetalPotential: public Potential
  private:
   double *rho,*invrho;
   bool initial;
+  NeighborList * list;
 };
 
 } // lpmd
