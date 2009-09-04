@@ -54,7 +54,6 @@ void MetalPotential::UpdateForces(Configuration & conf)
  const double forcefactor = double(GlobalSession["forcefactor"]);
  BasicParticleSet & atoms = conf.Atoms();
  const long n = atoms.Size();
- BasicCell & cell = conf.Cell();
 
  energycache = 0.0;
  double stress[3][3];
@@ -90,15 +89,15 @@ void MetalPotential::UpdateForces(Configuration & conf)
  }
  for (long i=0;i<n;++i) invrho[i] = 1/rho[i];
 
+ double cutoff2 = cutoff*cutoff;
 #ifdef _OPENMP
 #pragma omp parallel for reduction ( + : etmp, tmpvir, etmp2 )
 #endif
  
- double cutoff2 = cutoff*cutoff;
  for (long i=0;i<n;++i)
  {
   NeighborList & nlist = list[i];
-  for (unsigned long k=0;k<nlist.Size();++k)
+  for (long k=0;k<nlist.Size();++k)
   {
    AtomPair & nn = nlist[k];
    if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r2 < cutoff2)
