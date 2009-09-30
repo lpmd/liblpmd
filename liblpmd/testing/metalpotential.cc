@@ -10,41 +10,20 @@
 
 using namespace lpmd;
 
-MetalPotential::MetalPotential(): rho(NULL) { }
+MetalPotential::MetalPotential() { rho=NULL;invrho=NULL; }
 
-MetalPotential::MetalPotential(const MetalPotential & mp): rho(NULL) { assert(&mp != 0); } //icc 869
+MetalPotential::MetalPotential(const MetalPotential & mp) { assert(&mp != 0); rho = NULL; invrho = NULL; }//icc 869
 
-MetalPotential::~MetalPotential()
+MetalPotential::~MetalPotential() {if(rho!=NULL){delete [] rho; rho=NULL;}; if(invrho!=NULL){delete [] invrho; invrho=NULL;} }
+
+void MetalPotential::Initialize(Configuration & conf)
 {
- delete [] rho;
-}
-
-MetalPotential & MetalPotential::operator=(const MetalPotential & m)
-{
- if (&m != this)
- {
-  rho = NULL;
- }
- return (*this); 
-}
-
-MetalPotential & MetalPotential::operator=(const Potential & m)
-{
- if (&m != this)
- {
-  rho = NULL;
- }
- return (*this); 
-}
-
-void MetalPotential::Initialize(Configuration & conf) 
-{ 
  assert(&conf != 0); //icc 869
 }
 
-void MetalPotential::VirialEvaluate(Configuration & conf) { assert(&conf != 0); } //icc 869
+void MetalPotential::VirialEvaluate(Configuration & conf) { assert(&conf != 0); }//icc 869
 
-double MetalPotential::energy(Configuration & conf) { assert(&conf != 0); return energycache; } //icc 869
+double MetalPotential::energy(Configuration & conf) { assert(&conf != 0); return energycache; }//icc 869
 
 void MetalPotential::UpdateForces(Configuration & conf)
 {
@@ -55,56 +34,53 @@ void MetalPotential::UpdateForces(Configuration & conf)
  energycache = 0.0;
  double stress[3][3];
 
- double tmpvir=0.0e0, etmp=0.0e0, etmp2=0.0e0;
- double cutoff = GetCutoff();
+ // FIXME: Construct an "index table" so we don't have to depend on Atom::Index()
+ std::map<BasicAtom *, long int> indices;
 
- if (rho == NULL)
- {
-  rho = new double[n];
- }
+ double tmpvir=0.0e0, etmp=0.0e0, etmp2=0.0e0;
+
+ //Almacena densidad en variable rho y el inverso en invrho.
+ delete [] rho;
+ delete [] invrho;
+ rho = new double[n];
+ invrho = new double[n];
+ for(long i=0;i<n;++i) {rho[i]=0.0e0; invrho[i]=0.0e0; indices[&atoms[i]]=i;}
 
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
  for (long i=0;i<n;++i)
  {
-  rho[i] = 0.0e0;
+  double rhoi = 0.0e0;
   NeighborList nlist;
-  conf.GetCellManager().BuildNeighborList(conf, i, nlist, false, cutoff*0.5);
+  conf.GetCellManager().BuildNeighborList(conf, i, nlist, true, GetCutoff());
   for (long k=0;k<nlist.Size();++k)
   {
-   AtomPair & nn = nlist[k];
-   double rho_ij = rhoij(sqrt(nn.r2));
-   rho[i] += rho_ij;
-   rho[nn.j_index] += rho_ij;
+   rhoi += rhoij(sqrt(nlist[k].r2));
   }
+  rho[i] = rhoi;
+  invrho[i] = 1/rho[i];
  }
-
- double cutoff2 = cutoff*cutoff;
 
 #ifdef _OPENMP
 #pragma omp parallel for reduction ( + : etmp, tmpvir, etmp2 )
-#endif 
+#endif
  for (long i=0;i<n;++i)
  {
   NeighborList nlist;
-  conf.GetCellManager().BuildNeighborList(conf, i, nlist, false, cutoff);
+  conf.GetCellManager().BuildNeighborList(conf, i, nlist, false, GetCutoff());
   for (long k=0;k<nlist.Size();++k)
   {
-   AtomPair & nn = nlist[k];
-   if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r2 < cutoff2)
+   AtomPair nn = nlist[k];
+   if (AppliesTo(atoms[i].Z(), nn.j->Z()))
    {
-    //the principal variables.
-    double iirho = 1/rho[i];
-    double ijrho = 1/rho[nn.j_index];
     double r = sqrt(nn.r2);
     double ir = 1/r;
     Vector norm = nn.rij;
     norm.Normalize();
-    //start calculation.
     etmp += pairEnergy(r);
     Vector pf = PairForce(norm, ir);
-    Vector mb = ManyBodies(norm, iirho, ijrho, ir);
+    Vector mb = ManyBodies(norm, invrho[i], invrho[indices[nn.j]], ir);
     atoms[i].Acceleration() += ((pf+mb)*(forcefactor/atoms[i].Mass()));
     nn.j->Acceleration() -= ((pf+mb)*(forcefactor/nn.j->Mass()));
     tmpvir -= Dot(nn.rij, pf+mb);
