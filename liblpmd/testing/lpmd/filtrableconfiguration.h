@@ -28,16 +28,36 @@ namespace lpmd
 
     inline BasicParticleSet & Atoms()
     {
+     if (innerselect == 0) return OriginalAtoms();
      if (selector_inverted) 
-        return ((innerselect == 0) ? OriginalAtoms() : const_cast<BasicParticleSet&>(innerselect->InverseSelectFrom(OriginalAtoms())));
-     else return ((innerselect == 0) ? OriginalAtoms() : const_cast<BasicParticleSet&>(innerselect->SelectFrom(OriginalAtoms())));
+     {
+      BasicParticleSet & temp = const_cast<BasicParticleSet &>(innerselect->InverseSelectFrom(OriginalAtoms()));
+      static_cast< TagHandler<BasicAtom> & >(temp) = reinterpret_cast<const TagHandler<BasicAtom> &>(OriginalAtoms());
+      return temp;
+     }
+     else 
+     {
+      BasicParticleSet & temp = const_cast<BasicParticleSet &>(innerselect->SelectFrom(OriginalAtoms()));
+      static_cast< TagHandler<BasicAtom> & >(temp) = reinterpret_cast<const TagHandler<BasicAtom> &>(OriginalAtoms());
+      return temp;
+     }
     }
 
     inline const BasicParticleSet & Atoms() const 
     { 
+     if (innerselect == 0) return OriginalAtoms();
      if (selector_inverted) 
-        return ((innerselect == 0) ? OriginalAtoms() : innerselect->InverseSelectFrom(OriginalAtoms()));
-     else return ((innerselect == 0) ? OriginalAtoms() : innerselect->SelectFrom(OriginalAtoms()));
+     {
+      BasicParticleSet & temp = const_cast<BasicParticleSet &>(innerselect->InverseSelectFrom(OriginalAtoms()));
+      static_cast< TagHandler<BasicAtom> & >(temp) = reinterpret_cast<const TagHandler<BasicAtom> &>(OriginalAtoms());
+      return temp;
+     }
+     else 
+     {
+      BasicParticleSet & temp = const_cast<BasicParticleSet &>(innerselect->SelectFrom(OriginalAtoms()));
+      static_cast< TagHandler<BasicAtom> & >(temp) = reinterpret_cast<const TagHandler<BasicAtom> &>(OriginalAtoms());
+      return temp;
+     }
     }
 
     inline BasicCell & Cell() { return OriginalCell(); }

@@ -21,6 +21,21 @@ namespace lpmd
  template <typename T> class TagHandler
  {
   public:
+    TagHandler<T> & operator=(const TagHandler<T> & orig)
+    {
+     for (typename std::map<Tag, ParamList *>::const_iterator it=orig.namedcontainers.begin();it!=orig.namedcontainers.end();++it)
+     {
+      namedcontainers[it->first] = new ParamList();
+      *(namedcontainers[it->first]) = *(orig.namedcontainers[it->first]);
+     }
+     for (typename std::map<unsigned long int, ParamList *>::const_iterator it=orig.objmapper.begin();it!=orig.objmapper.end();++it)
+     {
+      objmapper[it->first] = new ParamList();
+      *(objmapper[it->first]) = *(orig.objmapper[it->first]);
+     }
+     return *this;
+    }
+
     ~TagHandler() 
     { 
      for (typename std::map<Tag, ParamList *>::const_iterator it=namedcontainers.begin();it!=namedcontainers.end();++it)
@@ -137,7 +152,7 @@ namespace lpmd
     }
 
   private:
-    std::map<Tag, ParamList *> namedcontainers;
+    mutable std::map<Tag, ParamList *> namedcontainers;
     mutable std::map<unsigned long int, ParamList *> objmapper;
  };
 

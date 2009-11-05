@@ -92,3 +92,16 @@ using namespace lpmd;
 }
 @end
 
+@test Operador de asignacion de TagHandler
+{
+ TagHandler<BasicAtom> h;
+ Atom at("Cu");
+ h.SetTag(at, Tag("fixedpos"), "true");
+ TagHandler<BasicAtom> g;
+ @assert h.Have(at, Tag("fixedpos"))
+ @assert !g.Have(at, Tag("fixedpos"))
+ g = h;
+ @assert g.Have(at, Tag("fixedpos"))
+}
+@end
+
