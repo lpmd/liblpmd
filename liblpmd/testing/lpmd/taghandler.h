@@ -26,12 +26,12 @@ namespace lpmd
      for (typename std::map<Tag, ParamList *>::const_iterator it=orig.namedcontainers.begin();it!=orig.namedcontainers.end();++it)
      {
       namedcontainers[it->first] = new ParamList();
-      *(namedcontainers[it->first]) = *(orig.namedcontainers[it->first]);
+      *(namedcontainers[it->first]) = *(it->second);
      }
-     for (typename std::map<unsigned long int, ParamList *>::const_iterator it=orig.objmapper.begin();it!=orig.objmapper.end();++it)
+     for (typename std::map<unsigned long int, ParamList *>::iterator it=orig.objmapper.begin();it!=orig.objmapper.end();++it)
      {
       objmapper[it->first] = new ParamList();
-      *(objmapper[it->first]) = *(orig.objmapper[it->first]);
+      *(objmapper[it->first]) = *(it->second);
      }
      return *this;
     }
@@ -152,7 +152,7 @@ namespace lpmd
     }
 
   private:
-    mutable std::map<Tag, ParamList *> namedcontainers;
+    std::map<Tag, ParamList *> namedcontainers;
     mutable std::map<unsigned long int, ParamList *> objmapper;
  };
 
