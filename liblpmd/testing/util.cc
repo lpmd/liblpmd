@@ -7,6 +7,7 @@
 #include <string>
 #include <sstream>
 #include <cctype>
+#include <stdint.h>
 
 #include <lpmd/util.h>
 
