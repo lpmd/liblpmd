@@ -35,6 +35,10 @@ namespace lpmd
        objmapper[it->first] = new ParamList();
        *(objmapper[it->first]) = *(it->second);
       }
+      for (typename std::map<Tag, int>::const_iterator it=orig.tagregistry.begin();it!=orig.tagregistry.end();++it)
+          tagregistry[it->first] = 1;
+      for (typename std::map<unsigned long int, int>::const_iterator it=orig.inside_named.begin();it!=orig.inside_named.end();++it)
+          inside_named[it->first] = 1;
      }
      return *this;
     }
@@ -42,7 +46,11 @@ namespace lpmd
     ~TagHandler() 
     { 
      for (typename std::map<Tag, ParamList *>::const_iterator it=namedcontainers.begin();it!=namedcontainers.end();++it)
-     { delete (it->second); }
+         delete (it->second);
+     for (typename std::map<unsigned long int, ParamList *>::const_iterator it=objmapper.begin();it!=objmapper.end();++it)
+     {
+      if (inside_named.count(it->first) == 0) delete (it->second);
+     }
     }
 
     void AssignTagGroup(const T & obj, Tag & container_tag)
@@ -52,6 +60,7 @@ namespace lpmd
       namedcontainers[container_tag] = new ParamList();
      }
      objmapper[obj.ID()] = namedcontainers[container_tag]; 
+     inside_named[obj.ID()] = 1;
     }
 
     Map & GetTagGroup(Tag & container_tag) 
@@ -83,12 +92,11 @@ namespace lpmd
      catch (std::exception & e) { return false; }
     }
 
-    bool HaveAny(Tag & tag)
-    {
+    bool HaveAny(Tag & tag) 
+    { 
+     if (tagregistry.count(tag) > 0) return true; 
      for (typename std::map<Tag, ParamList *>::const_iterator it=namedcontainers.begin();it!=namedcontainers.end();++it)
-     { 
-      if (it->second->Defined(tag)) return true;
-     }
+          if ((it->second)->Defined(tag)) return true;
      return false;
     }
 
@@ -113,9 +121,9 @@ namespace lpmd
      {
       ParamList * pl = new ParamList();
       objmapper[obj.ID()] = pl;
-      namedcontainers[ToString<long int>(long(&obj))] = pl;
      }
      (*objmapper[obj.ID()])[tag] = value;
+     tagregistry[tag] = 1;
     }
 
     template <typename Z> void SetTag(const T & obj, Tag & tag, const Z & value)
@@ -124,9 +132,9 @@ namespace lpmd
      {
       ParamList * pl = new ParamList();
       objmapper[obj.ID()] = pl;
-      namedcontainers[ToString<long int>(long(&obj))] = pl;
      }
      (*objmapper[obj.ID()])[tag] = ToString<Z>(value);
+     tagregistry[tag] = 1;
     }
 
     const std::string GetTag(const T & obj, Tag & tag)
@@ -157,6 +165,8 @@ namespace lpmd
   private:
     std::map<Tag, ParamList *> namedcontainers;
     mutable std::map<unsigned long int, ParamList *> objmapper;
+    mutable std::map<Tag, int> tagregistry;
+    mutable std::map<unsigned long int, int> inside_named;
  };
 
 }  // lpmd
