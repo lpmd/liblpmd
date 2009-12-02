@@ -23,15 +23,18 @@ namespace lpmd
   public:
     TagHandler<T> & operator=(const TagHandler<T> & orig)
     {
-     for (typename std::map<Tag, ParamList *>::const_iterator it=orig.namedcontainers.begin();it!=orig.namedcontainers.end();++it)
+     if (&orig != this)
      {
-      namedcontainers[it->first] = new ParamList();
-      *(namedcontainers[it->first]) = *(it->second);
-     }
-     for (typename std::map<unsigned long int, ParamList *>::iterator it=orig.objmapper.begin();it!=orig.objmapper.end();++it)
-     {
-      objmapper[it->first] = new ParamList();
-      *(objmapper[it->first]) = *(it->second);
+      for (typename std::map<Tag, ParamList *>::const_iterator it=orig.namedcontainers.begin();it!=orig.namedcontainers.end();++it)
+      {
+       namedcontainers[it->first] = new ParamList();
+       *(namedcontainers[it->first]) = *(it->second);
+      }
+      for (typename std::map<unsigned long int, ParamList *>::iterator it=orig.objmapper.begin();it!=orig.objmapper.end();++it)
+      {
+       objmapper[it->first] = new ParamList();
+       *(objmapper[it->first]) = *(it->second);
+      }
      }
      return *this;
     }

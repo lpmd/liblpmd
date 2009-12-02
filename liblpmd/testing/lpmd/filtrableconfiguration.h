@@ -32,13 +32,13 @@ namespace lpmd
      if (selector_inverted) 
      {
       BasicParticleSet & temp = const_cast<BasicParticleSet &>(innerselect->InverseSelectFrom(OriginalAtoms()));
-      static_cast< TagHandler<BasicAtom> & >(temp) = reinterpret_cast<const TagHandler<BasicAtom> &>(OriginalAtoms());
+      static_cast< TagHandler<BasicAtom> & >(temp) = static_cast<const TagHandler<BasicAtom> &>(OriginalAtoms());
       return temp;
      }
      else 
      {
       BasicParticleSet & temp = const_cast<BasicParticleSet &>(innerselect->SelectFrom(OriginalAtoms()));
-      static_cast< TagHandler<BasicAtom> & >(temp) = reinterpret_cast<const TagHandler<BasicAtom> &>(OriginalAtoms());
+      static_cast< TagHandler<BasicAtom> & >(temp) = static_cast<const TagHandler<BasicAtom> &>(OriginalAtoms());
       return temp;
      }
     }
