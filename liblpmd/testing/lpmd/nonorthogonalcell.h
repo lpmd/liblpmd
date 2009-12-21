@@ -79,8 +79,8 @@ class NonOrthogonalCell: public BasicCell
   }
 
   inline Vector & operator[](int q)
-  { 
-   mustupdate = true;   
+  {
+   UpdateTransfMatrix();
    return v[q]; 
   }  
 
@@ -105,9 +105,9 @@ class NonOrthogonalCell: public BasicCell
 
   void ConvertToExternal(Vector & a) const
   {
+   if (mustupdate) UpdateTransfMatrix();
    if (nonortg > 1.0E-10)
    {
-    if (mustupdate) UpdateTransfMatrix();
     double v[3];
     for (int q=0;q<3;++q) v[q] = a[q];
     for (int q=0;q<3;++q)
@@ -120,9 +120,9 @@ class NonOrthogonalCell: public BasicCell
 
   void ConvertToInternal(Vector & a) const
   {     
+   if (mustupdate) UpdateTransfMatrix();
    if (nonortg > 1.0e-10)
    {
-    if (mustupdate) UpdateTransfMatrix();
     double v[3];
     for (int q=0;q<3;++q) v[q] = a[q];
     for (int q=0;q<3;++q)
