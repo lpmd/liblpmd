@@ -1,6 +1,7 @@
 /*
  *
  *
+ * COLORES ATOMICOS DE http://jmol.sourceforge.net/jscolors/
  *
  */
 
@@ -43,7 +44,7 @@ Color ColorHandler::DefaultColor(const BasicAtom & at)
  else if (spc==4) ans=0.35*(e1+e2+e3);              //Beryllium (gray)
  else if (spc==5) ans=(0.545*e1+0.271*e2+0.075*e3); //Boron (brownish)
  else if (spc==6) ans=0.1*(e1+e2+e3);               //Carbon (black)
- else if (spc==7) ans=(e1+e2+e3);                   //Nitrogen (colorless)
+ else if (spc==7) ans=(0.188*e1+0.314*e2+0.972*e3);                   //Nitrogen (colorless)
  else if (spc==8) ans=(e1+e2+e3);                   //Oxigen (colorless)
  else if (spc==9) ans=0.8*e2;                       //Fluorine (Greenish)
  else if (spc==10)ans=(e1+e2+e3);                   //Neon (colorless)
@@ -58,7 +59,7 @@ Color ColorHandler::DefaultColor(const BasicAtom & at)
  else if (spc==19)ans=0.75*(e1+e2+e3);              //Potassium (silvery)
  else if (spc==20)ans=0.75*(e1+e2+e3);              //Calcium (silvery)
  else if (spc==21)ans=0.75*(e1+e2+e3);              //Scandium (silvery)
- else if (spc==22)ans=0.75*(e1+e2+e3);              //Titanium (silverish)
+ else if (spc==22)ans=(0.749*e1+0.760*e2+0.780*e3);              //Titanium (silverish)
  else if (spc==23)ans=0.75*(e1+e2+e3);              //Vanadium (silverish)
  else if (spc==24)ans=0.35*(e1+e2+e3);              //Chromium (gray)
  else if (spc==25)ans=0.75*(e1+e2+e3);              //Manganese (silverish)
@@ -67,7 +68,7 @@ Color ColorHandler::DefaultColor(const BasicAtom & at)
  else if (spc==28)ans=(e1+e2+e3);                   //Nickel (white)
  else if (spc==29)ans=(e1+0.271*e2);                //Copper (red/orange)
  else if (spc==30)ans=(e3);                         //Zinc (bluish)
- else if (spc==31)ans=0.827*(e1+e2+e3);             //Gallium (White/Silver)
+ else if (spc==31)ans=(0.760*e1+0.561*e2+0.561*e3);             //Gallium (White/Silver)
  else if (spc==32)ans=0.35*(e1+e2+e3);              //Germanium (grayish)
  else if (spc==33)ans=0.5*(e1+e2+e3);               //Arsenic (Gray)
  else if (spc==34)ans=0.5*(e1+e2+e3);               //Selenium (Gray)
