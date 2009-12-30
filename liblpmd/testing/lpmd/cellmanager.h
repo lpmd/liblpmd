@@ -23,6 +23,7 @@ namespace lpmd
 
    virtual void Reset() = 0;
    virtual void UpdateCell(Configuration & conf) = 0;
+   virtual void UpdateAtom(Configuration & conf, long i) = 0;
    virtual void BuildNeighborList(Configuration & conf, long i, NeighborList & nlist, bool full=true, double rcut=0.0e0) = 0;   
  };
 
