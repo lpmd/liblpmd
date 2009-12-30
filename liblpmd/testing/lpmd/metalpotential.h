@@ -22,6 +22,7 @@ class MetalPotential: public Potential
   void Initialize(Configuration & conf);
 
   double energy(Configuration & conf);
+  double AtomEnergy(Configuration & conf, long i);
   void UpdateForces(Configuration & conf);
 
   void VirialEvaluate(Configuration & conf);

@@ -18,6 +18,22 @@ PairPotential::~PairPotential() { }
 
 double PairPotential::energy(Configuration & conf) { assert(&conf != 0); return energycache; }//icc 869
 
+double PairPotential::AtomEnergy(Configuration & conf, long i)
+{
+ double etmp = 0.0;
+ NeighborList nlist;
+ const double cutoff = GetCutoff();
+ BasicParticleSet & atoms = conf.Atoms();
+ conf.GetCellManager().BuildNeighborList(conf, i, nlist, true, cutoff);
+ for (long k=0;k<nlist.Size();++k)
+ {
+  AtomPair nn = nlist[k];
+  if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r2 < cutoff*cutoff) 
+     etmp += pairEnergy(sqrt(nn.r2));
+ }
+ return etmp;
+}
+
 void PairPotential::UpdateForces(Configuration & conf)
 {
  const double forcefactor = GlobalSession["forcefactor"];
@@ -30,7 +46,7 @@ void PairPotential::UpdateForces(Configuration & conf)
  {
   for (int j=0;j<3;++j) stress[i][j]=0.0e0;
  }
- double cutoff=GetCutoff();
+ const double cutoff = GetCutoff();
 
 #ifdef _OPENMP
 #pragma omp parallel for reduction ( + : etmp, tmpvir )

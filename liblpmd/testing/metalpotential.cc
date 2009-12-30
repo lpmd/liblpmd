@@ -25,6 +25,22 @@ void MetalPotential::VirialEvaluate(Configuration & conf) { assert(&conf != 0); 
 
 double MetalPotential::energy(Configuration & conf) { assert(&conf != 0); return energycache; }//icc 869
 
+double MetalPotential::AtomEnergy(Configuration & conf, long i)
+{
+ double etmp = 0.0, rhoi = 0.0;
+ NeighborList nlist;
+ BasicParticleSet & atoms = conf.Atoms();
+ conf.GetCellManager().BuildNeighborList(conf, i, nlist, true, GetCutoff());
+ for (long k=0;k<nlist.Size();++k) rhoi += rhoij(sqrt(nlist[k].r2));
+ for (long k=0;k<nlist.Size();++k)
+ {
+  const AtomPair & nn = nlist[k];
+     if (AppliesTo(atoms[i].Z(), nn.j->Z())) etmp += pairEnergy(sqrt(nn.r2));
+ }
+ etmp += F(rhoi);
+ return etmp;
+}
+
 void MetalPotential::UpdateForces(Configuration & conf)
 {
  const double forcefactor = double(GlobalSession["forcefactor"]);

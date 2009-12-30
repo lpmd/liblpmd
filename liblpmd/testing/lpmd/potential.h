@@ -27,6 +27,7 @@ class Potential
 
    virtual double energy(Configuration & conf) = 0;
    virtual void UpdateForces(Configuration & conf) = 0;
+   virtual double AtomEnergy(Configuration & conf, long i) = 0;
 
  private:
    int spc_sum;

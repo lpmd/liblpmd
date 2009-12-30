@@ -19,6 +19,7 @@ class PairPotential: public Potential
   virtual ~PairPotential();
 
   double energy(Configuration & conf);
+  double AtomEnergy(Configuration & conf, long i);
   void UpdateForces(Configuration & conf);
 
   virtual double pairEnergy(const double & r) const = 0;

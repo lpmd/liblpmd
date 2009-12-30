@@ -31,6 +31,13 @@ class CombinedPotential: public Array<Potential &>, public Potential
     return en;
    }
 
+   double AtomEnergy(Configuration & conf, long i)
+   {
+    double en = 0.0;
+    for (int p=0;p<Size();++p) en += (*this)[p].AtomEnergy(conf, i);
+    return en;
+   }
+
    void UpdateForces(Configuration & conf)
    {
     BasicParticleSet & atoms = conf.Atoms();
