@@ -49,6 +49,7 @@ namespace lpmd
 
     NeighborList & Neighbors(long int i, bool full, double rcut)
     {
+     if (cellman == 0) throw MissingComponent("cellmanager");
      cellman->BuildNeighborList(*this, i, neighlist, full, rcut);
      return neighlist;
     }
