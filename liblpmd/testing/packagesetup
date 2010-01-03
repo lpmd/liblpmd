@@ -4,7 +4,7 @@
 
 name = liblpmd
 fullname = 'LibLPMD'
-version = 2.0.0
+version = 2.0.1
 author = 'GNM <gnm@gnm.cl>'
 prefix = /usr/local
 
@@ -33,7 +33,7 @@ directory .
 		  simulationbuilder.cc atomselector.cc systemfilter.cc simulationhistory.cc
 
        headers = lpmd_headers
-       version = 2.0.0
+       version = 2.0.1
 
        installpath = lib
     end
@@ -175,12 +175,6 @@ directory tests
        language = lpunit
        sources = propertiestest.unit
     end
-
-#    binary simulationcelltest
-#       test = true
-#       language = lpunit
-#       sources = simulationcelltest.unit
-#    end
 
     binary simulationtest
        test = true
