@@ -16,7 +16,7 @@ namespace lpmd
      Stepper(): start(0), end(-1), each(1) { }
      Stepper(long int s, long int e, long int d=1): start(s), end(e), each(d) { };
 
-     inline bool IsActiveInStep(long i)
+     inline bool IsActiveInStep(long i) const
      {
       if (i < start) return false;
       if ((end != -1) && (i > end)) return false;
@@ -24,7 +24,7 @@ namespace lpmd
       return false;
      }
 
-     inline double ValueAtStep(long i, double from_v, double to_v)
+     inline double ValueAtStep(long i, double from_v, double to_v) const
      {
       if (start == end) return from_v;
       return (from_v + double(i-start)/double(end-start)*(to_v - from_v));

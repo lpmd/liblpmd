@@ -6,6 +6,7 @@
 #define __LPMD_CELLREADER_H__
 
 #include <lpmd/cellgenerator.h>
+#include <lpmd/stepper.h>
 
 #include <iostream>
 
@@ -23,8 +24,8 @@ namespace lpmd
       virtual bool ReadCell(std::istream & is, Configuration & conf) const = 0;
  
       void Read(const std::string & filename, Configuration & conf) const;
-      void ReadMany(const std::string & filename, SimulationHistory & hist, bool skipheader=false) const;
-      void ReadMany(std::istream & inputstream, SimulationHistory & hist, bool skipheader=false) const;
+      void ReadMany(const std::string & filename, SimulationHistory & hist, const Stepper & stepper, bool skipheader=false) const;
+      void ReadMany(std::istream & inputstream, SimulationHistory & hist, const Stepper & stepper, bool skipheader=false) const;
 
   protected:
       std::string readfile;
