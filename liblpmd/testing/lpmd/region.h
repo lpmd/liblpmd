@@ -77,17 +77,24 @@ namespace lpmd
  class Cylinder: public Region
  {
   public:
-   Cylinder(const Vector & S, double rmax, double rmin): _S(S), _rmax(rmax), _rmin(rmin) { }
+   Cylinder(const Vector & S, const Vector & origin, double rmax, double rmin): _S(S), _origin(origin), _rmax(rmax), _rmin(rmin) { }
 
    inline bool IsInside(const Vector & v) const 
    { 
-    double temp = (Cross(v,_S).Module())/(_S.Module());
-    if ( temp < _rmax && temp > _rmin) return true;
+    double temp = (Cross(v-_origin,_S).Module())/(_S.Module());
+    if ( temp < _rmax && temp > _rmin)
+    {
+      Vector norm = _S ;
+      norm.Normalize();
+      double dp = Dot(norm, v-_origin);
+      if (dp < 0 || dp > _S.Module()) return false;
+      else return true;
+    }
     else return false;
    }
    inline double Volume() const { return ((M_PI*(_rmax*_rmax-_rmin*_rmin))*_S.Module()); }
   private:
-   Vector _S;
+   Vector _S,_origin;
    double _rmax;
    double _rmin;
  };
