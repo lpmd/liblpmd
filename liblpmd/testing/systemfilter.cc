@@ -24,7 +24,7 @@ void SystemFilter::Apply(Simulation & sim)
   for (long int i=0;i<orig_atoms.Size();++i) 
   {
    if (orig_atoms.Have(orig_atoms[i], Tag(except)) && (bool(Parameter(orig_atoms.GetTag(orig_atoms[i], Tag(except))))))
-      filtered->Append(orig_atoms[i]);
+      filtered->AppendUnique(orig_atoms[i]);
   }
  }
  atoms.Clear();
