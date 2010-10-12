@@ -26,6 +26,8 @@ class BasicAtom
 
   inline int Z() const { return z; }
 
+  inline int & Z() { return z; }
+
   inline std::string Symbol() const { return ElemSym[Z()]; }
 
   inline unsigned long int ID() const { return id; }
