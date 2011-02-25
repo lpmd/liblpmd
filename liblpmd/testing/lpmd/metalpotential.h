@@ -47,7 +47,7 @@ class MetalPotential: public Potential
   virtual double VirialCorrection(const double & rhobar, const int & N, const double & rhoi) const;
 
  private:
-  double *rho,*invrho;
+  double *rho;
   bool initial;
 };
 

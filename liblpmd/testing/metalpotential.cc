@@ -10,11 +10,11 @@
 
 using namespace lpmd;
 
-MetalPotential::MetalPotential() { rho=NULL;invrho=NULL; }
+MetalPotential::MetalPotential() { rho=NULL; }
 
-MetalPotential::MetalPotential(const MetalPotential & mp) { assert(&mp != 0); rho = NULL; invrho = NULL; }//icc 869
+MetalPotential::MetalPotential(const MetalPotential & mp) { assert(&mp != 0); rho = NULL; }//icc 869
 
-MetalPotential::~MetalPotential() {if(rho!=NULL){delete [] rho; rho=NULL;}; if(invrho!=NULL){delete [] invrho; invrho=NULL;} }
+MetalPotential::~MetalPotential() {if(rho!=NULL){delete [] rho; rho=NULL;};}
 
 void MetalPotential::Initialize(Configuration & conf)
 {
@@ -55,12 +55,10 @@ void MetalPotential::UpdateForces(Configuration & conf)
 
  double tmpvir=0.0e0, etmp=0.0e0, etmp2=0.0e0;
 
- //Almacena densidad en variable rho y el inverso en invrho.
+ //Almacena densidad en variable rho.
  delete [] rho;
- delete [] invrho;
  rho = new double[n];
- invrho = new double[n];
- for(long i=0;i<n;++i) {rho[i]=0.0e0; invrho[i]=0.0e0; indices[&atoms[i]]=i;}
+ for(long i=0;i<n;++i) {rho[i]=0.0e0; indices[&atoms[i]]=i;}
 
 #ifdef _OPENMP
 #pragma omp parallel for
@@ -75,7 +73,6 @@ void MetalPotential::UpdateForces(Configuration & conf)
    rhoi += rhoij(sqrt(nlist[k].r2));
   }
   rho[i] = rhoi;
-  invrho[i] = 1/rho[i];
  }
 
 #ifdef _OPENMP
@@ -91,12 +88,11 @@ void MetalPotential::UpdateForces(Configuration & conf)
    if (AppliesTo(atoms[i].Z(), nn.j->Z()))
    {
     double r = sqrt(nn.r2);
-    double ir = 1/r;
     Vector norm = nn.rij;
     norm.Normalize();
     etmp += pairEnergy(r);
-    Vector pf = PairForce(norm, ir);
-    Vector mb = ManyBodies(norm, invrho[i], invrho[indices[nn.j]], ir);
+    Vector pf = PairForce(norm, r);
+    Vector mb = ManyBodies(norm, rho[i], rho[indices[nn.j]], r);
     atoms[i].Acceleration() += ((pf+mb)*(forcefactor/atoms[i].Mass()));
     nn.j->Acceleration() -= ((pf+mb)*(forcefactor/nn.j->Mass()));
     tmpvir -= Dot(nn.rij, pf+mb);
