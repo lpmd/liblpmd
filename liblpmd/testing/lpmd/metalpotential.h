@@ -33,15 +33,9 @@ class MetalPotential: public Potential
   
   virtual double F(const double & rho) const = 0;
 
-  virtual double deltarhoi(const double & rhobar) const { return 0.0; }
-
-  virtual double deltaU1(const double & rhobar, const int & N) const { return 0.0; }
-
   virtual Vector PairForce(const Vector & normr, const double & mod) const = 0;
 
   virtual Vector ManyBodies(const Vector & normrij, const double & rhoi, const double & rhoj, const double & mod) const = 0;
-  
-  virtual double VirialCorrection(const double & rhobar, const int & N, const double & rhoi) const;
 
  private:
   double *rho;

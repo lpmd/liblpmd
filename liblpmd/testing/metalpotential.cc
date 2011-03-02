@@ -115,12 +115,3 @@ void MetalPotential::UpdateForces(Configuration & conf)
  for (int p=0;p<3;p++)
    for (int q=0;q<3;q++) config_stress.Set(q, p, config_stress.Get(q, p)+stress[q][p]);
 }
-
-double MetalPotential::VirialCorrection(const double & rhobar, const int & N, const double & rhoi) const 
-{
- assert(&rhobar != 0); //icc 869
- assert(&N != 0); //icc 869
- assert(&rhoi != 0);  //icc 869
- return 0.0; 
-}
-
