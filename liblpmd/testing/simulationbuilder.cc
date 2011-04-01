@@ -84,6 +84,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
  void SetSimulationTags()
  {
   const double pressfactor = double(GlobalSession["pressfactor"]);
+  const double densityfact = double(GlobalSession["ua3togrcm3"]);
   const double v = Cell().Volume();
   const Vector P = Momentum(Atoms(),(Atoms().HaveAny(Tag("fixedvel")) || Atoms().HaveAny(Tag("fixedpos"))));
   SetTag(*this, Tag("step"), step);
@@ -94,7 +95,7 @@ template <typename AtomContainer=lpmd::ParticleSet, typename CellType=lpmd::Cell
   SetTag(*this, Tag("cell-b"), Cell()[1].Module());
   SetTag(*this, Tag("cell-c"), Cell()[2].Module());
   SetTag(*this, Tag("particle-density"), double(Atoms().Size())/v);
-  SetTag(*this, Tag("density"), Density(Atoms(), Cell()));
+  SetTag(*this, Tag("density"), densityfact*Density(Atoms(), Cell()));
   SetTag(*this, Tag("momentum"), P.Module());
   SetTag(*this, Tag("px"), P[0]);
   SetTag(*this, Tag("py"), P[1]);
