@@ -27,11 +27,13 @@ namespace lpmd
      {
       for (typename std::map<Tag, ParamList *>::const_iterator it=orig.namedcontainers.begin();it!=orig.namedcontainers.end();++it)
       {
+       if (namedcontainers.count(it->first) != 0) delete namedcontainers[it->first];
        namedcontainers[it->first] = new ParamList();
        *(namedcontainers[it->first]) = *(it->second);
       }
       for (typename std::map<unsigned long int, ParamList *>::iterator it=orig.objmapper.begin();it!=orig.objmapper.end();++it)
       {
+       if (objmapper.count(it->first) != 0) delete objmapper[it->first];
        objmapper[it->first] = new ParamList();
        *(objmapper[it->first]) = *(it->second);
       }
