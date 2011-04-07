@@ -22,6 +22,7 @@ namespace lpmd
  
       virtual void ReadHeader(std::istream & is) const = 0;
       virtual bool ReadCell(std::istream & is, Configuration & conf) const = 0;
+      virtual bool SkipCell(std::istream & is) const;
  
       void Read(const std::string & filename, Configuration & conf) const;
       void ReadMany(const std::string & filename, SimulationHistory & hist, const Stepper & stepper, bool skipheader=false) const;

@@ -41,7 +41,7 @@ namespace lpmd
 
  template <typename T> double Temperature(const T & atomcont,const bool tag=false)
  {
-  if (atomcont.Size() == 0) EndWithError("Cannot compute temperature without atoms!");
+  if (atomcont.Size() == 0) return 0.0; // 
   int size = 0,tmp=0;
   if(tag==false) size=atomcont.Size();
   else

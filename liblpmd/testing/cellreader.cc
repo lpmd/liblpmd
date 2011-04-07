@@ -5,6 +5,8 @@
 #include <lpmd/cellreader.h>
 #include <lpmd/simulationhistory.h>
 #include <lpmd/storedconfiguration.h>
+#include <lpmd/session.h>
+#include <lpmd/error.h>
 
 #include <fstream>
 #include <memory>
@@ -22,6 +24,12 @@ void CellReader::Read(const std::string & filename, Configuration & conf) const
  if (! is.good()) throw FileNotFound(filename);
  ReadHeader(is);
  if (! ReadCell(is, conf)) throw SyntaxError("Invalid input in file \""+filename+"\"");
+}
+
+bool CellReader::SkipCell(std::istream & is) const
+{
+ // Not implemented! 
+ throw NotImplemented("SkipCell");
 }
 
 void CellReader::ReadMany(const std::string & filename, SimulationHistory & hist, const Stepper & stepper, bool skipheader) const
@@ -48,10 +56,12 @@ void CellReader::ReadMany(std::istream & inputstream, SimulationHistory & hist, 
   {
    if (stepper.IsActiveInStep(nconf))
    {
+    GlobalSession.DebugStream() << "-> Read configuration " << nconf << "\n";
     hist.Append(sconf);
     if (sconf.Have(sconf, Tag("level"))) 
        hist[hist.Size()-1].SetTag(hist[hist.Size()-1], Tag("level"), sconf.GetTag(sconf, Tag("level")));
    }
+   else { GlobalSession.DebugStream() << "-> Skipped configuration " << nconf << "\n"; }  
   }
   else break;
  }
