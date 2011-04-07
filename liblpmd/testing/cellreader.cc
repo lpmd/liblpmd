@@ -52,18 +52,20 @@ void CellReader::ReadMany(std::istream & inputstream, SimulationHistory & hist, 
  while (1)
  {
   sconf.Atoms().Clear();
-  if (ReadCell(inputstream, sconf))
+  if (stepper.IsActiveInStep(nconf))
   {
-   if (stepper.IsActiveInStep(nconf))
-   {
-    GlobalSession.DebugStream() << "-> Read configuration " << nconf << "\n";
-    hist.Append(sconf);
-    if (sconf.Have(sconf, Tag("level"))) 
-       hist[hist.Size()-1].SetTag(hist[hist.Size()-1], Tag("level"), sconf.GetTag(sconf, Tag("level")));
-   }
-   else { GlobalSession.DebugStream() << "-> Skipped configuration " << nconf << "\n"; }  
+   if (!ReadCell(inputstream, sconf)) break;
+   GlobalSession.DebugStream() << "-> Read configuration " << nconf << "\n";
+   hist.Append(sconf);
+   if (sconf.Have(sconf, Tag("level"))) 
+      hist[hist.Size()-1].SetTag(hist[hist.Size()-1], Tag("level"), sconf.GetTag(sconf, Tag("level")));
   }
-  else break;
+  else 
+  {
+   if (!SkipCell(inputstream)) break;
+   GlobalSession.DebugStream() << "-> Skipped configuration " << nconf << "\n";
+  }
+  nconf++;
  }
 }
 
