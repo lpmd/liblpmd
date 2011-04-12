@@ -4,15 +4,16 @@
 //
 
 #include <lpmd/metalpotential.h>
+#include <lpmd/properties.h>
 #include <lpmd/atompair.h>
 #include <lpmd/configuration.h>
 #include <lpmd/session.h>
 
 using namespace lpmd;
 
-MetalPotential::MetalPotential() { rho=NULL; }
+MetalPotential::MetalPotential() { rho=NULL; initial=true; du=0.0e0; drho=0.0e0; dvir=0.0e0; }
 
-MetalPotential::MetalPotential(const MetalPotential & mp) { assert(&mp != 0); rho = NULL; }//icc 869
+MetalPotential::MetalPotential(const MetalPotential & mp) { assert(&mp != 0); rho = NULL; initial=true; du=0.0e0; drho=0.0e0; dvir=0.0e0; }//icc 869
 
 MetalPotential::~MetalPotential() {if(rho!=NULL){delete [] rho; rho=NULL;};}
 
@@ -20,8 +21,6 @@ void MetalPotential::Initialize(Configuration & conf)
 {
  assert(&conf != 0); //icc 869
 }
-
-void MetalPotential::VirialEvaluate(Configuration & conf) { assert(&conf != 0); }//icc 869
 
 double MetalPotential::energy(Configuration & conf) { assert(&conf != 0); return energycache; }//icc 869
 
@@ -31,11 +30,11 @@ double MetalPotential::AtomEnergy(Configuration & conf, long i)
  NeighborList nlist;
  BasicParticleSet & atoms = conf.Atoms();
  conf.GetCellManager().BuildNeighborList(conf, i, nlist, true, GetCutoff());
- for (long k=0;k<nlist.Size();++k) rhoi += rhoij(sqrt(nlist[k].r2));
  for (long k=0;k<nlist.Size();++k)
  {
+  rhoi += rhoij(sqrt(nlist[k].r2));
   const AtomPair & nn = nlist[k];
-     if (AppliesTo(atoms[i].Z(), nn.j->Z())) etmp += pairEnergy(sqrt(nn.r2));
+  if (AppliesTo(atoms[i].Z(), nn.j->Z())) etmp += pairEnergy(sqrt(nn.r2));
  }
  etmp += F(rhoi);
  return etmp;
@@ -54,11 +53,45 @@ void MetalPotential::UpdateForces(Configuration & conf)
  std::map<BasicAtom *, long int> indices;
 
  double tmpvir=0.0e0, etmp=0.0e0, etmp2=0.0e0;
+ double mpd=0.0; //mean particle density
 
- //Almacena densidad en variable rho.
  delete [] rho;
  rho = new double[n];
  for(long i=0;i<n;++i) {rho[i]=0.0e0; indices[&atoms[i]]=i;}
+
+ //Load Corrections in the begining of the simulation.
+ //Correction apply only for suttonchen and gupta poential.
+ //and for highly homogeneous systems of this potentials.
+ if(initial==true)
+ {
+  double sinv = 0.0e0;
+  //mpd = atoms.Size()/conf.Cell().Volume();
+  for(long i=0;i<n;++i)
+  {
+   double rhoi = 0.0e0;
+   NeighborList nlist;
+   conf.GetCellManager().BuildNeighborList(conf, i, nlist, true, GetCutoff());
+   for (long k=0;k<nlist.Size();++k) 
+   {
+    rhoi += rhoij(sqrt(nlist[k].r2));
+   }
+   sinv += 1.0e0/(sqrt(rhoi));
+  }
+  Vector tmp=UpdateCorrections(mpd,n,sinv);
+  //du=tmp[1];
+  //dvir=tmp[2];
+  GlobalSession.DebugStream() << '\n';
+  GlobalSession.DebugStream() << "================================================================================" << '\n';
+  GlobalSession.DebugStream() << "=====================  METALLIC  CORRECTIONS.  ================================="<<'\n';
+  GlobalSession.DebugStream() << "================================================================================" <<'\n';
+
+  GlobalSession.DebugStream() << "Mean particle density = " << mpd << '\n';
+  GlobalSession.DebugStream() << "Sum 1/sqrt(rhoi)      = " << sinv << '\n';
+  GlobalSession.DebugStream() << "Delta rhoi            = " << tmp[0] << '\n';
+  GlobalSession.DebugStream() << "Delta U1              = " << tmp[1] << '\n';
+  GlobalSession.DebugStream() << "Delta Virial 1 + 2    = " << tmp[2] << '\n';
+  initial=false;
+ }
 
 #ifdef _OPENMP
 #pragma omp parallel for
@@ -72,7 +105,7 @@ void MetalPotential::UpdateForces(Configuration & conf)
   {
    rhoi += rhoij(sqrt(nlist[k].r2));
   }
-  rho[i] = rhoi;
+  rho[i] = rhoi + mpd;
  }
 
 #ifdef _OPENMP
@@ -90,7 +123,7 @@ void MetalPotential::UpdateForces(Configuration & conf)
     double r = sqrt(nn.r2);
     Vector norm = nn.rij;
     norm.Normalize();
-    etmp += pairEnergy(r);
+    etmp += pairEnergy(r); 
     Vector pf = PairForce(norm, r);
     Vector mb = ManyBodies(norm, rho[i], rho[indices[nn.j]], r);
     atoms[i].Acceleration() += ((pf+mb)*(forcefactor/atoms[i].Mass()));
@@ -106,11 +139,9 @@ void MetalPotential::UpdateForces(Configuration & conf)
   }
   etmp2 += F(rho[i]);
  }
- energycache += etmp + etmp2;
- // Virial 
- VirialEvaluate(conf);
+ energycache += etmp + du + etmp2;//added energy U1 correction.
  double & config_virial = conf.Virial();
- config_virial += tmpvir;
+ config_virial += tmpvir + dvir; //added virial (V1+V2) correction. 
  Matrix & config_stress = conf.StressTensor();
  for (int p=0;p<3;p++)
    for (int q=0;q<3;q++) config_stress.Set(q, p, config_stress.Get(q, p)+stress[q][p]);

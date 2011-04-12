@@ -25,8 +25,6 @@ class MetalPotential: public Potential
   double AtomEnergy(Configuration & conf, long i);
   void UpdateForces(Configuration & conf);
 
-  void VirialEvaluate(Configuration & conf);
-
   virtual double pairEnergy(const double & r) const = 0;
 
   virtual double rhoij(const double & r) const = 0;
@@ -37,8 +35,10 @@ class MetalPotential: public Potential
 
   virtual Vector ManyBodies(const Vector & normrij, const double & rhoi, const double & rhoj, const double & mod) const = 0;
 
+  virtual Vector UpdateCorrections(const double & rho, const int & N, const double & sinv) const = 0;
+
  private:
-  double *rho;
+  double *rho,du,drho,dvir;
   bool initial;
 };
 
