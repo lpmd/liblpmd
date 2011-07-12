@@ -146,40 +146,47 @@ void lpmd::vacf(lpmd::ConfigurationSet & hist, lpmd::Potential & pot, double dt,
   //
   // Undo periodicity 
   //
-  lpmd::ParticleSet part = hist[0].Atoms();
-  lpmd::BasicCell & cell = hist[0].Cell();
+  lpmd::StoredConfiguration scratch(hist[0]);
+  lpmd::ParticleSet  scratch_atoms = scratch.Atoms();
+  lpmd::BasicCell & cell = scratch.Cell();
 
   Vector ** noperiodic = new Vector*[N];
   for (int t=0;t<N;++t) noperiodic[t] = new Vector[nat];
-  for (int i=0;i<nat;++i) noperiodic[0][i] = part[i].Position();
+  for (int i=0;i<nat;++i) noperiodic[0][i] = scratch_atoms[i].Position();
 
   for (int t=1;t<N;++t)
+  {
    for (int i=0;i<nat;++i)
    {
-    part[0].Position() = hist[t-1].Atoms()[i].Position();
-    part[1].Position() = hist[t].Atoms()[i].Position();
-    noperiodic[t][i] = noperiodic[t-1][i] + cell.Displacement(part[0].Position(), part[1].Position());
+    const Vector & v0 = scratch_atoms[0].Position() = hist[t-1].Atoms()[i].Position();
+    const Vector & v1 = scratch_atoms[1].Position() = hist[t].Atoms()[i].Position();
+    noperiodic[t][i] = noperiodic[t-1][i] + cell.Displacement(v0, v1);
    }
+  }
   //
   //Evaluate and set velocities
   //
-  for (int i=0;i<nat;++i) velocities[0][i]=(noperiodic[0][i]-noperiodic[N-1][i])/dt;
+  for (int i=0;i<nat;++i) velocities[0][i]=(noperiodic[0][i]-noperiodic[1][i])/dt;
 
-  for (int t=1;t<N;++t)
+  for (int t=1;t<N-1;++t)
+  {
    for (int i=0;i<nat;++i)
    {
-    Vector vel = (noperiodic[t][i]-noperiodic[t-1][i])/dt;
+    Vector vel = (noperiodic[t+1][i]-noperiodic[t][i])/dt;
     velocities[t][i] = vel;
    }
+  }
  }
  if (level == 1)
  {
   for (int t=0;t<N;++t)
+  {
    for (int i=0;i<nat;++i)
    {
     ParticleSet tmp = hist[t].Atoms();
     velocities[t][i] = tmp[i].Velocity();
    }
+  }
  }
 
  int s=0;
