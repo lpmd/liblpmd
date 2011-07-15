@@ -6,9 +6,6 @@
 #include <lpmd/pairpotential.h>
 #include <lpmd/atompair.h>
 #include <lpmd/matrix.h>
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 using namespace lpmd;
 
