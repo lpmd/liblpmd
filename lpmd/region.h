@@ -111,13 +111,18 @@ namespace lpmd
      double dotab = Dot(direct,posrel);
      double angle = (acos(dotab/(direct.Module()*posrel.Module())))*180.0/M_PI;
      if(angle>=_alpha || angle<_beta) return false;
-     //if((v - _bot).Module() > direct.Module()) return false;
      double lbase = sin(angle)*posrel.Module();
      if(lbase>direct.Module()) return false;
      else return true;
     }
     
-    inline double Volume() const { return 0.0; }
+    inline double Volume() const 
+    { 
+     double l = (_bot - _tip).Module();
+     double A = (1.0e0/3.0e0)*l*pow(l*tan(_alpha),2);
+     double B = (1.0e0/3.0e0)*l*pow(l*tan(_beta),2);
+     return A-B; 
+    }
 
   private:
     Vector _tip;
