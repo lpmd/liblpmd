@@ -99,6 +99,34 @@ namespace lpmd
    double _rmin;
  };
 
+ class Cone: public Region
+ {
+  public:
+    Cone(const Vector & tip, const Vector & bot, double alpha, double beta): _tip(tip), _bot(bot), _alpha(alpha), _beta(beta) { }
+    
+    inline bool IsInside(const Vector & v) const 
+    {
+     Vector direct = _bot - _tip;
+     Vector posrel = v - _tip;
+     double dotab = Dot(direct,posrel);
+     double angle = (acos(dotab/(direct.Module()*posrel.Module())))*180.0/M_PI;
+     if(angle>=_alpha || angle<_beta) return false;
+     //if((v - _bot).Module() > direct.Module()) return false;
+     double lbase = sin(angle)*posrel.Module();
+     if(lbase>direct.Module()) return false;
+     else return true;
+    }
+    
+    inline double Volume() const { return 0.0; }
+
+  private:
+    Vector _tip;
+    Vector _bot;
+    double _alpha,_beta;
+ };
+
+
+
 }  // lpmd
 
 #endif
