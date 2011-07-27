@@ -32,8 +32,8 @@ namespace lpmd
     {
      for (int q=0;q<3;++q) vmin[q] = 0.0;
      vmax[0] = xlength;
-     vmax[1] = xlength;
-     vmax[2] = xlength;
+     vmax[1] = ylength;
+     vmax[2] = zlength;
     }
     
     Box(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
@@ -48,9 +48,9 @@ namespace lpmd
 
     inline bool IsInside(const Vector & v) const 
     {
-     if ((v[0] < vmin[0]) || (v[0] > vmax[0])) return false;
-     if ((v[1] < vmin[1]) || (v[1] > vmax[1])) return false;
-     if ((v[2] < vmin[2]) || (v[2] > vmax[2])) return false;
+     if ((fabs(v[0]) < vmin[0]) || (fabs(v[0]) > vmax[0])) return false;
+     if ((fabs(v[1]) < vmin[1]) || (fabs(v[1]) > vmax[1])) return false;
+     if ((fabs(v[2]) < vmin[2]) || (fabs(v[2]) > vmax[2])) return false;
      return true;
     }
 
