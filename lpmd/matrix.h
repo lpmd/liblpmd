@@ -31,6 +31,9 @@ class Matrix
    void SetLabel(long col, std::string lbl);
    std::string GetLabel(long col) const;
 
+   //Matrix operations
+   double Det() const;
+   void Inverse();
 
    // Operador de asignacion
    Matrix & operator=(const Matrix & m);

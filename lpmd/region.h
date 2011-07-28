@@ -36,7 +36,7 @@ namespace lpmd
      vmax[2] = zlength;
     }
     
-    Box(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
+    Box(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, Vector _a, Vector _b, Vector _c)
     {
      vmin[0] = xmin;
      vmin[1] = ymin;
@@ -44,13 +44,16 @@ namespace lpmd
      vmax[0] = xmax;
      vmax[1] = ymax;
      vmax[2] = zmax;
+     a = _a ; b = _b ; c = _c;
     }
 
     inline bool IsInside(const Vector & v) const 
     {
-     if ((fabs(v[0]) < vmin[0]) || (fabs(v[0]) > vmax[0])) return false;
-     if ((fabs(v[1]) < vmin[1]) || (fabs(v[1]) > vmax[1])) return false;
-     if ((fabs(v[2]) < vmin[2]) || (fabs(v[2]) > vmax[2])) return false;
+     //Set the old coordinates based in the cell
+     Vector vp(v[0]*a/a.Module() + v[1]*b/b.Module() + v[2]*c/c.Module());
+     if ((fabs(vp[0]) < vmin[0]) || (fabs(vp[0]) > vmax[0])) return false;
+     if ((fabs(vp[1]) < vmin[1]) || (fabs(vp[1]) > vmax[1])) return false;
+     if ((fabs(vp[2]) < vmin[2]) || (fabs(vp[2]) > vmax[2])) return false;
      return true;
     }
 
@@ -58,6 +61,7 @@ namespace lpmd
 
   private:
    double vmin[3], vmax[3];
+   Vector a,b,c;
  };
 
  class Sphere: public Region
