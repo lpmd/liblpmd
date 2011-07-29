@@ -17,7 +17,8 @@ namespace lpmd
    SystemFilter();
    virtual ~SystemFilter();
 
-   void Apply(Simulation & sim);
+   virtual void Apply(Simulation & sim);
+   virtual void Update(Simulation & sim);
    virtual Selector<BasicParticleSet> & CreateSelector() = 0;
 
    bool inverted;

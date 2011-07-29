@@ -11,9 +11,12 @@ SystemFilter::SystemFilter(): inverted(false) { }
 
 SystemFilter::~SystemFilter() { }
 
+void SystemFilter::Update(Simulation & sim) { }
+
 void SystemFilter::Apply(Simulation & sim) 
 { 
  BasicParticleSet & atoms = sim.Atoms();
+ Update(sim);
  Selector<BasicParticleSet> & selector = CreateSelector();
  ParticleSet * filtered = 0;
  if (!inverted) filtered = new ParticleSet(selector.SelectFrom(atoms));
