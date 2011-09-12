@@ -111,7 +111,7 @@ namespace lpmd
 
    void Delete(long int i) 
    { 
-    for (long int j=i+1;j<nl+1;++j) (*this)[j-1] = (*this)[j];
+    for (long int j=i+1;j<nl;++j) (*this)[j-1] = (*this)[j];
     nl--;
     iter = nl;
    }
