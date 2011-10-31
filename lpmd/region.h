@@ -115,8 +115,7 @@ namespace lpmd
      double dotab = Dot(direct,posrel);
      double angle = (acos(dotab/(direct.Module()*posrel.Module())))*180.0/M_PI;
      if(angle>=_alpha || angle<_beta) return false;
-     double lbase = sin(angle)*posrel.Module();
-     if(lbase>direct.Module()) return false;
+     if(posrel.Module()>direct.Module()) return false;
      else return true;
     }
     
