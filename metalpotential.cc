@@ -118,6 +118,7 @@ void MetalPotential::UpdateForces(Configuration & conf)
   for (long k=0;k<nlist.Size();++k)
   {
    AtomPair nn = nlist[k];
+#pragma omp critical
    if (AppliesTo(atoms[i].Z(), nn.j->Z()))
    {
     double r = sqrt(nn.r2);

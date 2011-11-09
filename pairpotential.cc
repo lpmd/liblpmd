@@ -55,6 +55,7 @@ void PairPotential::UpdateForces(Configuration & conf)
   for (long k=0;k<nlist.Size();++k)
   {
    AtomPair nn = nlist[k];
+#pragma omp critical
    if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r2 < cutoff*cutoff) 
    {
     etmp += pairEnergy(sqrt(nn.r2));
