@@ -105,8 +105,14 @@ void MetalPotential::UpdateForces(Configuration & conf)
   {
    rhoi += rhoij(sqrt(nlist[k].r2));
   }
+#ifdef _OPENMP
+#pragma omp critical
+#endif
   rho[i] = rhoi + mpd;
  }
+#ifdef _OPENMP
+#pragma omp barrier
+#endif
 
 #ifdef _OPENMP
 #pragma omp parallel for reduction ( + : etmp, tmpvir, etmp2 )
@@ -118,7 +124,6 @@ void MetalPotential::UpdateForces(Configuration & conf)
   for (long k=0;k<nlist.Size();++k)
   {
    AtomPair nn = nlist[k];
-#pragma omp critical
    if (AppliesTo(atoms[i].Z(), nn.j->Z()))
    {
     double r = sqrt(nn.r2);
@@ -127,7 +132,13 @@ void MetalPotential::UpdateForces(Configuration & conf)
     etmp += pairEnergy(r); 
     Vector pf = PairForce(norm, r);
     Vector mb = ManyBodies(norm, rho[i], rho[indices[nn.j]], r);
+#ifdef _OPENMP
+#pragma omp critical
+#endif
     atoms[i].Acceleration() += ((pf+mb)*(forcefactor/atoms[i].Mass()));
+#ifdef _OPENMP
+#pragma omp critical
+#endif
     nn.j->Acceleration() -= ((pf+mb)*(forcefactor/nn.j->Mass()));
     tmpvir -= Dot(nn.rij, pf+mb);
     for (int q=0;q<3;q++)
@@ -140,6 +151,9 @@ void MetalPotential::UpdateForces(Configuration & conf)
   }
   etmp2 += F(rho[i]);
  }
+#ifdef _OPENMP
+#pragma omp barrier
+#endif
  energycache += etmp + du + etmp2;//added energy U1 correction.
  double & config_virial = conf.Virial();
  config_virial += tmpvir + dvir; //added virial (V1+V2) correction. 

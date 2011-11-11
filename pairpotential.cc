@@ -55,12 +55,17 @@ void PairPotential::UpdateForces(Configuration & conf)
   for (long k=0;k<nlist.Size();++k)
   {
    AtomPair nn = nlist[k];
-#pragma omp critical
    if (AppliesTo(atoms[i].Z(), nn.j->Z()) && nn.r2 < cutoff*cutoff) 
    {
     etmp += pairEnergy(sqrt(nn.r2));
     Vector ff = pairForce(nn.rij);
+#ifdef _OPENMP
+#pragma omp critical
+#endif
     atoms[i].Acceleration() += ff*(forcefactor/atoms[i].Mass());
+#ifdef _OPENMP
+#pragma omp critical
+#endif
     nn.j->Acceleration() -= ff*(forcefactor/nn.j->Mass());
     tmpvir -= Dot(nn.rij, ff);
     for (int l=0;l<3;++l)
@@ -72,6 +77,7 @@ void PairPotential::UpdateForces(Configuration & conf)
    }
   }
  }
+#pragma omp barrier
  double & config_virial = conf.Virial();
  energycache += etmp;
  config_virial += tmpvir;
