@@ -98,6 +98,7 @@ class NonOrthogonalCell: public BasicCell
 
   Vector ScaleByCell(const Vector & cv) const
   {
+   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector nv;
    for (int j=0;j<3;++j) nv = nv + v[j]*cv[j];
    return nv;
@@ -135,6 +136,7 @@ class NonOrthogonalCell: public BasicCell
 
   Vector Fractional(const Vector & cv) const
   {
+   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector tmp(cv);
    ConvertToInternal(tmp);
    for (int q=0;q<3;++q) tmp[q] /= v[q].Module();
@@ -143,6 +145,7 @@ class NonOrthogonalCell: public BasicCell
   
   Vector Cartesian(const Vector & cv) const
   {
+   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector tmp(cv);
    for (int q=0;q<3;++q) tmp[q] *= v[q].Module();
    ConvertToExternal(tmp);
@@ -151,6 +154,7 @@ class NonOrthogonalCell: public BasicCell
 
   Vector FittedInside(const Vector & a) const
   {
+   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector vtmp(a);
    ConvertToInternal(vtmp);
    for (int q=0;q<3;++q)
@@ -168,6 +172,7 @@ class NonOrthogonalCell: public BasicCell
 
   bool IsInside(const Vector & a) const
   {
+   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector vtmp(a);
    ConvertToInternal(vtmp);
    for (int q=0;q<3;++q) 
@@ -185,6 +190,7 @@ class NonOrthogonalCell: public BasicCell
    mutable double tm[3][3],itm[3][3];
    mutable double nonortg;
    mutable bool mustupdate;
+   mutable bool firstapp;
 
    inline void UpdateTransfMatrix() const
    {
@@ -225,6 +231,7 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell()
 {
  v[0]=e1;v[1]=e2;v[2]=e3;
  for (int i=0;i<3;++i) p[i] = true;
+ firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -235,6 +242,7 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell(const BasicCell & c)
   v[q] = c[q];
   p[q] = c.Periodicity(q);
  }
+ firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -245,6 +253,7 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell(const NonOrthogonalCell & c)
   v[q] = c[q];
   p[q] = c.p[q];
  }
+ firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -252,6 +261,7 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell(const Vector & a, const Vector
 {
  v[0]=a;v[1]=b;v[2]=c;
  for (int i=0;i<3;++i) p[i] = true;
+ firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -271,6 +281,7 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell(const double a, const double b
  v[2][1] = c*tmp;			      
  v[2][2] = c*sqrt(sin(br)*sin(br)-tmp*tmp);		
  for (int i=0;i<3;++i) p[i] = true;
+ firstapp=true;
  UpdateTransfMatrix();
 }
 
