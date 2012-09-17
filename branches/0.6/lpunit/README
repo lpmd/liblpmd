@@ -1,0 +1,11 @@
+
+Este directorio contiene un micro 'framework' con clases para definir y ejecutar 'unit tests',
+al igual que una aplicacion, 'lpmaketest.py' que genera codigo C++ para una bateria de tests 
+a partir de una plantilla (de extension .unit)
+
+-- 
+
+This directory contains a micro framework with classes for defining and executing unit tests,
+as well as an application, 'lpmaketest.py', which generates C++ code for a test suite from a 
+template (with extension .unit)
+

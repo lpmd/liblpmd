@@ -1,0 +1,140 @@
+//
+//
+//
+
+#include <lpmd/atom.h>
+#include <lpmd/vector.h>
+
+using namespace lpmd;
+
+@testsuite Tests de Atom
+
+@test Constructor con simbolo y numero atomico
+{
+ Atom at("H");
+ @equal at.Z(), 1
+ @equal at.Symbol(), "H"
+ @approx at.Position().Module(), 0.0, 1.0E-10
+ Atom at2(26);
+ @equal at2.Z(), 26
+ @equal at2.Symbol(), "Fe"
+}
+@end
+
+@test Asignacion directa de posicion, velocidad, aceleracion
+{
+ Atom at("H");
+ Vector pos(2.0, 3.0, 4.0);
+ at.Position() = pos;
+ @approx (at.Position()-pos).Module(), 0.0, 1.0E-10
+ Vector vel(0.5, 0.2, 3.4);
+ at.Velocity() = vel;
+ @approx (at.Velocity()-vel).Module(), 0.0, 1.0E-10
+ Vector acc(50.0, 70.0, 35.0);
+ at.Acceleration() = acc;
+ @approx (at.Acceleration()-acc).Module(), 0.0, 1.0E-10
+}
+@end
+
+@test Constructor con posicion, velocidad, aceleracion
+{
+ Vector pos(2.0, 3.0, 4.0), vel(0.5, 0.2, 3.4), acc(50.0, 70.0, 35.0);
+ Atom at("H", pos);
+ @equal at.Z(), 1
+ @equal at.Symbol(), "H"
+ @approx (at.Position()-pos).Module(), 0.0, 1.0E-10
+ Atom at2("H", pos, vel);
+ @equal at2.Z(), 1
+ @equal at2.Symbol(), "H"
+ @approx (at2.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at2.Velocity()-vel).Module(), 0.0, 1.0E-10
+ Atom at3("H", pos, vel, acc);
+ @equal at3.Z(), 1
+ @equal at3.Symbol(), "H"
+ @approx (at3.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at3.Velocity()-vel).Module(), 0.0, 1.0E-10
+ @approx (at3.Acceleration()-acc).Module(), 0.0, 1.0E-10
+ 
+ Atom at4(2, pos);
+ @equal at4.Z(), 2
+ @equal at4.Symbol(), "He"
+ @approx (at4.Position()-pos).Module(), 0.0, 1.0E-10
+ Atom at5(3, pos, vel);
+ @equal at5.Z(), 3
+ @equal at5.Symbol(), "Li"
+ @approx (at5.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at5.Velocity()-vel).Module(), 0.0, 1.0E-10
+ Atom at6(4, pos, vel, acc);
+ @equal at6.Z(), 4
+ @equal at6.Symbol(), "Be"
+ @approx (at6.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at6.Velocity()-vel).Module(), 0.0, 1.0E-10
+ @approx (at6.Acceleration()-acc).Module(), 0.0, 1.0E-10
+}
+@end
+
+@test Constructor de copia
+{
+ Vector pos(2.0, 3.0, 4.0), vel(0.5, 0.2, 3.4), acc(50.0, 70.0, 35.0);
+ Atom * at = new Atom("H", pos, vel, acc);
+ Atom at2(*at);
+ delete at;
+ 
+ @equal at2.Z(), 1
+ @equal at2.Symbol(), "H"
+ @approx (at2.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at2.Velocity()-vel).Module(), 0.0, 1.0E-10
+ @approx (at2.Acceleration()-acc).Module(), 0.0, 1.0E-10
+}
+@end
+
+@test Operador de asignacion
+{
+ Vector pos(2.0, 3.0, 4.0), vel(0.5, 0.2, 3.4), acc(50.0, 70.0, 35.0);
+ Atom * at = new Atom("H", pos, vel, acc);
+ Atom at2("Zr");
+ @equal at2.Symbol(), "Zr" 
+ at2 = *at;
+ delete at;
+ 
+ @equal at2.Z(), 1
+ @equal at2.Symbol(), "H"
+ @approx (at2.Position()-pos).Module(), 0.0, 1.0E-10
+ @approx (at2.Velocity()-vel).Module(), 0.0, 1.0E-10
+ @approx (at2.Acceleration()-acc).Module(), 0.0, 1.0E-10
+}
+@end
+
+@test Masas por defecto
+{
+ Atom at("Ar");
+ @approx at.Mass(), 39.948, 1.0E-10
+}
+@end
+
+@test Modificacion de la masa
+{
+ Atom at("Ar"), at2("Ar");
+ at.Mass() = 1.0;
+ @approx at.Mass(), 1.0, 1.0E-10 
+ @approx at2.Mass(), 39.948, 1.0E-10
+}
+@end
+
+@test Carga por defecto
+{
+ Atom at("Fe");
+ @approx at.Charge(), 0.0, 1.0E-10
+}
+@end
+
+@test Modificacion de la carga
+{
+ Atom at("Cl"), at2("Cl");
+ at.Charge() = -1.0;
+ @approx at.Charge(), -1.0, 1.0E-10 
+ @approx at2.Charge(), 0.0, 1.0E-10
+}
+@end
+
+

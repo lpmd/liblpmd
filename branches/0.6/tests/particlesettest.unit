@@ -1,0 +1,68 @@
+//
+//
+//
+
+#include <lpmd/particleset.h>
+#include <lpmd/vector.h>
+
+using namespace lpmd;
+
+@testsuite Tests de ParticleSet
+
+@test Constructor
+{
+ ParticleSet ps;
+ @equal ps.Size(), 0
+}
+@end
+
+@test Asignacion y lectura de atomos
+{
+ ParticleSet ps;
+ Vector pos(1.0, 2.0, 3.0);
+ for (long int i=0;i<ps.Size();++i) ps.Append(Atom("H",pos));
+ for (long int i=0;i<ps.Size();++i) 
+ {
+  @approx (ps[i].Position()-pos).Module(), 0.0, 1.0E-10
+  @equal ps[i].Z(), 1
+ }
+}
+@end
+
+@test Metodo Elements
+{
+ ParticleSet ps;
+ Vector h(1,2,3);
+ Vector ge(2,2,3);
+ Vector he(3,2,1);
+ ps.Append(Atom("H",h));
+ ps.Append(Atom("Ge",ge));
+ ps.Append(Atom("Ge",ge));
+ ps.Append(Atom("H",h));
+ ps.Append(Atom("He",he));
+ ps.Append(Atom("H",h));
+ Array<int> elems = ps.Elements();
+ @equal elems.Size(), 3
+}
+@end
+
+@test Metodo WithZ
+{
+ ParticleSet ps;
+ Vector h(1,2,3);
+ Vector ge(2,2,3);
+ Vector he(3,2,1);
+ ps.Append(Atom("H",h));
+ ps.Append(Atom("Ge",ge));
+ ps.Append(Atom("Ge",ge));
+ ps.Append(Atom("H",h));
+ ps.Append(Atom("He",he));
+ ps.Append(Atom("H",h));
+ Array<int> elemsh = ps.WithZ(1);
+ Array<int> elemsge = ps.WithZ(32);
+ Array<int> elemshe = ps.WithZ(2);
+ @equal elemsh.Size(), 3
+ @equal elemsge.Size(), 2
+ @equal elemshe.Size(), 1
+}
+@end

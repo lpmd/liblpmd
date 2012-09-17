@@ -1,0 +1,56 @@
+
+#include <lpmd/colorhandler.h>
+#include <lpmd/particleset.h>
+#include <lpmd/atom.h>
+
+using namespace lpmd;
+
+@testsuite Tests de ColorHandler
+
+@test Test de HaveColor 
+{
+ Atom at("Cu");
+ @assert !ColorHandler::HaveColor(at)
+ ColorHandler::ColorOfAtom(at) = Color(1.0, 1.0, 1.0);
+ @assert ColorHandler::HaveColor(at)
+}
+@end
+
+@test Seteo y lectura de color
+{
+ Atom at("Zr");
+ ColorHandler::ColorOfAtom(at) = Color(0.2, 0.7, 0.5);
+ const Color & col = ColorHandler::ColorOfAtom(at);
+ @approx col[0], 0.2, 1.0E-10
+ @approx col[1], 0.7, 1.0E-10
+ @approx col[2], 0.5, 1.0E-10
+
+ @approx col.Red(), 0.2, 1.0E-10
+ @approx col.Green(), 0.7, 1.0E-10
+ @approx col.Blue(), 0.5, 1.0E-10
+
+ ColorHandler::ColorOfAtom(at).Green() = 0.1;
+ @approx col.Green(), 0.1, 1.0E-10
+}
+@end
+
+@test Colores se preservan despues de un BasicParticleSet::Delete
+{
+ ParticleSet atoms;
+ atoms.Append(Atom("Zr"));
+ atoms.Append(Atom("Cu"));
+ atoms.Append(Atom("Ar"));
+ atoms.Append(Atom("Ag"));
+ atoms.Append(Atom("Fe"));
+ atoms.Append(Atom("Cr"));
+ atoms.Append(Atom("Ni"));
+ for (int i=0;i<atoms.Size();++i)
+     ColorHandler::ColorOfAtom(atoms[i]) = ColorFromScalar(double(i)/6);
+ atoms.Delete(3);
+ for (int i=0;i<3;++i) 
+     @approx (ColorHandler::ColorOfAtom(atoms[i])-ColorFromScalar(double(i)/6)).Module(), 0.0, 1.0E-10
+ for (int i=3;i<6;++i) 
+     @approx (ColorHandler::ColorOfAtom(atoms[i])-ColorFromScalar(double(i+1)/6)).Module(), 0.0, 1.0E-10
+}
+@end
+

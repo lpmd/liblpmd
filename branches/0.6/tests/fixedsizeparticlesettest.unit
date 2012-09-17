@@ -1,0 +1,42 @@
+//
+//
+//
+
+#include <lpmd/fixedsizeparticleset.h>
+#include <lpmd/vector.h>
+#include <lpmd/atom.h>
+
+using namespace lpmd;
+
+@testsuite Tests de FixedSizeParticleSet
+
+@test Constructor con numero de atomos
+{
+ FixedSizeParticleSet ps(100);
+ @equal ps.Size(), 0
+ for (int i=0;i<100;++i) ps.Append(Atom("Cu"));
+ @equal ps.Size(), 100
+ try
+ {
+  ps.Append(Atom("Cu"));
+  @fail
+ }
+ catch (Error & e)
+ {
+  @pass
+ }
+}
+@end
+
+@test Asignacion y lectura de atomos
+{
+ FixedSizeParticleSet ps(50);
+ const Vector pos(1.0, 2.0, 3.0);
+ for (long int i=0;i<ps.Size();++i) ps[i].Position() = pos;
+ for (long int i=0;i<ps.Size();++i) 
+ {
+  @approx (ps[i].Position()-pos).Module(), 0.0, 1.0E-10
+ }
+}
+@end
+
