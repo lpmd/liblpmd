@@ -1,0 +1,10 @@
+prefix=$(prefix)
+exec_prefix=$(prefix)/bin
+libdir=$(prefix)/lib
+includedir=$(prefix)/include
+
+Name: lpunit
+Description: A framework for C++ unit testing
+Version: $(version)
+Libs: -L$(prefix)/lib -llpunit 
+Cflags: -I$(prefix)/include

@@ -1,0 +1,10 @@
+prefix=$(prefix)
+exec_prefix=$(prefix)/bin
+libdir=$(prefix)/lib
+includedir=$(prefix)/include
+
+Name: liblpmd
+Description: An object-oriented, modular Molecular Dynamics library
+Version: $(version)
+Libs: -L$(prefix)/lib -llpmd -ldl -lm
+Cflags: -I$(prefix)/include

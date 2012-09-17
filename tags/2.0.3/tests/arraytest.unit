@@ -1,0 +1,129 @@
+
+#include <lpmd/array.h>
+
+using namespace lpmd;
+
+@testsuite Tests de Array
+
+@test Constructor por defecto
+{
+ Array<int> a;
+ @equal a.Size(), 0
+}
+@end
+
+@test Constructor con numero de items
+{
+ Array<int> a(50);
+ @equal a.Size(), 50
+}
+@end
+
+@test Constructor desde un puntero 
+{
+ int buffer[10];
+ for (int q=0;q<10;++q) buffer[q] = q;
+ Array<int> a(buffer, 10);
+ for (int q=0;q<10;++q)
+ {
+  @equal a[q], q
+ }
+}
+@end
+
+@test Asignacion y lectura con operator[]
+{
+ Array<int> a(2);
+ a[0] = 42;
+ a[1] = 37;
+ @equal a[0], 42
+ @equal a[1], 37
+}
+@end
+
+@test Acceso a un Array const
+{
+ Array<int> a(2);
+ a[0] = 42;
+ a[1] = 37;
+ const Array<int> & b = a;
+ @equal b[0], 42
+ @equal b[1], 37
+}
+@end
+
+@test Agregar elementos a un Array
+{
+ Array<int> a;
+ for (int q=0;q<10;++q) a.Append(q);
+ @equal a.Size(), 10
+ for (int q=0;q<a.Size();++q) 
+ {
+  @equal a[q], q
+ } 
+}
+@end
+
+@test Copia del Array completo
+{
+ Array<int> a;
+ for (int q=0;q<10;++q) a.Append(q);
+ Array<int> b;
+ b = a;
+ for (int q=0;q<b.Size();++q) 
+ {
+  @equal b[q], q
+ } 
+}
+@end
+
+@test Metodo Clear
+{
+ Array<int> a;
+ for (int q=0;q<10;++q) a.Append(q);
+ @equal a.Size(), 10
+ a.Clear();
+ @equal a.Size(), 0
+}
+@end
+
+@test Metodo Delete
+{
+ Array<int> a;
+ a.Append(5);
+ a.Append(7);
+ @equal a[0], 5
+ @equal a[1], 7
+ a.Delete(1);
+ @equal a.Size(), 1
+ @equal a[0], 5
+}
+@end
+
+@test Metodo Find
+{
+ Array<int> a(3);
+ a[0] = 10;
+ a[1] = 20;
+ a[2] = 30;
+ @equal a.Find(30), 2
+ @equal a.Find(10), 0
+ @equal a.Find(20), 1
+ @equal a.Find(55), -1
+}
+@end
+
+@test Metodo Contains
+{
+ Array<int> a(3);
+ a[0] = 17;
+ a[1] = 2;
+ a[2] = 42;
+ @assert a.Contains(17)
+ @assert a.Contains(2)
+ @assert a.Contains(42)
+ @assert (!a.Contains(73))
+ @assert (!a.Contains(55))
+}
+@end
+

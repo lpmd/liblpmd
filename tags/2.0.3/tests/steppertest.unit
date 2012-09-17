@@ -1,0 +1,55 @@
+//
+//
+//
+
+#include <lpmd/stepper.h>
+#include <lpmd/util.h>
+
+using namespace lpmd;
+
+@testsuite Tests de Stepper
+
+@test Constructor con start, end
+{
+ Stepper in(1, 100);
+ @equal in.start, 1
+ @equal in.end, 100
+ @equal in.each, 1
+}
+@end
+
+
+@test Constructor con start, end, each
+{
+ Stepper in(1, 100, 10);
+ @equal in.start, 1
+ @equal in.end, 100
+ @equal in.each, 10
+}
+@end
+
+@test Metodo IsActiveInStep
+{
+ Stepper in(5, 210, 50);
+ std::string accum = "";
+ for (int i=0;i<250;++i) 
+ {
+  if (in.IsActiveInStep(i)) accum += (ToString<int>(i)+" ");
+ }
+ @equal accum, "5 55 105 155 205 "
+ // ojo: posible bug en la implementacion original de MustDo! incluia el punto end siempre
+}
+@end
+
+@test Metodo ValueAtStep
+{
+ Stepper in(50, 1050);
+ double initial = 0.0, final = 100.0;
+ @approx in.ValueAtStep(50, initial, final), initial, 1.0E-10
+ @approx in.ValueAtStep(1050, initial, final), final, 1.0E-10
+ @approx in.ValueAtStep(550, initial, final), 50.0, 1.0E-10
+ @approx in.ValueAtStep(250, initial, final), 20.0, 1.0E-10
+ @approx in.ValueAtStep(750, initial, final), 70.0, 1.0E-10
+}
+@end
+

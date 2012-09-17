@@ -1,0 +1,72 @@
+
+#include <lpmd/atomselector.h>
+#include <lpmd/particleset.h>
+
+using namespace lpmd;
+
+@testsuite Tests de AtomSelector
+
+@test Seleccion por especies
+{
+ ParticleSet ps;
+ ps.Append(Atom("Cu"));
+ ps.Append(Atom("Si"));
+ ps.Append(Atom("Cu"));
+ ps.Append(Atom("Ge"));
+ ps.Append(Atom("Zr"));
+ ps.Append(Atom("Na"));
+ ps.Append(Atom("Na"));
+ ps.Append(Atom("Cl"));
+ ps.Append(Atom("Cl"));
+ ps.Append(Atom("F"));
+
+ Selector<BasicParticleSet> & s = AtomSelector::WithZ(ElemNum("Cu"));
+ const BasicParticleSet & subset = s.SelectFrom(ps);
+ @equal subset.Size(), 2
+ @equal &subset[0], &ps[0]
+ @equal &subset[1], &ps[2]
+
+ Selector<BasicParticleSet> & s2 = AtomSelector::WithZ(ElemNum("Na"));
+ const BasicParticleSet & subset2 = s2.SelectFrom(ps);
+ @equal subset2.Size(), 2
+ @equal &subset2[0], &ps[5]
+ @equal &subset2[1], &ps[6]
+}
+@end
+
+@test Seleccion por tags
+{
+ ParticleSet ps(10, Atom("Ar"));
+ ps.SetTag(ps[3], Tag("fixedpos"), "true");
+ ps.SetTag(ps[5], Tag("fixedpos"), "true");
+ ps.SetTag(ps[7], Tag("fixedpos"), "true");
+
+ Selector<BasicParticleSet> & s = AtomSelector::WithTag(Tag("fixedpos"));
+ const BasicParticleSet & subset = s.SelectFrom(ps);
+ @equal subset.Size(), 3
+ @equal &subset[0], &ps[3]
+ @equal &subset[1], &ps[5]
+ @equal &subset[2], &ps[7]
+}
+@end
+
+@test Seleccion por region
+{
+ ParticleSet ps(10, Atom("Ar"));
+ for (int i=0;i<10;++i) ps[i].Position() = Vector(double(i), double(i), double(i));
+
+ Box box(3.5, 6.5, 3.5, 6.5, 3.5, 6.5);
+ Selector<BasicParticleSet> & s = AtomSelector::Inside(box);
+ const BasicParticleSet & subset = s.SelectFrom(ps);
+ @equal subset.Size(), 3
+ @equal &subset[0], &ps[4]
+ @equal &subset[1], &ps[5]
+ @equal &subset[2], &ps[6]
+
+ Vector origin(5,5,5);
+ Vector end(10,10,10);
+ Cylinder cyl(origin-end, 5,0);
+}
+@end
+
+
