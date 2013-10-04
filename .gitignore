@@ -1,2 +1,7 @@
 *.[ao]
 *.so.*
+Makefile
+*/Makefile
+liblpmd.so
+plugmaker
+binding/lpmdmodule.so
