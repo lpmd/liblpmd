@@ -1,0 +1,10 @@
+prefix=/home/jperaltac/local
+exec_prefix=/home/jperaltac/local/bin
+libdir=/home/jperaltac/local/lib
+includedir=/home/jperaltac/local/include
+
+Name: liblpmd
+Description: An object-oriented, modular Molecular Dynamics library
+Version: 3.0.0
+Libs: -L/home/jperaltac/local/lib -llpmd -ldl -lm
+Cflags: -I/home/jperaltac/local/include

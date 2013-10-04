@@ -29,6 +29,8 @@ class OrthogonalCell: public BasicCell
    for (int q=0;q<3;++q) { modv[q] = 1.0; p[q] = true; }
   }
 
+  inline ~OrthogonalCell() { }
+
   OrthogonalCell(const OrthogonalCell & c)
   {
    for (int q=0;q<3;++q) 
@@ -143,7 +145,7 @@ class OrthogonalCell: public BasicCell
    return Vector(d);
   }
 
-  void FixDisplacement(Vector & delta)
+  void FixDisplacement(Vector & delta) const
   {
    if (mustupdate) UpdateInternals();
    double m, mhalf, *dd;
@@ -156,6 +158,23 @@ class OrthogonalCell: public BasicCell
     if (*dd >= mhalf) (*dd) -= m;
     else if (*dd < -mhalf) (*dd) += m;
    }
+  }
+
+  inline double FixDisplacement(double * dr) const
+  {
+   if (mustupdate) UpdateInternals();
+   double m, mhalf, *dd, r2=0.0e0;
+   for (int i=0;i<3;++i)
+   {
+    if (!p[i]) continue;
+    m = modv[i];
+    dd = dr+i;
+    mhalf = 0.5*m;
+    if (*dd >= mhalf) (*dd) -= m;
+    else if (*dd < -mhalf) (*dd) += m;
+    r2 += (*dd)*(*dd);
+   }
+   return r2;
   }
 
   inline double Volume() const { return v[0].Module()*v[1].Module()*v[2].Module(); }

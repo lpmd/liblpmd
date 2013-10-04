@@ -15,6 +15,8 @@
 #include <lpmd/basiccell.h>
 #include <lpmd/util.h>
 
+inline double DegreesToRadians(double d) { return (M_PI*d/180.0); }
+
 namespace lpmd
 {
 
@@ -30,40 +32,6 @@ class NonOrthogonalCell: public BasicCell
   NonOrthogonalCell(const Vector & a, const Vector & b, const Vector & c);
 
   NonOrthogonalCell(const double a, const double b, const double c, const double alpha, const double beta, const double gamma);
-
-  NonOrthogonalCell(std::string str)
-  {
-   RemoveUnnecessarySpaces(str);
-   if (str[0] == '<') 
-   {
-    Array<std::string> bv = ParseThreeVectors(str);
-    (*this) = NonOrthogonalCell(Vector(bv[0].c_str()), Vector(bv[1].c_str()), Vector(bv[2].c_str()));
-   }
-   else
-   {
-    Array<std::string> vecs = StringSplit(str,' ');
-    if (vecs.Size() == 3)
-    {
-     for (int q=0;q<3;++q) v[q] = Vector(vecs[q].c_str());
-    }
-    else if(vecs.Size()==6)
-    {
-     NonOrthogonalCell tmp(atof(vecs[0].c_str()),atof(vecs[1].c_str()),atof(vecs[2].c_str()),atof(vecs[3].c_str()),atof(vecs[4].c_str()),atof(vecs[5].c_str()));
-     (*this) = tmp;
-    }
-    else if(vecs.Size()==9)
-    {
-     for (int p=0;p<3;++p)
-       for (int q=0;q<3;++q) v[p][q] = atof(vecs[q+3*p].c_str());
-    }
-    else
-    {
-     //FIXME : Error!
-    }
-   }
-   for (int i=0;i<3;++i) p[i] = true;
-   UpdateTransfMatrix();
-  }
 
   bool IsOrthogonal() const { return !(nonortg); }
 
@@ -98,13 +66,27 @@ class NonOrthogonalCell: public BasicCell
 
   Vector ScaleByCell(const Vector & cv) const
   {
-   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector nv;
    for (int j=0;j<3;++j) nv = nv + v[j]*cv[j];
    return nv;
   }
 
   void ConvertToExternal(Vector & a) const
+  {
+   if (mustupdate) UpdateTransfMatrix();
+   if (nonortg > 1.0E-10)
+   {
+    double v[3];
+    for (int q=0;q<3;++q) v[q] = a[q];
+    for (int q=0;q<3;++q)
+    {
+     a[q] = 0.0;
+     for (int p=0;p<3;++p) a[q] += v[p]*itm[p][q];
+    }
+   }
+  }
+
+  void ConvertToExternal(double * a) const
   {
    if (mustupdate) UpdateTransfMatrix();
    if (nonortg > 1.0E-10)
@@ -134,9 +116,23 @@ class NonOrthogonalCell: public BasicCell
    }
   }
 
+  void ConvertToInternal(double * a) const
+  {     
+   if (mustupdate) UpdateTransfMatrix();
+   if (nonortg > 1.0e-10)
+   {
+    double v[3];
+    for (int q=0;q<3;++q) v[q] = a[q];
+    for (int q=0;q<3;++q)
+    {
+     a[q] = 0.0;
+     for (int p=0;p<3;++p) a[q] += v[p]*tm[p][q];
+    }
+   }
+  }
+
   Vector Fractional(const Vector & cv) const
   {
-   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector tmp(cv);
    ConvertToInternal(tmp);
    for (int q=0;q<3;++q) tmp[q] /= v[q].Module();
@@ -145,7 +141,6 @@ class NonOrthogonalCell: public BasicCell
   
   Vector Cartesian(const Vector & cv) const
   {
-   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector tmp(cv);
    for (int q=0;q<3;++q) tmp[q] *= v[q].Module();
    ConvertToExternal(tmp);
@@ -154,7 +149,6 @@ class NonOrthogonalCell: public BasicCell
 
   Vector FittedInside(const Vector & a) const
   {
-   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector vtmp(a);
    ConvertToInternal(vtmp);
    for (int q=0;q<3;++q)
@@ -172,7 +166,6 @@ class NonOrthogonalCell: public BasicCell
 
   bool IsInside(const Vector & a) const
   {
-   if (firstapp) {UpdateTransfMatrix(); firstapp=false;}
    Vector vtmp(a);
    ConvertToInternal(vtmp);
    for (int q=0;q<3;++q) 
@@ -182,6 +175,42 @@ class NonOrthogonalCell: public BasicCell
 
   Vector Displacement(const Vector & a, const Vector & b) const;
 
+  inline void FixDisplacement(Vector & d) const
+  {
+   ConvertToInternal(d);
+   for (int i=0;i<3;++i)
+   {
+    double q = d[i];
+    if (p[i] == true)
+    {
+     double ll = v[i].Module();
+     if (q >= 0.5*ll) q -= ll;
+     else if (q < -0.5*ll) q += ll;
+     d[i] = q;
+    }
+   }
+   ConvertToExternal(d);
+  }
+
+  inline double FixDisplacement(double * dr) const
+  {
+   ConvertToInternal(dr);
+   double * dd, r2 = 0.0e0;
+   for (int i=0;i<3;++i)
+   {
+    if (p[i] == true)
+    {
+     dd = dr+i;
+     double ll = v[i].Module();
+     if (*dd >= 0.5*ll) *dd -= ll;
+     else if (*dd < -0.5*ll) *dd += ll;
+    }
+    r2 += (dr[i]*dr[i]);
+   }
+   ConvertToExternal(dr);
+   return r2;
+  }
+
   inline double Volume() const { return fabs(Dot(Cross(v[0], v[1]), v[2])); }
 
  private:
@@ -190,7 +219,6 @@ class NonOrthogonalCell: public BasicCell
    mutable double tm[3][3],itm[3][3];
    mutable double nonortg;
    mutable bool mustupdate;
-   mutable bool firstapp;
 
    inline void UpdateTransfMatrix() const
    {
@@ -231,7 +259,6 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell()
 {
  v[0]=e1;v[1]=e2;v[2]=e3;
  for (int i=0;i<3;++i) p[i] = true;
- firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -242,7 +269,6 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell(const BasicCell & c)
   v[q] = c[q];
   p[q] = c.Periodicity(q);
  }
- firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -253,7 +279,6 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell(const NonOrthogonalCell & c)
   v[q] = c[q];
   p[q] = c.p[q];
  }
- firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -261,7 +286,6 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell(const Vector & a, const Vector
 {
  v[0]=a;v[1]=b;v[2]=c;
  for (int i=0;i<3;++i) p[i] = true;
- firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -281,7 +305,6 @@ inline lpmd::NonOrthogonalCell::NonOrthogonalCell(const double a, const double b
  v[2][1] = c*tmp;			      
  v[2][2] = c*sqrt(sin(br)*sin(br)-tmp*tmp);		
  for (int i=0;i<3;++i) p[i] = true;
- firstapp=true;
  UpdateTransfMatrix();
 }
 
@@ -303,6 +326,7 @@ inline Vector lpmd::NonOrthogonalCell::Displacement(const Vector & a, const Vect
  ConvertToExternal(d);
  return d;
 }
+
 
 }  // lpmd
 

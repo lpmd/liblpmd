@@ -32,11 +32,11 @@ namespace lpmd
     {
      for (int q=0;q<3;++q) vmin[q] = 0.0;
      vmax[0] = xlength;
-     vmax[1] = ylength;
-     vmax[2] = zlength;
+     vmax[1] = xlength;
+     vmax[2] = xlength;
     }
     
-    Box(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, Vector _a, Vector _b, Vector _c)
+    Box(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
     {
      vmin[0] = xmin;
      vmin[1] = ymin;
@@ -44,16 +44,13 @@ namespace lpmd
      vmax[0] = xmax;
      vmax[1] = ymax;
      vmax[2] = zmax;
-     a = _a ; b = _b ; c = _c;
     }
 
     inline bool IsInside(const Vector & v) const 
     {
-     //Set the old coordinates based in the cell
-     Vector vp(v[0]*a/a.Module() + v[1]*b/b.Module() + v[2]*c/c.Module());
-     if ((fabs(vp[0]) < vmin[0]) || (fabs(vp[0]) > vmax[0])) return false;
-     if ((fabs(vp[1]) < vmin[1]) || (fabs(vp[1]) > vmax[1])) return false;
-     if ((fabs(vp[2]) < vmin[2]) || (fabs(vp[2]) > vmax[2])) return false;
+     if ((v[0] < vmin[0]) || (v[0] > vmax[0])) return false;
+     if ((v[1] < vmin[1]) || (v[1] > vmax[1])) return false;
+     if ((v[2] < vmin[2]) || (v[2] > vmax[2])) return false;
      return true;
     }
 
@@ -61,7 +58,6 @@ namespace lpmd
 
   private:
    double vmin[3], vmax[3];
-   Vector a,b,c;
  };
 
  class Sphere: public Region
@@ -102,38 +98,6 @@ namespace lpmd
    double _rmax;
    double _rmin;
  };
-
- class Cone: public Region
- {
-  public:
-    Cone(const Vector & tip, const Vector & bot, double alpha, double beta): _tip(tip), _bot(bot), _alpha(alpha), _beta(beta) { }
-    
-    inline bool IsInside(const Vector & v) const 
-    {
-     Vector direct = _bot - _tip;
-     Vector posrel = v - _tip;
-     double dotab = Dot(direct,posrel);
-     double angle = (acos(dotab/(direct.Module()*posrel.Module())))*180.0/M_PI;
-     if(angle>=_alpha || angle<_beta) return false;
-     if(posrel.Module()>direct.Module()) return false;
-     else return true;
-    }
-    
-    inline double Volume() const 
-    { 
-     double l = (_bot - _tip).Module();
-     double A = (1.0e0/3.0e0)*l*pow(l*tan(_alpha),2);
-     double B = (1.0e0/3.0e0)*l*pow(l*tan(_beta),2);
-     return A-B; 
-    }
-
-  private:
-    Vector _tip;
-    Vector _bot;
-    double _alpha,_beta;
- };
-
-
 
 }  // lpmd
 

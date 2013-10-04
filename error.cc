@@ -44,3 +44,6 @@ MissingComponent::MissingComponent(const std::string component): RuntimeError(co
 
 FileNotFound::FileNotFound(const std::string filename): SystemError("File "+filename+" not found.") { }
 
+//
+CutoffTooLarge::CutoffTooLarge(): RuntimeError("Boundary length is too large for the chosen processor grid") { }
+

@@ -5,18 +5,22 @@
 #ifndef __LPMD_MATRIX_H__
 #define __LPMD_MATRIX_H__
 
-#include <iostream>
-#include <lpmd/array.h>
+typedef struct
+{
+ long rows, columns;
+ double ** values;   
+ const char ** label;
+} RawMatrix;
 
+#ifdef __cplusplus
 namespace lpmd
 {
-
-class Matrix
-{
- public:
-
+ class Matrix: private RawMatrix
+ {
+  public:
    Matrix(long cols, long rows);
    Matrix(const Matrix & m);
+   Matrix(const RawMatrix & m);
    Matrix();
    virtual ~Matrix();
 
@@ -28,32 +32,22 @@ class Matrix
    double Get(long col, long row) const;
    void Set(long col, long row, double v);
 
-   void SetLabel(long col, std::string lbl);
-   std::string GetLabel(long col) const;
+   void SetLabel(long col, const char * lbl);
+   const char * GetLabel(long col) const;
 
-   //Matrix operations
-   double Det() const;
-   void Inverse();
 
    // Operador de asignacion
    Matrix & operator=(const Matrix & m);
    Matrix & operator+=(const Matrix & m);
 
- private:
-   long nr, nc;
-   double **values;   
-   Array<std::string> col_labels;
-};
+ };
 
-// Sobrecarga operadores aritmeticos 
-Matrix operator+(const Matrix & a, const Matrix & b);
-Matrix operator*(const Matrix & a, double f);
-Matrix operator/(const Matrix & a, double f);
-
-// Operador de salida
-std::ostream & operator<<(std::ostream & os, const Matrix & m);
-
+ // Sobrecarga operadores aritmeticos 
+ Matrix operator+(const Matrix & a, const Matrix & b);
+ Matrix operator*(const Matrix & a, double f);
+ Matrix operator/(const Matrix & a, double f);
 } // lpmd
+#endif
 
 #endif
 

@@ -13,7 +13,9 @@
 #include <string.h>
 #include <cstdlib>
 #include <cassert>
-#include <lpmd/error.h>
+
+#include "error.h"
+#include "mtwist.h"
 
 namespace lpmd
 {
@@ -169,7 +171,7 @@ inline std::ostream & operator<<(std::ostream & os, const Vector & v)
 inline Vector RandomVector(double m=1.0)
 {
  double w[3];
- for (int q=0;q<3;++q) w[q] = 2.0*drand48()-1.0;
+ for (int q=0;q<3;++q) w[q] = 2.0*mt_drand()-1.0;
  double r = Vector(w).Module();
  return Vector(m*w[0]/r, m*w[1]/r, m*w[2]/r);
 }
@@ -204,15 +206,20 @@ inline Vector Cross(const Vector & a, const Vector & b)
  return Vector(a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]);
 }
 
+inline double Angle(const Vector a, const Vector b)
+{
+ return acos(Dot(a,b)/ (a.Module()*b.Module()));
+}
+
 //
 //
 //
 
-const Vector e1(1.0, 0.0, 0.0);
-const Vector e2(0.0, 1.0, 0.0);
-const Vector e3(0.0, 0.0, 1.0);
+extern const Vector e1;
+extern const Vector e2;
+extern const Vector e3;
 
-const Vector identity[3] = { e1, e2, e3 };
+extern const Vector identity[3];
 
 }
 

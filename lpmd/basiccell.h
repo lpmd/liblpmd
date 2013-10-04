@@ -7,12 +7,21 @@
 #ifndef __LPMD_BASICCELL_H__
 #define __LPMD_BASICCELL_H__
 
+typedef struct
+{
+ double a[3];
+ double b[3];
+ double c[3];
+} RawCell;
+
+#ifdef __cplusplus
+
 #include <lpmd/region.h>
 
 namespace lpmd
 {
 
- class BasicCell: public Region
+ class BasicCell: public Region, public RawCell
  {
   public:
     virtual ~BasicCell() { }
@@ -37,6 +46,10 @@ namespace lpmd
 
     virtual Vector Displacement(const Vector & a, const Vector & b) const = 0;
 
+    virtual void FixDisplacement(Vector & delta) const = 0;
+    
+    virtual double FixDisplacement(double * dr) const = 0;
+
  };
 
 } // lpmd
@@ -49,6 +62,8 @@ inline bool operator==(const lpmd::BasicCell & cell_a, const lpmd::BasicCell & c
 }
 
 inline bool operator!=(const lpmd::BasicCell & cell_a, const lpmd::BasicCell & cell_b) { return !(operator==(cell_a, cell_b)); }
+
+#endif
 
 #endif
 

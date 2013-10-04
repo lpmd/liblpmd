@@ -1,0 +1,368 @@
+
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{verbatim}
+\usepackage{url}
+
+\usepackage[spanish]{babel}
+\usepackage{makeidx}
+\usepackage{fancybox}
+\usepackage{fancyhdr}
+\usepackage[svgnames]{xcolor}
+\usepackage{pgf}
+\usepackage{listings}
+
+\begin{document}
+\lstset{basicstyle=\small\ttfamily}
+\lstset{keywordstyle=\color{Navy}}
+\lstset{identifierstyle=\color{Brown}}
+\lstset{commentstyle=\color{Green}}
+\lstset{showstringspaces=false}
+\lstset{captionpos=b}
+
+\title{PlugCode 1.0alpha Reference Guide}
+\author{Sergio Davis}
+\date{\today}
+
+\maketitle
+
+\section{What is PlugCode?}
+
+PlugCode it is a \textit{dialect} of C programing language, developed to write
+\textit{plug-ins} of \textbf{lpmd} software package. PLugCode it is a
+\emph{superset}  of C, this mean that any C routine it is allowed
+automatically as a valid PlugCode subroutine.
+
+%PlugCode es un dialecto del lenguaje de programaci\'on C, especializado para
+%escribir \emph{plug-ins} de LPMD. PlugCode es un \emph{superset} de C, es
+%decir,
+%cualquier rutina en C es aceptada autom\'aticamente como c\'odigo PlugCode
+%v\'alido.
+PlugCode add C facilities as macros, clousures (in a limited way), and allow a
+very clear ab optimized syntaxis over vector operations, without the poor
+performance usually related to high level languages like C++. These
+characteristics are possible because PlugCode is internally tranformed to
+traditional C code\footnotemark ~ during compile.
+
+%PlugCode agrega a C facilidades como macros, clausuras (de manera limitada) y 
+%operaciones sobre vectores con una sintaxis mucho m\'as clara, y sin la
+%p\'erdida 
+%de eficiencia usualmente asociada a lenguajes de m\'as alto nivel como C++, ya
+%que PlugCode es internamente traducido a c\'odigo C tradicional\footnotemark ~
+%para su compilaci\'on.
+
+%\footnotetext{Para ser precisos, cuando digo C tradicional me refiero al
+%est\'andar C99, que
+%incluye comentarios con \texttt{//} y declaraciones dentro de los ciclos
+%\texttt{for} o \texttt{while}.}
+
+\footnotetext{To be accurate, traditional C means the standard C99, that
+incorporate comments with \texttt{//} and declare allowed inside \texttt{for}
+and \texttt{while} cicles.}
+
+\begin{figure}[ht]\centering\shadowbox{
+\begin{minipage}{12cm}\scriptsize
+\lstset{language=C}
+\begin{lstlisting}
+@slot Evaluate (reader)
+{
+ Vector * vel = GetArray("vel");
+ double ti = 0.0e0;
+ for (long i=0;i<size;i++)
+ {
+  ti += 0.5*M*SquareModule(vel[i]);
+ }
+ ti *= KIN2EV;
+ ti /= ((3.0/2.0)*KBOLTZMANN*totalsize);
+ return ti;
+}
+\end{lstlisting}
+\end{minipage}}
+\caption{``slot'' example wrote at PlugCode.}
+\label{fig_code_slot}
+\end{figure}
+
+\begin{figure}[ht]\centering\shadowbox{
+\begin{minipage}{12cm}\scriptsize
+\lstset{language=C}
+\lstset{basicstyle=\tiny\ttfamily}
+\begin{lstlisting}
+void Evaluate(const RawAtomSet * aset, const RawCell * cell)
+{
+ double * vel = NULL;
+ ASet_GetArrays(aset, NULL, &vel, NULL, NULL, NULL, NULL);
+ double ti = 0.0e0;
+ long size = ASet_LocalSize(aset);
+ long totalsize = ASet_TotalSize(aset);
+ for (long i=0;i<size;i++)
+ {
+  ti += 0.5*M*(pow(vel[3*i],2.0)+pow(vel[3*i+1],2.0)+pow(vel[3*i+2],2.0));
+ }
+ ti *= KIN2EV;
+ ti /= ((3.0/2.0)*KBOLTZMANN*totalsize);
+ ASet_ReturnValue(aset, RET_DOUBLE, &ti, 1);
+}
+\end{lstlisting}
+\end{minipage}}
+\caption{The same example of figure~(\ref{fig_code_slot}) but in C.}
+\label{}
+\end{figure}
+
+To more details about ``slots'' en \textbf{lpmd} 0.7, refeer to the document
+``Scheme-Design of LPMD 0.7''.
+
+%Para m\'as detalles sobre los ``slots'' en LPMD 0.7, vea el documento ``Esquema
+%de dise\~no de LPMD 0.7''.
+
+\section{Using \texttt{Allocate} and \texttt{Deallocate}}
+
+PlugCode proporciona las funciones \texttt{Allocate} y \texttt{Deallocate}, como 
+reemplazos de \texttt{malloc}, \texttt{realloc} y \texttt{free} para pedir y
+liberar memoria din\'amica (equivalentes a \verb'new' y \verb'delete' en C++).
+
+Su sintaxis es la siguiente:
+
+\begin{center}
+\framebox{
+\emph{T}\texttt{ * Allocate (}\emph{T}, \texttt{long} \emph{N}\texttt{)}} \\
+\vspace{15pt}
+%
+pide memoria suficiente para un arreglo de \emph{N} elementos de tipo \emph{T}, y devuelve un
+puntero al comienzo de esa memoria. Es similar a una llamada a \verb'malloc' en
+C tradicional, con la diferencia que \verb'Allocate' lleva cuenta de la memoria
+pedida y permitir\'a evitar muchas fugas de memoria en los \emph{plug-ins}.
+\vspace{15pt}
+
+\framebox{
+\emph{T}\texttt{ * Allocate (}\emph{T}, \texttt{long} \emph{M}, \emph{T}\texttt{ * }\emph{pointer}\texttt{)}} \\
+\vspace{15pt}
+%
+reajusta el tama\~no del bloque de memoria al que apunta \emph{pointer}, para
+que acomode ahora \emph{M} elementos del tipo \emph{T}. Es similar a una llamada
+a \verb'realloc' en C tradicional, pero tambi\'en evita fugas de memoria.
+
+\vspace{15pt}
+\framebox{
+\texttt{void Deallocate (}\emph{T}\texttt{ * }\emph{pointer}\texttt{)}} \\
+\vspace{15pt}
+%
+libera el bloque de memoria al que apunta \emph{pointer}. Es similar a una
+llamada a \verb'free' en C tradicional, con la diferencia de que est\'a al tanto
+de si el bloque de memoria ya fue liberado previamente lo que ayudar\'a a evitar
+algunos fallos de segmentaci\'on producidos por aplicar \verb'free' dos veces.
+\end{center}
+
+\section{El tipo de datos \texttt{Vector}}
+
+El tipo \verb'Vector' es una agregaci\'on de tres valores reales, de tipo
+\verb'double', consecutivos en memoria. Para muchos efectos es equivalente a ser
+declarado con \verb'typedef double Vector[3]'.
+
+\section{El ciclo \texttt{VectorLoop}}
+
+El ciclo \verb'VectorLoop' se utiliza para realizar operaciones sobre las
+componentes de un vector "impl\'{\i}citamente". Por ejemplo, si $a$ y $b$ son de 
+tipo Vector y queremos hacer que $b$ sea igual a $a$ multiplicado por el escalar $f$, 
+lo conseguimos con
+
+\lstset{language=C}
+\begin{lstlisting}
+double f = 20.0;
+VectorLoop { b = a*f; }
+\end{lstlisting}
+%
+que es equivalente a hacer en C tradicional
+
+\lstset{language=C}
+\begin{lstlisting}
+double f = 20.0;
+for (int q=0;q<3;++q) { b[q] = a[q]*f; }
+\end{lstlisting}
+
+Es posible usar \verb'Vector' en combinaci\'on con \verb'VectorLoop' para
+asignar las componentes de un vector, como en el siguiente ejemplo:
+
+\lstset{language=C}
+\begin{lstlisting}
+Vector v;
+VectorLoop { v = Vector(1.0, 2.0, 3.0); }
+\end{lstlisting}
+%
+lo cual es equivalente a 
+
+\lstset{language=C}
+\begin{lstlisting}
+Vector v;
+v[0] = 1.0;
+v[1] = 2.0;
+v[2] = 3.0;
+\end{lstlisting}
+
+\section{Uso de \texttt{@define}}
+
+La instrucci\'on \verb'@define' sirve para definir constantes y peque\~nas
+funciones, haciendo el papel de las macros \verb'#define' del preprocesador de
+C. El siguiente ejemplo muestra ambos usos de \verb'@define'.
+
+\lstset{language=C}
+\begin{lstlisting}
+@define KBOLTZMANN = 8.617E-05
+@define Suma(x, y) = (x+y)
+
+@slot Prueba(reader)
+{
+ double x = Suma(5.0, 3.0*KBOLTZMANN);
+}
+\end{lstlisting}
+
+\section{Uso de \texttt{@macro}}
+
+La instrucci\'on \verb'@macro' define una macro, es decir, un bloque de c\'odigo
+con nombre, en el cual cero o m\'as par\'ametros son expandidos al momento de
+ser llamado. Las macros no pueden retornar resultados como si fueran funciones, 
+aunque por supuesto siempre es posible retornar valores a trav\'es de
+par\'ametros de salida.
+
+\lstset{language=C}
+\begin{lstlisting}
+@macro Igualar(v1, v2)
+{
+ VectorLoop { v1 = v2; }
+}
+
+@slot Prueba2(reader)
+{
+ Vector a, b;
+ Igualar (b, Vector(1,2,3));
+ Igualar (a, b);
+}
+\end{lstlisting}
+
+\section{Simulando captura de valores con \texttt{@define} y \texttt{@macro}}
+
+Es posible simular \emph{clausuras} usando \texttt{@define} y \texttt{@macro}.
+Ya que ambas son expandidas textualmente, es posible hacer referencia en ellas a
+variables ``colgantes'' (\emph{unbounded}) que no han sido definidas hasta el
+momento de la llamada. A continuaci\'on el t\'{\i}pico ejemplo de clausura en el
+cual se \verb'@define' una funci\'on que suma $a=10$ a su argumento:
+
+\lstset{language=C}
+\begin{lstlisting}
+@define SumaDiez(x) = (x+a)
+int a = 10;
+int y = SumaDiez(5);
+assert (y == 15);
+a = 20;
+y = SumaDiez(5);
+assert (y == 25);
+\end{lstlisting}
+
+Note que \verb'SumaDiez' no es una clausura genuina, uno, porque no es un objeto
+sino una macro expandida en tiempo de compilaci\'on (similar a un template de
+C++), y dos, porque el valor $a$ no queda en realidad capturado dentro de la
+funci\'on, sino que se toma el valor actual de $a$ del \'ambito superior. Al 
+cambiar el valor de $a$ a 20, \verb'SumaDiez(x)' cambia su resultado.
+
+\section{Referencia de PlugCode}
+
+\subsection{Tipos de datos}
+
+Nativos (heredados de C):
+
+\begin{itemize}
+\item \verb'int'
+\item \verb'long'
+\item \verb'float'
+\item \verb'double'
+\item \verb'bool'
+\item \verb'char'
+\end{itemize}
+
+Emulados:
+
+\begin{itemize}
+\item \verb'Vector'
+\item \verb'Matrix'
+\item \verb'AtomPair'
+\item \verb'NeighborList'
+\item \verb'AtomSelection'
+\end{itemize}
+
+``Constructores''\footnotemark ~ de los tipos emulados
+
+\begin{itemize}
+\item \verb'Vector Vector(double x, double y, double z)'
+\item \verb'Matrix Matrix(int columns, int rows)'
+\item \verb'NeighborList NeighborList(AtomPair * pairs, long n)'
+\item \verb'AtomSelection AtomSelection(long * indices, long n)'
+
+\end{itemize}
+
+\footnotetext{En realidad como C no tiene el concepto de constructor, \'estos
+son m\'as bien ``funciones de f\'abrica'' (\emph{factory functions}).}
+
+\subsection{Funciones de manejo de memoria}
+
+\begin{itemize}
+\item \verb'T * Allocate(T, long N)'
+\item \verb'T * Allocate(T, long N, T * p)'
+\item \verb'void Deallocate(T * p)'
+\end{itemize}
+
+\subsection{Funciones que involucran objetos \texttt{Vector}}
+
+\begin{itemize}
+\item \verb'const char * VectorFormat(const char * format, Vector v)'
+\item \verb'double Module(Vector v)'
+\item \verb'double SquareModule(Vector v)'
+\item \verb'double Dot(Vector v)'
+\item \verb'Vector Cross(Vector a, Vector b)'
+\item \verb'Vector Unitary(Vector v)'
+\end{itemize}
+
+\subsection{Funciones de generaci\'on de n\'umeros aleatorios}
+
+\begin{itemize}
+\item \verb'double Random()'
+\item \verb'Vector RandomVector()'
+\end{itemize}
+
+\subsection{Funciones relacionadas con la celda de simulaci\'on}
+
+\begin{itemize}
+\item \verb'double Distance(Vector dr, Vector pi, Vector pj)'
+\item \verb'void Fractional(Vector cart, Vector frac)'
+\item \verb'void Cartesian(Vector frac, Vector cart)'
+\item \verb'void CenterOfMass(Vector cm)'
+\item \verb'int InsideNode(Vector v)'
+\item \verb'void AddAtom(const char * names, ...)'
+\item \verb'void * GetArray(const char * name)'
+\item \verb'void GetArrays(const char * names, ...)'
+\item \verb'void SetArray(const char * name, long n, void * p)'
+\item \verb'void SetArrays(const char * names, long n, ...)'
+\item \verb'void * GetTotalArray(const char * name, long a, long b, int sorted)'
+\item \verb'void GetTotalArrays(const char * names, long a, long b, int sorted, ...)'
+\item \verb'int HasTag(const Tag tag, int key)'
+\item \verb'void SetTag(Tag * tag, int key)'
+\item \verb'void UnsetTag(Tag * tag, int key)'
+\end{itemize}
+
+\subsection{Depuraci\'on y tests unitarios}
+
+\begin{itemize}
+\item \verb'void LogMessage(const char * format, ...)'
+\end{itemize}
+
+\subsection{Variables especiales disponibles en un ``slot''}
+
+\begin{description}
+\item[long size]{: Tama\~no local del conjunto de \'atomos.}
+\item[long totalsize]{: Tama\~no total del conjunto de \'atomos.}
+\item[long extsize]{: Tama\~no extendido del conjunto de \'atomos.}
+\item[int masternode]{: 1 si el nodo es el nodo maestro, de lo contrario 0.}
+\item[NeighborList neighborlist]{: La lista de vecinos precalculada.}
+\end{description}
+
+\end{document}
+

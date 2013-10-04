@@ -5,8 +5,6 @@
 #ifndef __LPMD_TIMER_H__
 #define __LPMD_TIMER_H__
 
-#include <cstdlib>
-
 namespace lpmd
 {
 
@@ -19,14 +17,13 @@ namespace lpmd
 
    void Start();
    void Stop();
-   void ShowElapsedTimes() const;
+   double Elapsed() const;
 
    private:
-     class TimerImpl * timpl;
+     class TimerImpl * impl;
  };
 
 } // lpmd
 
 #endif
-
 

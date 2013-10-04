@@ -2,14 +2,27 @@
 //
 //
 
-#ifndef __LPMD_ERROR_H__
-#define __LPMD_ERROR_H__
+#ifndef __ERROR_H__
+#define __ERROR_H__
 
 #include <exception>
 #include <string>
+#include <cstdlib>
+#include <iostream>
 
 namespace lpmd
 {
+
+ inline void EndWithError(const std::string & text)
+ {
+  std::cerr << "[Error] " << text << '\n';
+  exit(1);
+ }
+
+ inline void ShowWarning(const std::string who, const std::string text)
+ {
+  std::cerr << "[Warning (from " << who << ")] " << text << '\n';
+ }
 
  class Error: public std::exception
  {
@@ -80,6 +93,12 @@ namespace lpmd
  {
   public:
     MissingComponent(const std::string component);
+ };
+
+ class CutoffTooLarge: public RuntimeError
+ {
+  public:
+    CutoffTooLarge();
  };
 
 } // lpmd

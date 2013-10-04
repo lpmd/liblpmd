@@ -1,57 +1,57 @@
-//
-//
-//
+/*
+ *
+ *
+ *
+ */
 
-#include <lpmd/timer.h>
+#ifndef SERIAL
+#include <mpi.h>
+#else
+#include <time.h>
+#endif
 
 #include <iostream>
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <cstdio>
+#include <lpmd/timer.h>
 
 using namespace lpmd;
 
 class lpmd::TimerImpl
 {
  public:
-   struct timeval t0, t1;
-   double treal, tuser, tsystem;
+   TimerImpl() 
+   { 
+#ifndef SERIAL
+    t0 = MPI_Wtime();
+#else
+    t0 = time(NULL);
+#endif
+    t1 = t0; 
+   }
+   double t0, t1;
 };
 
-Timer::Timer() { timpl = new TimerImpl(); }
+Timer::Timer() { impl = new TimerImpl(); }
 
-Timer::~Timer() { delete timpl; }
+Timer::~Timer() { delete impl; }
 
 void Timer::Start() 
-{
- timpl->treal = 0.0;
- timpl->tuser = 0.0;
- timpl->tsystem = 0.0;
- gettimeofday(&(timpl->t0), NULL);
+{ 
+#ifndef SERIAL
+ impl->t0 = MPI_Wtime(); 
+#else
+ impl->t0 = time(NULL);
+#endif
+ impl->t1 = impl->t0; 
 }
 
-void Timer::Stop()
-{
- gettimeofday(&(timpl->t1), NULL);
- timpl->treal = double(timpl->t1.tv_sec)+(1e-6)*double(timpl->t1.tv_usec)-double(timpl->t0.tv_sec)-(1e-6)*double(timpl->t0.tv_usec);
- struct rusage usg;
- if (getrusage(RUSAGE_SELF, &usg) == 0)
- {
-  timpl->tuser = double(usg.ru_utime.tv_sec) + (1e-6)*double(usg.ru_utime.tv_usec);
-  timpl->tsystem = double(usg.ru_stime.tv_sec) + (1e-6)*double(usg.ru_stime.tv_usec);
- }
- else 
- {
-  perror("lpmd");
-  exit(1);
- }
+void Timer::Stop() 
+{ 
+#ifndef SERIAL
+ impl->t1 = MPI_Wtime(); 
+#else
+ impl->t1 = time(NULL);
+#endif
 }
 
-void Timer::ShowElapsedTimes() const
-{
- std::cout << "Elapsed real time: " << timpl->treal << " seconds." << '\n';
- std::cout << "Elapsed user time: " << timpl->tuser << " seconds." << '\n';
- std::cout << "Elapsed system time: " << timpl->tsystem << " seconds." << '\n';
-}
-
+double Timer::Elapsed() const { return (impl->t1-impl->t0); }
 
