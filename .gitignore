@@ -5,3 +5,7 @@ Makefile
 liblpmd.so
 plugmaker
 binding/lpmdmodule.so
+*.aux
+*.log
+*.tex.backup
+*~

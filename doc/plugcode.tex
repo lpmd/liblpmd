@@ -1,4 +1,3 @@
-
 \documentclass[a4paper,12pt]{article}
 
 \usepackage[pdftex]{graphicx}
@@ -30,32 +29,15 @@
 \section{What is PlugCode?}
 
 PlugCode it is a \textit{dialect} of C programing language, developed to write
-\textit{plug-ins} of \textbf{lpmd} software package. PLugCode it is a
+\textit{plug-ins} of \textbf{lpmd} software package. PlugCode it is a
 \emph{superset}  of C, this mean that any C routine it is allowed
 automatically as a valid PlugCode subroutine.
 
-%PlugCode es un dialecto del lenguaje de programaci\'on C, especializado para
-%escribir \emph{plug-ins} de LPMD. PlugCode es un \emph{superset} de C, es
-%decir,
-%cualquier rutina en C es aceptada autom\'aticamente como c\'odigo PlugCode
-%v\'alido.
 PlugCode add C facilities as macros, clousures (in a limited way), and allow a
-very clear ab optimized syntaxis over vector operations, without the poor
+very clear aand optimized syntaxis over vector operations, without the poor
 performance usually related to high level languages like C++. These
 characteristics are possible because PlugCode is internally tranformed to
-traditional C code\footnotemark ~ during compile.
-
-%PlugCode agrega a C facilidades como macros, clausuras (de manera limitada) y 
-%operaciones sobre vectores con una sintaxis mucho m\'as clara, y sin la
-%p\'erdida 
-%de eficiencia usualmente asociada a lenguajes de m\'as alto nivel como C++, ya
-%que PlugCode es internamente traducido a c\'odigo C tradicional\footnotemark ~
-%para su compilaci\'on.
-
-%\footnotetext{Para ser precisos, cuando digo C tradicional me refiero al
-%est\'andar C99, que
-%incluye comentarios con \texttt{//} y declaraciones dentro de los ciclos
-%\texttt{for} o \texttt{while}.}
+traditional C code\footnotemark ~ during compiling process.
 
 \footnotetext{To be accurate, traditional C means the standard C99, that
 incorporate comments with \texttt{//} and declare allowed inside \texttt{for}
@@ -112,67 +94,72 @@ void Evaluate(const RawAtomSet * aset, const RawCell * cell)
 To more details about ``slots'' en \textbf{lpmd} 0.7, refeer to the document
 ``Scheme-Design of LPMD 0.7''.
 
-%Para m\'as detalles sobre los ``slots'' en LPMD 0.7, vea el documento ``Esquema
-%de dise\~no de LPMD 0.7''.
-
 \section{Using \texttt{Allocate} and \texttt{Deallocate}}
 
-PlugCode proporciona las funciones \texttt{Allocate} y \texttt{Deallocate}, como 
-reemplazos de \texttt{malloc}, \texttt{realloc} y \texttt{free} para pedir y
-liberar memoria din\'amica (equivalentes a \verb'new' y \verb'delete' en C++).
+PlugCode incorporate the \texttrademark{Allocate} and \texttt{Deallocate}
+functions as replaces of \texttt{malloc}, \texttt{realloc}, and \texttt{free}
+used to request and free dynamic memory (as the equivalent \texttt{new} and
+\texttt{delete} in C++.
 
-Su sintaxis es la siguiente:
 
-\begin{center}
+The syntaxis of Allocate are :
+
+\vspace{15pt}
 \framebox{
 \emph{T}\texttt{ * Allocate (}\emph{T}, \texttt{long} \emph{N}\texttt{)}} \\
 \vspace{15pt}
-%
-pide memoria suficiente para un arreglo de \emph{N} elementos de tipo \emph{T}, y devuelve un
-puntero al comienzo de esa memoria. Es similar a una llamada a \verb'malloc' en
-C tradicional, con la diferencia que \verb'Allocate' lleva cuenta de la memoria
-pedida y permitir\'a evitar muchas fugas de memoria en los \emph{plug-ins}.
-\vspace{15pt}
 
+\noindent
+the instruction make a memory request for an array of size \emph{N} of
+elements of type \emph{T}, and return the pointer to the begining of that
+memory. It is similar to the \texttt{malloc} call, in traditional C, however
+\texttt{Allocate} keep a track of the requested memory, avoiding memory leaks
+produced by the code. And :
+
+\vspace{15pt}
 \framebox{
 \emph{T}\texttt{ * Allocate (}\emph{T}, \texttt{long} \emph{M}, \emph{T}\texttt{ * }\emph{pointer}\texttt{)}} \\
 \vspace{15pt}
-%
-reajusta el tama\~no del bloque de memoria al que apunta \emph{pointer}, para
-que acomode ahora \emph{M} elementos del tipo \emph{T}. Es similar a una llamada
-a \verb'realloc' en C tradicional, pero tambi\'en evita fugas de memoria.
+
+\noindent
+modify the size of the memory block pointed to \emph{pointer}, in order to
+acommodate the size to \emph{M} components of the type \emph{T}. This work in a
+similar way than \texttt{realloc} in traditional C, but avoiding memory leaks.
+
+The syntaxis of Deallocate is :
 
 \vspace{15pt}
 \framebox{
 \texttt{void Deallocate (}\emph{T}\texttt{ * }\emph{pointer}\texttt{)}} \\
 \vspace{15pt}
-%
-libera el bloque de memoria al que apunta \emph{pointer}. Es similar a una
-llamada a \verb'free' en C tradicional, con la diferencia de que est\'a al tanto
-de si el bloque de memoria ya fue liberado previamente lo que ayudar\'a a evitar
-algunos fallos de segmentaci\'on producidos por aplicar \verb'free' dos veces.
-\end{center}
 
-\section{El tipo de datos \texttt{Vector}}
+\noindent
+this syntaxis free the memory block pointing to the \emph{pointer}
+address. It is similar to traditional C, however this keep a tracking bout
+the memory block (if it was free previously), avoinding segmentation fauls
+by the use of \texttt{free} twice.
 
-El tipo \verb'Vector' es una agregaci\'on de tres valores reales, de tipo
-\verb'double', consecutivos en memoria. Para muchos efectos es equivalente a ser
-declarado con \verb'typedef double Vector[3]'.
+\section{The \texttt{Vector} data type}
 
-\section{El ciclo \texttt{VectorLoop}}
+The \verb'Vector' data type is an aggregation of three real values
+(\verb'double' type) sequential in memory. To different uses, is equivalent to
+declare as \verb'typedef double Vector[3]'.
 
-El ciclo \verb'VectorLoop' se utiliza para realizar operaciones sobre las
-componentes de un vector "impl\'{\i}citamente". Por ejemplo, si $a$ y $b$ son de 
-tipo Vector y queremos hacer que $b$ sea igual a $a$ multiplicado por el escalar $f$, 
-lo conseguimos con
+\section{The \texttt{VectorLoop} loop}
+
+The \verb'VectorLoop' directive is used to create computation on different
+components of a vector in a implicit way. As an example if $a$ and $b$ are
+Vector type variables and we want to assign to $b$ the value of $a\times f$
+with $f$ a scalar value, then :
 
 \lstset{language=C}
 \begin{lstlisting}
 double f = 20.0;
 VectorLoop { b = a*f; }
 \end{lstlisting}
-%
-que es equivalente a hacer en C tradicional
+
+\noindent
+that is equivalent in traditional C to :
 
 \lstset{language=C}
 \begin{lstlisting}
@@ -180,16 +167,17 @@ double f = 20.0;
 for (int q=0;q<3;++q) { b[q] = a[q]*f; }
 \end{lstlisting}
 
-Es posible usar \verb'Vector' en combinaci\'on con \verb'VectorLoop' para
-asignar las componentes de un vector, como en el siguiente ejemplo:
+It is possible use a combination of \verb'Vector' with \verb'VectorLoop' to set
+the vector componentes, as in this example :
 
 \lstset{language=C}
 \begin{lstlisting}
 Vector v;
 VectorLoop { v = Vector(1.0, 2.0, 3.0); }
 \end{lstlisting}
-%
-lo cual es equivalente a 
+
+\noindent
+That is equivalent to (in traditional C) :
 
 \lstset{language=C}
 \begin{lstlisting}
@@ -199,30 +187,31 @@ v[1] = 2.0;
 v[2] = 3.0;
 \end{lstlisting}
 
-\section{Uso de \texttt{@define}}
+\section{Using \texttt{@define}}
 
-La instrucci\'on \verb'@define' sirve para definir constantes y peque\~nas
-funciones, haciendo el papel de las macros \verb'#define' del preprocesador de
-C. El siguiente ejemplo muestra ambos usos de \verb'@define'.
+
+The \verb'@define' instruction, can be used to define constant values or
+small functions, doing the job of the \verb'#define' macros of standard C.
+The next example show the use of \verb'@define' for both cases.
 
 \lstset{language=C}
 \begin{lstlisting}
 @define KBOLTZMANN = 8.617E-05
 @define Suma(x, y) = (x+y)
 
-@slot Prueba(reader)
+@slot Test(reader)
 {
  double x = Suma(5.0, 3.0*KBOLTZMANN);
 }
 \end{lstlisting}
 
-\section{Uso de \texttt{@macro}}
+\section{Using \texttt{@macro}}
 
-La instrucci\'on \verb'@macro' define una macro, es decir, un bloque de c\'odigo
-con nombre, en el cual cero o m\'as par\'ametros son expandidos al momento de
-ser llamado. Las macros no pueden retornar resultados como si fueran funciones, 
-aunque por supuesto siempre es posible retornar valores a trav\'es de
-par\'ametros de salida.
+The \verb'@macro' instruction define a macro, this mean, a block code (with a
+particular name) in which no one to many parameters can be expanded when they
+are called.The macros can't return results as functions, despite of course it
+is always possbiel return values using specific output parameters. The next
+example use a macro to make equal to vectors $v1$ and $v2$.
 
 \lstset{language=C}
 \begin{lstlisting}
@@ -239,13 +228,13 @@ par\'ametros de salida.
 }
 \end{lstlisting}
 
-\section{Simulando captura de valores con \texttt{@define} y \texttt{@macro}}
+\section{Simulating value capture by using \texttt{@define} and \texttt{@macro}}
 
-Es posible simular \emph{clausuras} usando \texttt{@define} y \texttt{@macro}.
-Ya que ambas son expandidas textualmente, es posible hacer referencia en ellas a
-variables ``colgantes'' (\emph{unbounded}) que no han sido definidas hasta el
-momento de la llamada. A continuaci\'on el t\'{\i}pico ejemplo de clausura en el
-cual se \verb'@define' una funci\'on que suma $a=10$ a su argumento:
+It is possible emulate \emph{clousures} using \texttt{@define} and
+\texttt{@macro}. Because both can be expanded as text, it is possible reference
+those as ``hanging'' variables (\emph{unbounded}) that are not defined until
+they are called. This is a typical examplo of clousure in in which
+\verb'@define' a function that add $a=10$ to the argument.
 
 \lstset{language=C}
 \begin{lstlisting}
@@ -258,17 +247,18 @@ y = SumaDiez(5);
 assert (y == 25);
 \end{lstlisting}
 
-Note que \verb'SumaDiez' no es una clausura genuina, uno, porque no es un objeto
-sino una macro expandida en tiempo de compilaci\'on (similar a un template de
-C++), y dos, porque el valor $a$ no queda en realidad capturado dentro de la
-funci\'on, sino que se toma el valor actual de $a$ del \'ambito superior. Al 
-cambiar el valor de $a$ a 20, \verb'SumaDiez(x)' cambia su resultado.
+Please note that \verb'SumaDiez' is not a genuine clousure, because: first, it
+is not an object but a expanded macro in compiling time (as a template in C++);
+second, the $a$ value is not captured inside the function, but take an actual
+$a$ value of the previous scope. By changing the value of $a$ to 20,
+\verb'SumaDiez(x)' change the result.
 
-\section{Referencia de PlugCode}
 
-\subsection{Tipos de datos}
+\section{References of PlugCode}
 
-Nativos (heredados de C):
+\subsection{Data types}
+
+Native (C heritage):
 
 \begin{itemize}
 \item \verb'int'
@@ -279,7 +269,7 @@ Nativos (heredados de C):
 \item \verb'char'
 \end{itemize}
 
-Emulados:
+Emulated:
 
 \begin{itemize}
 \item \verb'Vector'
@@ -289,7 +279,7 @@ Emulados:
 \item \verb'AtomSelection'
 \end{itemize}
 
-``Constructores''\footnotemark ~ de los tipos emulados
+``Builders''\footnotemark ~ of emulated types.
 
 \begin{itemize}
 \item \verb'Vector Vector(double x, double y, double z)'
@@ -299,10 +289,10 @@ Emulados:
 
 \end{itemize}
 
-\footnotetext{En realidad como C no tiene el concepto de constructor, \'estos
-son m\'as bien ``funciones de f\'abrica'' (\emph{factory functions}).}
+\footnotetext{Strictly speaking C doesn't have a builder concept, \'this are
+more like ``factory functions''.}
 
-\subsection{Funciones de manejo de memoria}
+\subsection{Memory control functions}
 
 \begin{itemize}
 \item \verb'T * Allocate(T, long N)'
@@ -310,7 +300,7 @@ son m\'as bien ``funciones de f\'abrica'' (\emph{factory functions}).}
 \item \verb'void Deallocate(T * p)'
 \end{itemize}
 
-\subsection{Funciones que involucran objetos \texttt{Vector}}
+\subsection{Functions that involve the use of \texttt{Vector}}
 
 \begin{itemize}
 \item \verb'const char * VectorFormat(const char * format, Vector v)'
@@ -321,14 +311,14 @@ son m\'as bien ``funciones de f\'abrica'' (\emph{factory functions}).}
 \item \verb'Vector Unitary(Vector v)'
 \end{itemize}
 
-\subsection{Funciones de generaci\'on de n\'umeros aleatorios}
+\subsection{Functions of random number generation}
 
 \begin{itemize}
 \item \verb'double Random()'
 \item \verb'Vector RandomVector()'
 \end{itemize}
 
-\subsection{Funciones relacionadas con la celda de simulaci\'on}
+\subsection{Functions related to a simulation cell}
 
 \begin{itemize}
 \item \verb'double Distance(Vector dr, Vector pi, Vector pj)'
@@ -348,20 +338,20 @@ son m\'as bien ``funciones de f\'abrica'' (\emph{factory functions}).}
 \item \verb'void UnsetTag(Tag * tag, int key)'
 \end{itemize}
 
-\subsection{Depuraci\'on y tests unitarios}
+\subsection{Debug and unit test}
 
 \begin{itemize}
 \item \verb'void LogMessage(const char * format, ...)'
 \end{itemize}
 
-\subsection{Variables especiales disponibles en un ``slot''}
+\subsection{Special variables availables in a ``slot''}
 
 \begin{description}
-\item[long size]{: Tama\~no local del conjunto de \'atomos.}
-\item[long totalsize]{: Tama\~no total del conjunto de \'atomos.}
-\item[long extsize]{: Tama\~no extendido del conjunto de \'atomos.}
-\item[int masternode]{: 1 si el nodo es el nodo maestro, de lo contrario 0.}
-\item[NeighborList neighborlist]{: La lista de vecinos precalculada.}
+\item[long size]{: Local size of atoms.}
+\item[long totalsize]{: Total size of \'atomos.}
+\item[long extsize]{: Extended size of atoms.}
+\item[int masternode]{: 1 for masternode 0 otherwise.}
+\item[NeighborList neighborlist]{: Precalculated neighbor list.}
 \end{description}
 
 \end{document}
