@@ -19,8 +19,9 @@ from lpmdmodule import AtomSet, Cell, FinishCommunication, InitializeCommunicati
 
 mpi_lib, lpmd_lib, globaltags = None, None, None
 
-def QuickSearchForLibrary(name):
-    possible_libs = [os.path.join(d, name) for d in SearchLibraryPath.split(':') if os.path.exists(os.path.join(d, name))]
+def QuickSearchForLibrary(name, otherdirs=None):
+    this_libpath = SearchLibraryPath.split(':')+(otherdirs if otherdirs is not None else list())
+    possible_libs = [os.path.join(d, name) for d in this_libpath if os.path.exists(os.path.join(d, name))]
     if len(possible_libs) == 0: raise Exception('MPI dynamic library not found (libmpi.so)')
     return possible_libs[0]
 
