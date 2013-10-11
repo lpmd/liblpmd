@@ -98,7 +98,7 @@ directory lpplugmaker
 
     file PluginProcessor.py
        language = python
-       sources = PluginProcessor.py
+       sources = PluginProcessor_.py
        ifdef prefix
         installpath = $(prefix)/lib/lpplugmaker
        else
@@ -108,7 +108,7 @@ directory lpplugmaker
 
     file CParser.py
        language = python
-       sources = CParser.py
+       sources = CParser_.py
        ifdef prefix
         installpath = $(prefix)/lib/lpplugmaker
        else
@@ -118,7 +118,7 @@ directory lpplugmaker
 
     file CFormatter.py
        language = python
-       sources = CFormatter.py
+       sources = CFormatter_.py
        ifdef prefix
         installpath = $(prefix)/lib/lpplugmaker
        else
@@ -128,7 +128,7 @@ directory lpplugmaker
 
     file ShuntingYard.py
        language = python
-       sources = ShuntingYard.py
+       sources = ShuntingYard_.py
        ifdef prefix
         installpath = $(prefix)/lib/lpplugmaker
        else
@@ -138,7 +138,7 @@ directory lpplugmaker
 
     file __init__.py
        language = python
-       sources = __init__.py
+       sources = init_.py
        ifdef prefix
          installpath = $(prefix)/lib/lpplugmaker
        else
@@ -151,7 +151,7 @@ directory lptoolkit
 
     file __init__.py
        language = python
-       sources = __init__.py
+       sources = init_.py
        ifdef prefix
          installpath = $(prefix)/lib/lptoolkit
        else
@@ -161,7 +161,7 @@ directory lptoolkit
 
     file LPMD.py
        language = python
-       sources = LPMD.py.in
+       sources = LPMD_.py
        expand = prefix
        ifdef prefix
         installpath = $(prefix)/lib/lptoolkit
@@ -172,7 +172,7 @@ directory lptoolkit
 
     file Plugin.py
        language = python
-       sources = Plugin.py
+       sources = Plugin_.py
        ifdef prefix
         installpath = $(prefix)/lib/lptoolkit
        else
@@ -182,7 +182,7 @@ directory lptoolkit
 
     file Simulation.py
        language = python
-       sources = Simulation.py
+       sources = Simulation_.py
        ifdef prefix
         installpath = $(prefix)/lib/lptoolkit
        else
@@ -192,7 +192,7 @@ directory lptoolkit
 
     file Tag.py
        language = python
-       sources = Tag.py
+       sources = Tag_.py
        ifdef prefix
         installpath = $(prefix)/lib/lptoolkit
        else
@@ -202,7 +202,7 @@ directory lptoolkit
 
     file Topology.py
        language = python
-       sources = Topology.py
+       sources = Topology_.py
        ifdef prefix
         installpath = $(prefix)/lib/lptoolkit
        else
