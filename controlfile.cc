@@ -14,12 +14,6 @@
 
 using namespace lpmd;
 
-inline void RemoveComments(std::string & line)
-{
- std::size_t pos = line.find_first_of('#');
- if (pos != std::string::npos) line = line.substr(0, pos);
-}
-
 class lpmd::ControlFileImpl
 {
  public:
@@ -97,7 +91,6 @@ inline std::string AddBlockContent(const std::string & blockname, const std::str
   if (istr.eof()) throw SyntaxError("\""+blockname+"\" block was not properly closed with \""+terminator+"\"");
   getline(istr, line);
   RemoveUnnecessarySpaces(line);
-  RemoveComments(line);
   if (line == terminator) break;
   inpbuffer += (line+" "); 
  }
@@ -168,6 +161,12 @@ void ControlFile::ReadLine(const std::string & line)
        throw SyntaxError("Unexpected instruction was found in input file \""+impl->filename+"\", line "+ToString(impl->line_count)+"\n  "+tmp);
    }
   }
+}
+
+inline void RemoveComments(std::string & line)
+{
+ std::size_t pos = line.find_first_of('#');
+ if (pos != std::string::npos) line = line.substr(0, pos);
 }
 
 void ControlFile::Read(std::istream & real_istr, const ParamList & options, const std::string & inpfile)
