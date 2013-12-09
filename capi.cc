@@ -117,10 +117,12 @@ extern "C" void ASet_AddAtom(RawAtomSet * aset, RawCell * cell, const char * a_n
  va_list ap;
  va_start(ap, a_names);
  double * ipos = NULL, * ivel = NULL, * iacc = NULL, * iaux0 = NULL;
+ char *symbol = NULL;
  long iindex = -1;
  Tag itag;
  itag.flags = 0;
  int tag_active = 0;
+ //printf("nw = %d ",nw);
  for (int q=0;q<nw;++q)
  {
   if (!strcmp(words[q], "pos")) ipos = va_arg(ap, double *);
@@ -129,6 +131,7 @@ extern "C" void ASet_AddAtom(RawAtomSet * aset, RawCell * cell, const char * a_n
   else if (!strcmp(words[q], "aux0")) iaux0 = va_arg(ap, double *);
   else if (!strcmp(words[q], "tag")) { itag.flags = va_arg(ap, long); tag_active = 1; }
   else if (!strcmp(words[q], "index")) iindex = va_arg(ap, long);
+  else if (!strcmp(words[q], "sym")) { itag.flags = va_arg(ap, long); tag_active = 1; }
   else throw InvalidRequest(words[q]);
  }
  va_end(ap);
