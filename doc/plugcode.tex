@@ -189,7 +189,6 @@ v[2] = 3.0;
 
 \section{Using \texttt{@define}}
 
-
 The \verb'@define' instruction, can be used to define constant values or
 small functions, doing the job of the \verb'#define' macros of standard C.
 The next example show the use of \verb'@define' for both cases.
@@ -204,6 +203,30 @@ The next example show the use of \verb'@define' for both cases.
  double x = Suma(5.0, 3.0*KBOLTZMANN);
 }
 \end{lstlisting}
+
+\section{Using \texttt{@global}}
+
+The \verb'@global' instruction is used to generate a global variable that is
+common to all slots in the code.
+
+\lstset{language=C}
+\begin{lstlisting}
+@global *ptr(real)
+
+@slot Test1(modifier)
+{
+ ptr = Allocate(real,size*3);
+}
+
+@slot Test2(modifier)
+{
+ for (int i=0 ; i<size*3 ; ++i)
+ {
+  ptr[i] = 0.0;
+ }
+} 
+\end{lstlisting}
+
 
 \section{Using \texttt{@macro}}
 
