@@ -18,6 +18,7 @@
 #include <lpmd/atomselection.h>
 #include <lpmd/matrix.h>
 #include <lpmd/util.h>
+#include <lpmd/capi.h>
 #include "mtwist.h"
 
 using namespace parallel;
@@ -34,6 +35,9 @@ int parallel::InitializeCommunication(int * argc, char *** argv)
  MPI_Init(argc, argv); 
  MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
 #endif
+
+ // A falta de un mejor lugar
+ InitTagRegistry();
  return nprocs;
 }
 

@@ -18,6 +18,8 @@ typedef RawCell Cell;
 typedef RawAtomPair AtomPair;
 typedef RawMatrix Matrix;
 
+extern char * TagRegistry[64]; // This is a hardcoded limit
+
 extern void ASet_LogMessage(const RawAtomSet * aset, const char * format, ...);
 
 extern void ASet_GetArrays(const RawAtomSet * aset, double ** pos, double ** vel, double ** acc, double ** aux0, Tag ** tc, long ** index);
@@ -83,6 +85,26 @@ inline int HasTag(const Tag tag, int key) { return (tag.flags & (1 << key)); }
 inline void SetTag(Tag * tag, int key) { tag->flags |= (1 << key); }
 
 inline void UnsetTag(Tag * tag, int key) { tag->flags &= ~(1 << key); }
+
+void InitTagRegistry();
+
+inline int RegisterTag(const char * name) 
+{   
+ printf("DEBUG RegisterTag %s\n", name);
+ for (int i=0;i<64;i++) 
+     if (TagRegistry[i] == NULL) { TagRegistry[i] = (char *)(name); return i; }
+ return -1;
+}
+
+inline int LookupTag(const char * name) 
+{ 
+ printf("DEBUG LookupTag %s\n", name);
+ for (int i=0;i<64;i++)
+ {
+  if ((TagRegistry[i] != NULL) && (!strcmp(TagRegistry[i], name))) return i;
+ }
+ return -1; 
+} 
 
 #endif
 

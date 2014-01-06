@@ -11,6 +11,8 @@
 #include <lpmd/matrix.h>
 #include <lpmd/atomselection.h>
 
+char * TagRegistry[64]; // This is a hardcoded limit
+
 //FIXME:Parece que params hay que eliminarlo ASAP, revisar params.h
 #include "params.h"
 
@@ -551,5 +553,11 @@ extern "C" void Matrix_Destroy(RawMatrix * mat)
  delete [] mat->label;
  for (long j=0;j<mat->rows;++j) delete [] mat->values[j];
  delete [] mat->values;
+}
+
+void InitTagRegistry()
+{
+ printf("DEBUG InitTagRegistry\n");
+ for (int i=0;i<64;i++) TagRegistry[i] = NULL;
 }
 

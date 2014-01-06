@@ -99,7 +99,12 @@ inline void ParseStringKeyword(const char * value, const char ** ret)
  memcpy((void *)(*ret), (void *)(value), l+1);
 }
 
-inline void ParseTagKeyword(const char * value, int * ret) { *ret = atoi(value); }
+inline void ParseTagKeyword(const char * value, int * ret) 
+{ 
+ int k = LookupTag(value);
+ if (k != -1) *ret = k;
+ else *ret = RegisterTag(value);
+}
 
 inline void ParseBooleanKeyword(const char * value, int * ret) { *ret = (strcmp(value, "true") ? 0 : 1); }
 
