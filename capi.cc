@@ -14,7 +14,7 @@
 char * TagRegistry[64]; // This is a hardcoded limit
 
 //FIXME:Parece que params hay que eliminarlo ASAP, revisar params.h
-#include "params.h"
+#include "lpmd/params.h"
 
 static inline int fge(double x, double m)
 {
