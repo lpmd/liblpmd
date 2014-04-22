@@ -54,6 +54,12 @@ namespace lpmd
      return neighlist;
     }
 
+    void Update()
+    {
+     if (cellman == 0) throw MissingComponent("cellmanager");
+     cellman -> UpdateCell(*this);
+    }
+
     double MinimumPairDistance() const;
 
   private:

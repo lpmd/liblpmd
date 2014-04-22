@@ -33,7 +33,7 @@ template <typename T> class Array: private std::vector<T>
 
   inline long int Size() const { return static_cast<const std::vector<T> &>(*this).size(); }
 
-  inline void Append(const T & x) { push_back(x); }
+  inline void Append(const T & x) { this->push_back(x); }
   inline void AppendUnique(const T & x) 
   {
    if (Find(x) == -1) Append(x);
@@ -72,9 +72,9 @@ template <typename T> class Array<T &>: private std::vector<T *>
   
   inline long int Size() { return (static_cast<std::vector<T *> &>(*this)).size(); }
 
-  inline void Append(T & x) { push_back(&x); }
+  inline void Append(T & x) { this->push_back(&x); }
 
-  inline void Append(const T & x) { push_back(const_cast<T *>(&x)); }
+  inline void Append(const T & x) { this->push_back(const_cast<T *>(&x)); }
 
   inline void AppendUnique(T & x) 
   {

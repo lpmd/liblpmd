@@ -21,10 +21,10 @@ namespace lpmd
 
 //
 //
-inline void UnCenter(BasicParticleSet & part, BasicCell & cell) 
+inline void UnCenter(BasicParticleSet & part, BasicCell & cell, Vector & v) 
 {
  const long n = part.Size();
- Vector displacement = cell.ScaleByCell(Vector(0.5,0.5,0.5));
+ Vector displacement = cell.ScaleByCell(v);
  for (long i=0;i<n;++i)
  {
   part[i].Position() += displacement;
