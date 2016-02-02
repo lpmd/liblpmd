@@ -1,4 +1,10 @@
+*.o
 *.so
 *.a
 *.so.*
 Makefile
+config.h
+liblpmd-2.0.pc
+lpunit/lpmaketest
+lpunit/lpunit.pc
+
