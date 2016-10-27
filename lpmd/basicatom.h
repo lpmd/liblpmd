@@ -31,6 +31,8 @@ class BasicAtom
   inline std::string Symbol() const { return ElemSym[Z()]; }
 
   inline unsigned long int ID() const { return id; }
+  
+  inline unsigned long int & ID() { return id; }
 
   inline const Vector & Position() const { return *ipos; }
 
