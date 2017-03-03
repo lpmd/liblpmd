@@ -10,18 +10,20 @@ defaultPrefix = '/usr/local'
 defaultInstall = 'install'
 pythonlib = [x for x in sys.path if 'python%d.%d' % (sys.version_info[0:2]) in x and 'pymodules' not in x][0]
 
-defaultLanguages = ['c', 'c++', 'd', 'python', 'lpunit']
+defaultLanguages = ['c', 'c++', 'mpic++', 'd', 'python', 'lpunit']
 
-compiledLanguages = ['c', 'c++', 'd', 'lpunit']
+compiledLanguages = ['c', 'c++', 'mpic++', 'd', 'lpunit']
 
-headerExtensions = { 'c': ['h'] , 'c++': ['h', 'hpp'], 'd': [], 'lpunit': ['h', 'hpp'] }
+headerExtensions = { 'c': ['h'] , 'c++': ['h', 'hpp'], 'mpic++':['h', 'hpp'], 'd': [], 'lpunit': ['h', 'hpp'] }
 
 languageCompilation = { 'c++': '%(compiler)s %(compilerflags)s -c %(source)s -o %(object)s',
+                        'mpic++': '%(compiler)s %(compilerflags)s -c %(source)s -o %(object)s',
                         'c': '%(compiler)s %(compilerflags)s -c %(source)s -o %(object)s',
                         'd': '%(compiler)s %(compilerflags)s -c %(source)s -o %(object)s',
                         'lpunit': '%(compiler)s %(source)s - | g++ %(compilerflags)s -x c++ -c -o %(object)s -' }
 
 languageStaticLibraryPacking  = { 'c++': 'ar rcs %(target)s %(object)s',
+                                  'mpic++': 'ar rcs %(target)s %(object)s',
                                   'c': 'ar rcs %(target)s %(object)s',
                                   'd': 'ar rcs %(target)s %(object)s',
                                   'lpunit': 'ar rcs %(target)s %(object)s' }
@@ -510,8 +512,8 @@ class SetupHandler:
         if not hasattr(self, 'platform'): self.CheckPlatform()
         if self.platform == 'linux':
            sys.stdout.write('* Detected Linux platform\n\n') 
-           defaultCompiler = { 'c++': 'g++', 'd': 'gdc', 'c': 'gcc', 'lpunit': 'lpmaketest' }
-           defaultLinker = { 'c++': 'g++', 'd': 'gdc', 'c': 'gcc', 'lpunit': 'g++' }
+           defaultCompiler = { 'c++': 'g++', 'mpic++': 'mpiCC', 'd': 'gdc', 'c': 'gcc', 'lpunit': 'lpmaketest' }
+           defaultLinker = { 'c++': 'g++', 'mpic++': 'mpiCC', 'd': 'gdc', 'c': 'gcc', 'lpunit': 'g++' }
            libraryNamePattern = '%(name)s.%(extension)s.%(major)d.%(minor)d.%(revision)d'
            librarySemiNamePattern = '%(name)s.%(extension)s.%(major)d'
            libraryExtensions = ['a', 'so']
@@ -521,6 +523,7 @@ class SetupHandler:
            moduleSharedFlags = ' -fPIC -shared '
            moduleSharedLinkerFlags = ' -fPIC -shared '
            languageLinking = { 'c++': '%(linker)s -o %(target)s %(object)s -Wl,-rpath,%(prefix)s/lib %(linkflags)s',
+                               'mpic++': '%(linker)s -o %(target)s %(object)s -Wl,-rpath,%(prefix)s/lib %(linkflags)s',
                                'd': '%(linker)s -o %(target)s %(object)s -Wl,-rpath,%(prefix)s/lib %(linkflags)s',
                                'c': '%(linker)s -o %(target)s %(object)s -Wl,-rpath,%(prefix)s/lib %(linkflags)s',
                                'lpunit': '%(linker)s -o %(target)s %(object)s -Wl,-rpath,%(prefix)s/lib %(linkflags)s' }

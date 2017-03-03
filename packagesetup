@@ -32,6 +32,19 @@ language lpunit
    libraries = ../liblpmd.so ../lpunit/liblpunit.a -ldl -lm
 end
 
+language mpic++
+ifdef intel
+   compiler = mpiicc -std=c++11
+   linker = mpiicc -std=c++11
+   flags = -g -O3 -Wall -Wno-literal-suffix -ffast-math -funroll-all-loops
+else
+   compiler = mpiCC -std=c++11
+   linker = mpiCC -std=c++11
+   flags = -g -O3 -Wall -Wno-literal-suffix -ffast-math -funroll-all-loops
+endif
+end
+
+
 directory .
 
     library liblpmd
@@ -81,6 +94,68 @@ directory .
     end
 
 end
+
+ifdef libinfer
+directory libinfer
+
+    staticlibrary libinfer
+       language = mpic++
+       sources = metropolis.cc pso.cc
+       headers = infer/random.h infer/pso.h infer/metropolis.h
+       version = 0.1.0
+       installpath = lib
+    end
+
+    headers infer_headers
+       sources = infer/average.h infer/block.h infer/gammamodel.h infer/gaussianmodel.h infer/ising2d.h infer/minimizer.h infer/pso.h infer/state.h \
+                 infer/binarymatrix.h infer/function.h infer/hamiltonian.h infer/metropolis.h infer/objfunction.h infer/random.h infer/statmechanics.h infer/bezier.h infer/region.h
+       installpath = include/infer
+    end
+
+    binary testpso
+       language = mpic++
+       sources = testpso.cc
+       libraries += ./libinfer.a
+    end
+
+    binary test_mcgamma
+       language = mpic++
+       sources = test_mcgamma.cc
+       libraries += ./libinfer.a
+    end
+
+    binary test_ising2d
+       language = mpic++
+       sources = test_ising2d.cc
+       libraries += ./libinfer.a
+    end
+
+    binary test_bezier
+       language = mpic++
+       sources = test_bezier.cc
+       libraries += ./libinfer.a
+    end
+
+    binary test_wanglandau
+       language = mpic++
+       sources = test_wanglandau.cc
+       libraries += ./libinfer.a
+    end
+
+    binary test_maxent
+       language = mpic++
+       sources = test_maxent.cc
+       libraries += ./libinfer.a
+    end
+
+    binary test_maxent_auto
+       language = mpic++
+       sources = test_maxent_auto.cc
+       libraries += ./libinfer.a
+    end
+end
+endif
+
 
 directory lpunit
 
