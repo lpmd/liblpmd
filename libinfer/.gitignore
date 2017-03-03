@@ -1,0 +1,10 @@
+Makefile
+*.o
+libinfer.a
+test_mcgamma
+test_ising2d
+test_bezier
+test_wanglandau
+test_maxent
+test_maxent_auto
+testpso
