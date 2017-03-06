@@ -9,3 +9,4 @@ binding/lpmdmodule.so
 *.log
 *.tex.backup
 *~
+outputfile
